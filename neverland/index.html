@@ -124,21 +124,6 @@
   .timer .c { opacity:.55; }
   @media (min-width: 768px) { .timer { font-size:52px; } }
 
-  /* --- подпись внизу ---
-     системным шрифтом, а не Aviano: в нём из кириллицы только 5 букв,
-     слово распалось бы на два шрифта посреди себя */
-  .credit { position:fixed; left:0; right:0; z-index:3; text-align:center;
-    bottom:calc(env(safe-area-inset-bottom) + 3.2vh);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:11px; font-weight:500; letter-spacing:.16em;
-    color:rgba(255,255,255,.4); pointer-events:none; user-select:none;
-    opacity:0; transition:opacity 1.4s ease; }
-  .credit.show { opacity:1; }
-
-  /* заголовок для поисковика и скринридеров: в дизайне не виден */
-  .sr { position:absolute; width:1px; height:1px; margin:-1px; padding:0;
-    overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0; }
-  @media (min-width: 768px) { .credit { font-size:12px; bottom:3vh; } }
   .pbtn { cursor:pointer; display:flex; align-items:center; justify-content:center;
     padding:10px 0; transition:transform .16s ease, opacity .2s ease; }
   .pbtn img { height:clamp(15px,4.5vw,19px); width:auto; display:block; }
@@ -178,7 +163,6 @@
 <p class="sr">NEVER LAND — новый релиз Sимптом (Симптом), проект Симптомапоника.
 Релиз выходит 23 октября 2026 года. Слушайте на Apple Music, Spotify, YouTube Music и Deezer.</p>
 
-<div class="credit" id="credit">2026 Sимптом</div>
 
 <div class="wrap">
   <div class="timer" id="timer" hidden></div>
@@ -223,7 +207,6 @@
   // чтобы отсчёт был одинаковым у зрителя в любом часовом поясе
   const RELEASE_AT = Date.UTC(2026, 9, 22, 21, 0, 0);
   const timer = document.getElementById('timer');
-  setTimeout(() => document.getElementById('credit').classList.add('show'), 1800);
   const pad = n => String(n).padStart(2, '0');
   let shown = false;
 
