@@ -255,10 +255,28 @@
     document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
   }
 
+  // === Google Analytics ===
+  // Вставь сюда идентификатор вида G-XXXXXXXXXX из analytics.google.com.
+  // Пока строка пустая — аналитика не грузится вообще, страница работает как есть.
+  const GA_ID = "G-3M6T8W5B6X";
+
+  if (GA_ID) {
+    const ga = document.createElement('script');
+    ga.async = true;
+    ga.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(ga);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { dataLayer.push(arguments); };
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+  }
+
   // === учёт кликов TYRAZH ===
   const TRACK_SLUG = "never-land";
   const CLICK_ENDPOINT = "https://ktfmjaanheowyzjrovkc.supabase.co/functions/v1/track-click";
   function logClick(platform) {
+    // то же событие уходит и в Google Analytics, если он подключён
+    window.gtag?.('event', 'platform_click', { platform: platform, release: TRACK_SLUG });
     const body = JSON.stringify({ slug: TRACK_SLUG, platform });
     try { return fetch(CLICK_ENDPOINT, { method:"POST", headers:{"content-type":"application/json"}, body, keepalive:true }).catch(()=>{}); }
     catch (_) { return Promise.resolve(); }
