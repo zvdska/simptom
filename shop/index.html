@@ -9,7 +9,8 @@
 <link rel="icon" href="img/logo-round.webp" type="image/webp">
 <link rel="apple-touch-icon" href="img/logo-round.webp">
 <link rel="preload" href="fonts/AvianoBlack.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="video/intro.mp4" as="video" type="video/mp4">
+<!-- интро выключено (CFG.intro=false). Вернёшь — раскомментируй:
+<link rel="preload" href="video/intro.mp4" as="video" type="video/mp4"> -->
 <link rel="preconnect" href="https://api.monobank.ua">
 <style>
 /* Manrope — для нижнего меню. Два файла вместо одного: браузер качает
@@ -32,7 +33,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{background:#000;color:#fff}
-body{font-family:var(--display);-webkit-font-smoothing:antialiased;overflow:hidden;height:100svh}
+body{font-family:var(--display);-webkit-font-smoothing:antialiased;min-height:100svh}
 /* два экрана рядом: Buy слева, Products справа */
 /* ── ФОНОВОЕ ВИДЕО ГЛАВНОГО ЭКРАНА ──────────────────────────
    Лежит отдельно от .panes: у .panes есть transform, а он становится
@@ -40,7 +41,6 @@ body{font-family:var(--display);-webkit-font-smoothing:antialiased;overflow:hidd
 .bgv{position:fixed;inset:0;z-index:0;overflow:hidden;background:#000;
   opacity:0;transition:opacity 1.4s ease}
 body.ready .bgv{opacity:1}
-body.on-products .bgv{opacity:0}
 .bgv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 /* затемнение сверху под шапку и снизу под кнопку с подвалом */
 .bgv::after{content:'';position:absolute;inset:0;pointer-events:none;
@@ -48,23 +48,9 @@ body.on-products .bgv{opacity:0}
     rgba(0,0,0,.6) 0,rgba(0,0,0,0) 24%,rgba(0,0,0,0) 40%,
     rgba(0,0,0,.55) 68%,rgba(0,0,0,.88) 88%,rgba(0,0,0,.96) 100%)}
 
-.panes{position:relative;z-index:1;display:flex;width:200vw;height:100svh;transition:transform .95s var(--ease);will-change:transform}
-body.on-products .panes{transform:translateX(-100vw)}
-.pane{flex:none;width:100vw;height:100svh;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
-  -webkit-overflow-scrolling:touch}
-#pane-buy{display:flex;flex-direction:column}
-#pane-buy>main{flex:1 1 auto;min-height:0}
-body.intro .pane{overflow:hidden}
-/* стрелки у края экрана для перехода между разделами (компьютер) */
-.pgo{position:fixed;z-index:18;top:50%;translate:0 -50%;display:flex;align-items:center;gap:12px;
-  background:none;border:0;color:rgba(255,255,255,.55);cursor:pointer;padding:18px 10px;
-  font:900 12px/1 var(--display);letter-spacing:.14em;opacity:0;pointer-events:none;
-  transition:opacity .5s ease,color .2s}
-.pgo:hover{color:#fff}
-.pgo:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.pgo.next{right:calc(var(--pad) - 10px)}.pgo.prev{left:calc(var(--pad) - 10px)}
-body.ready:not(.on-products) .pgo.next,body.ready.on-products .pgo.prev{opacity:1;pointer-events:auto;transition-delay:.9s,0s}
-@media (max-width:860px),(hover:none){.pgo{display:none}}
+/* разделы ниже первого экрана кладём на чёрное: они проезжают поверх видео.
+   Шов не виден — низ видео и так затемнён почти в чёрный. */
+#products,footer{position:relative;z-index:1;background:var(--bg)}
 img{display:block;max-width:100%}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 a{color:inherit}
@@ -81,18 +67,11 @@ a{color:inherit}
 #intro.moving #skip{opacity:0}
 
 /* ── ШАПКА ──────────────────────────────────────────────── */
-.hlogo{position:fixed;z-index:20;top:calc(18px + env(safe-area-inset-top,0px));left:var(--pad);
-  width:clamp(64px,7vw,104px);aspect-ratio:1;display:block;border-radius:50%;opacity:0}
-.hlogo img{width:100%;height:100%}
+.hlogo{position:fixed;z-index:20;top:calc(16px + env(safe-area-inset-top,0px));left:50%;translate:-50% 0;
+  width:clamp(50px,5vw,74px);aspect-ratio:1;display:block;border-radius:50%;opacity:0}
+.hlogo img{width:100%;height:100%;filter:drop-shadow(0 2px 10px rgba(0,0,0,.9))}
 .hlogo:focus-visible{outline:2px solid #fff;outline-offset:4px}
 body.ready .hlogo{opacity:1}
-.nav{position:fixed;z-index:20;top:calc(18px + env(safe-area-inset-top,0px));right:var(--pad);
-  height:clamp(64px,7vw,104px);display:flex;align-items:center;gap:clamp(14px,2vw,32px);opacity:0;transition:opacity .8s ease 1s}
-body.ready .nav{opacity:1}
-.nav a{font:900 clamp(13px,1.1vw,17px)/1 var(--display);letter-spacing:.08em;text-decoration:none;color:rgba(255,255,255,.75);
-  padding:8px 0;background:linear-gradient(#fff,#fff) left 100%/0 1px no-repeat;transition:color .2s,background-size .25s}
-.nav a:hover,.nav a[aria-current="true"]{color:#fff;background-size:100% 1px}
-.nav a:focus-visible{outline:2px solid #fff;outline-offset:4px}
 /* затемнение под шапкой, чтобы она читалась поверх разделов */
 .topfade{position:fixed;z-index:19;left:0;right:0;top:0;height:clamp(100px,14vh,150px);pointer-events:none;
   background:linear-gradient(#000 20%,rgba(0,0,0,0));opacity:0;transition:opacity .4s}
@@ -101,8 +80,23 @@ body.scrolled .topfade{opacity:1}
 /* ── ГЛАВНЫЙ ЭКРАН ───────────────────────────────────────── */
 /* видео — главное, поэтому кнопка уходит вниз, а подвал садится под неё:
    весь экран Buy помещается в один вид, скроллить не нужно */
-main{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  padding:clamp(96px,13vh,140px) var(--pad) clamp(30px,5.5vh,58px)}
+/* z-index обязателен: .bgv позиционирован, а непозиционированный блок
+   рисуется ПОД ним — без этого видео перекрывало кнопку и клик уходил в него */
+main.hero{position:relative;z-index:1;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:clamp(96px,13vh,140px) var(--pad) clamp(34px,7vh,78px)}
+/* «What's inside» — ведёт вниз, к разделам с вещами */
+.inside{display:inline-flex;align-items:center;gap:.7em;margin-top:clamp(16px,2.6vh,26px);
+  font:500 clamp(10px,.85vw,12px)/1 var(--ui);letter-spacing:.17em;text-transform:uppercase;
+  text-decoration:none;color:rgba(255,255,255,.62);
+  text-shadow:0 1px 10px rgba(0,0,0,.95);
+  opacity:0;transform:translateY(14px);
+  transition:opacity .9s ease .95s,transform .9s var(--ease) .95s,color .25s}
+body.ready .inside{opacity:1;transform:none}
+.inside::after{content:'';width:5px;height:5px;border:solid currentColor;border-width:0 1px 1px 0;
+  transform:rotate(45deg) translate(-1px,-1px);transition:transform .25s}
+.inside:hover{color:#fff}
+.inside:hover::after{transform:rotate(45deg) translate(1px,1px)}
+.inside:focus-visible{outline:2px solid #fff;outline-offset:5px}
 /* композиция вещей: футболка — медаль — диск.
    Сейчас НЕ используется: на главной вместо неё фоновое видео.
    Чтобы вернуть — восстановить <nav class="items"> в разметке. */
@@ -149,16 +143,16 @@ body.ready footer{opacity:1}
 .social a:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .social svg{width:20px;height:20px;fill:currentColor}
 .legal{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
-  font:500 clamp(10.5px,.92vw,12.5px)/1.7 var(--ui);letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(255,255,255,.82)}
+  font:500 clamp(9px,.72vw,10.5px)/1.8 var(--ui);letter-spacing:.17em;text-transform:uppercase;
+  color:rgba(255,255,255,.72)}
 .legal li{display:flex;align-items:center}
 .legal li+li::before{content:'';width:1px;height:.95em;background:rgba(255,255,255,.3);margin:0 clamp(12px,1.2vw,20px)}
 .legal button{all:unset;cursor:pointer;background:linear-gradient(#fff,#fff) left 92%/0 1px no-repeat;transition:background-size .25s}
 .legal button:hover{background-size:100% 1px}
 .legal button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 /* кто продавец — требование ст. 7 ЗУ «Про електронну комерцію» */
-.selline{font:500 clamp(9.5px,.78vw,11px)/1.6 var(--ui);letter-spacing:.11em;text-transform:uppercase;
-  color:rgba(255,255,255,.4)}
+.selline{font:500 clamp(8.5px,.66vw,9.5px)/1.7 var(--ui);letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.34)}
 
 
 /* ── PRODUCTS (из первой версии) ─────────────────────────── */
@@ -406,10 +400,7 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
 <body class="intro">
 
 <div id="intro" aria-hidden="true">
-  <video id="introV" muted playsinline preload="auto" disablepictureinpicture>
-    <source src="video/intro.mp4" type="video/mp4">
-    <source src="video/intro.webm" type="video/webm">
-  </video>
+  <video id="introV" muted playsinline preload="none" disablepictureinpicture></video>
   <button type="button" id="skip" tabindex="-1">Skip</button>
 </div>
 
@@ -419,32 +410,13 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
 
 <div class="topfade" aria-hidden="true"></div>
 <a class="hlogo" href="#" id="hlogo" aria-label="Never Land — back to top"><img src="img/logo-round.webp" alt="Never Land" width="360" height="360"></a>
-<nav class="nav" aria-label="Main">
-  <a href="#buy" data-nav="buy">Buy</a>
-  <a href="#products" data-nav="products">Products</a>
-</nav>
 
-<div class="panes" id="panes">
-<div class="pane" id="pane-buy" aria-label="Buy">
-<main>
+<main class="hero">
   <h1 class="sr">Never Land — collector's box by Sимптом</h1>
   <button type="button" class="shopnow buybox" id="shopNow" aria-haspopup="dialog" aria-controls="co">Buy box</button>
+  <a class="inside" href="#products" id="toInside">What's inside</a>
 </main>
-<footer>
-  <img class="wordmark" src="img/wordmark.png" alt="Never Land" width="1289" height="149">
-  <ul class="social" id="social"></ul>
-  <ul class="legal">
-    <li>© 2026 SIMPTOM</li>
-    <li><button type="button" data-doc="offer">Публічна оферта</button></li>
-    <li><button type="button" data-doc="shipping">Доставка і повернення</button></li>
-    <li><button type="button" data-doc="privacy">Конфіденційність</button></li>
-    <li><button type="button" data-doc="cookies">Cookies</button></li>
-    <li><button type="button" data-doc="contact">Контакти</button></li>
-  </ul>
-  <p class="selline" lang="uk">ФОП Дудулад Оксана Анатоліївна · РНОКПП 2556839688</p>
-</footer>
-</div>
-<div class="pane" id="pane-products" aria-label="Products" inert>
+
 <div id="products">
   <header class="phead">
     <h2>Products</h2>
@@ -526,11 +498,20 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
   <audio id="player" preload="none"></audio>
 </section>
 </div>
-<footer class="foot-clone"></footer>
-</div>
-</div>
-<button type="button" class="pgo next" id="goProducts">Products →</button>
-<button type="button" class="pgo prev" id="goBuy">← Buy</button>
+
+<footer>
+  <img class="wordmark" src="img/wordmark.png" alt="Never Land" width="1289" height="149">
+  <ul class="social" id="social"></ul>
+  <ul class="legal">
+    <li>© 2026 SIMPTOM</li>
+    <li><button type="button" data-doc="offer">Публічна оферта</button></li>
+    <li><button type="button" data-doc="shipping">Доставка і повернення</button></li>
+    <li><button type="button" data-doc="privacy">Конфіденційність</button></li>
+    <li><button type="button" data-doc="cookies">Cookies</button></li>
+    <li><button type="button" data-doc="contact">Контакти</button></li>
+  </ul>
+  <p class="selline" lang="uk">ФОП Дудулад Оксана Анатоліївна · РНОКПП 2556839688</p>
+</footer>
 
 <!-- ══ ПРАВОВЫЕ ТЕКСТЫ ══════════════════════════════════════
      Жёлтым (.todo) отмечено то, что осталось подставить:
@@ -834,6 +815,9 @@ const CFG = {
     spotify:'https://open.spotify.com/artist/4bI1b116KZGjJl5Dy7Lsjy',
     soundcloud:'',
   },
+  /* интро с логотипом: false — сайт открывается сразу с фонового видео.
+     Вернуть — поставить true (и раскомментировать preload в <head>). */
+  showIntro:false,
   /* круг логотипа в кадре видео (в пикселях исходника 1920×1080) */
   intro:{ w:1920, h:1080, cx:960, cy:531.5, d:830 },
   teeFrames:160,                               // tee/t001.webp … t160.webp — полный оборот
@@ -926,9 +910,13 @@ function skipToEnd(){                                               // клик 
   if(vid.duration&&isFinite(vid.duration)){ vid.pause(); vid.currentTime=vid.duration-.01; setTimeout(()=>finish(true),120); }
   else finish(false);
 }
-const quick=new URLSearchParams(location.search).has('order')||matchMedia('(prefers-reduced-motion: reduce)').matches;
+const quick=!CFG.showIntro||new URLSearchParams(location.search).has('order')||matchMedia('(prefers-reduced-motion: reduce)').matches;
 if(quick){ ready(); }
 else{
+  [['mp4','video/mp4'],['webm','video/webm']].forEach(([ext,type])=>{
+    const s=document.createElement('source'); s.src='video/intro.'+ext; s.type=type; vid.appendChild(s);
+  });
+  vid.preload='auto'; vid.load();
   placeVideo(); addEventListener('resize',()=>{ if(!finished) placeVideo(); });
   vid.addEventListener('ended',()=>setTimeout(()=>finish(true),350));   // короткая пауза на стоп-кадре
   intro.addEventListener('click',skipToEnd);
@@ -936,7 +924,7 @@ else{
   const p=vid.play(); if(p&&p.catch) p.catch(()=>finish(false));       // автозапуск запрещён → сразу сайт
   setTimeout(()=>{ if(!finished&&vid.currentTime===0) finish(false); },3500);   // видео не загрузилось
 }
-hlogo.addEventListener('click',e=>{ e.preventDefault(); if(typeof go==='function'){ if(onProducts) go('buy'); else paneBuy.scrollTo({top:0,behavior:'smooth'}); } });
+hlogo.addEventListener('click',e=>{ e.preventDefault(); scrollTo({top:0,behavior:'smooth'}); });
 
 /* ── CHECKOUT ── */
 const co=$('co'), cof=$('cof'); let qty=1, lastFocus=null;
@@ -1232,38 +1220,22 @@ player.addEventListener('error',()=>{
 /* общий цикл: вращалки + бокс диска */
 (function loop(){ spinners.forEach(sp=>sp.tick()); cdTick(); requestAnimationFrame(loop); })();
 
-/* ══ ДВА ЭКРАНА: Buy ⇄ Products ══════════════════════ */
-const paneBuy=$('pane-buy'), paneProd=$('pane-products');
-// подвал есть на обоих экранах: копируем его в Products
-document.querySelector('.foot-clone').replaceWith((()=>{ const f=paneBuy.querySelector('footer').cloneNode(true);
-  f.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));
-  f.querySelectorAll('[data-doc]').forEach(b=>b.addEventListener('click',()=>$('doc-'+b.dataset.doc).showModal()));
-  return f; })());
-const navBuy=document.querySelector('[data-nav=buy]'), navProducts=document.querySelector('[data-nav=products]');
-let onProducts=false;
-function go(where,target,push=true){
-  onProducts=where==='products';
-  document.body.classList.toggle('on-products',onProducts);
-  paneBuy.inert=onProducts; paneProd.inert=!onProducts;
-  navProducts.setAttribute('aria-current',onProducts); navBuy.setAttribute('aria-current',!onProducts);
-  if(push) history.pushState({where},'',onProducts?'#products':location.pathname+location.search);
-  const pane=onProducts?paneProd:paneBuy;
-  if(target){ setTimeout(()=>pane.scrollTo({top:target.offsetTop,behavior:'smooth'}),onProducts?650:0); }
-  updateFade();
-}
-function updateFade(){ document.body.classList.toggle('scrolled',(onProducts?paneProd:paneBuy).scrollTop>40); }
-[paneBuy,paneProd].forEach(p=>p.addEventListener('scroll',updateFade,{passive:true}));
-navBuy.addEventListener('click',e=>{ e.preventDefault(); if(onProducts) go('buy'); else paneBuy.scrollTo({top:0,behavior:'smooth'}); });
-navProducts.addEventListener('click',e=>{ e.preventDefault(); if(!onProducts) go('products'); else paneProd.scrollTo({top:0,behavior:'smooth'}); });
-$('goProducts').addEventListener('click',()=>go('products'));
-$('goBuy').addEventListener('click',()=>go('buy'));
-/* клик по вещи на экране Buy → экран Products, сразу к этой вещи */
-document.querySelectorAll('.items a').forEach(a=>a.addEventListener('click',e=>{
-  e.preventDefault(); const t=document.querySelector(a.getAttribute('href'));
-  if(onProducts) paneProd.scrollTo({top:t.offsetTop,behavior:'smooth'}); else go('products',t);
-}));
-addEventListener('popstate',e=>go(location.hash==='#products'?'products':'buy',null,false));
-go(location.hash==='#products'?'products':'buy',null,false);
+/* ══ ПРОКРУТКА ══════════════════════════════════════════ */
+/* «What's inside» ведёт к разделам с вещами */
+$('toInside').addEventListener('click',e=>{
+  e.preventDefault();
+  $('products').scrollIntoView({behavior:'smooth',block:'start'});
+});
+/* затемнение под лого появляется, как только страницу тронули */
+addEventListener('scroll',()=>document.body.classList.toggle('scrolled',scrollY>40),{passive:true});
+/* ниже первого экрана фоновое видео не видно — останавливаем, чтобы не грело телефон */
+addEventListener('scroll',()=>{
+  const v=$('bgVid'); if(!v||!CFG) return;
+  const away=scrollY>innerHeight*.9;
+  if(away&&!v.paused) v.pause();
+  else if(!away&&v.paused&&!matchMedia('(prefers-reduced-motion: reduce)').matches) v.play?.().catch(()=>{});
+},{passive:true});
+if(location.hash==='#products') addEventListener('load',()=>$('products').scrollIntoView());
 </script>
 </body>
 </html>
