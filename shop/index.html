@@ -900,7 +900,21 @@ const setQty=n=>{ qty=clamp(n,1,CFG.order.maxQty); $('qVal').textContent=qty;
 const API=/YOUR-SUBDOMAIN/.test(CFG.order.api||'')?'':(CFG.order.api||'').replace(/\/+$/,'');
 const apiGet=path=>fetch(API+path).then(r=>{if(!r.ok) throw new Error(r.status); return r.json();});
 const paintPrice=()=>document.querySelectorAll('[data-price]').forEach(el=>el.textContent=fmtUAH(priceUAH));
-if(API) apiGet('/config').then(c=>{ if(c.priceUAH){ priceUAH=c.priceUAH; paintPrice(); } setQty(qty); }).catch(()=>{});
+/* пока эквайринг не одобрен, сервер принимает заказ и мы связываемся вручную —
+   кнопка и подпись под ней должны говорить об этом честно */
+let payments=true;
+function labelPlace(){
+  $('place').disabled=false;
+  $('place').textContent=payments?'Pay with monobank':'Place order';
+  $('coNote').textContent=payments
+    ? "You'll be taken to a secure monobank page to pay by card, Apple Pay or Google Pay."
+    : "Card payment is being connected. Leave your order and we'll message you to arrange payment.";
+}
+if(API) apiGet('/config').then(c=>{
+  if(c.priceUAH){ priceUAH=c.priceUAH; paintPrice(); }
+  if(c.payments===false) payments=false;
+  labelPlace(); setQty(qty);
+}).catch(()=>{});
 paintPrice(); setQty(1);
 $('qMinus').onclick=()=>setQty(qty-1); $('qPlus').onclick=()=>setQty(qty+1);
 function openCo(){
@@ -909,7 +923,7 @@ function openCo(){
 }
 function closeCo(){
   co.classList.remove('open'); co.setAttribute('aria-hidden','true'); document.body.classList.remove('lock');
-  if(co.classList.contains('ok')){ co.classList.remove('ok'); cof.reset(); setQty(1); }
+  if(co.classList.contains('ok')){ co.classList.remove('ok'); cof.reset(); setQty(1); labelPlace(); }
   lastFocus&&lastFocus.focus();
 }
 co.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeCo));
@@ -969,15 +983,22 @@ cof.addEventListener('submit',async e=>{
   e.preventDefault(); if(!validate()) return;
   if(!API){ $('coNote').textContent='Online payment is not connected yet — message us on Instagram and we will take your order by hand.'; return; }
   const d=Object.fromEntries(new FormData(cof));
-  const btn=$('place'); btn.disabled=true; btn.textContent='Creating payment…';
+  const btn=$('place'); btn.disabled=true; btn.textContent=payments?'Creating payment…':'Sending order…';
   try{
     const r=await fetch(API+'/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...d,qty})});
     const res=await r.json().catch(()=>({}));
-    if(!r.ok||!res.pageUrl) throw new Error(res.message||'Could not create the payment');
+    if(!r.ok) throw new Error(res.message||'Could not place the order');
+    if(res.manual){            // карта ещё не подключена — заказ принят, напишем сами
+      $('doneTitle').textContent='Order received';
+      $('doneText').innerHTML='Thank you! Your order <span class="oid">'+escH(res.orderId)+'</span> is in. '
+        +"We'll message you shortly to arrange payment and delivery.";
+      $('payAgain').hidden=true; co.classList.add('ok'); return;
+    }
+    if(!res.pageUrl) throw new Error(res.message||'Could not create the payment');
     store.set({orderId:res.orderId,invoiceId:res.invoiceId,pageUrl:res.pageUrl});
     location.href=res.pageUrl;                                  // → monobank
   }catch(err){
-    btn.disabled=false; btn.textContent='Pay with monobank';
+    btn.disabled=false; btn.textContent=payments?'Pay with monobank':'Place order';
     $('coNote').textContent=(err.message||'Something went wrong')+'. Please try again or DM us.';
   }
 });
