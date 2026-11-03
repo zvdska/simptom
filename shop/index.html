@@ -359,6 +359,8 @@ footer .social a{filter:drop-shadow(0 2px 10px rgba(0,0,0,.85))}
 /* в блоках Products — рядом с кнопкой */
 .cta .pricetag{margin-top:12px;font:900 clamp(16px,1.5vw,22px)/1 var(--display);letter-spacing:.04em}
 .cdcap .pricetag{margin:0;font:900 clamp(15px,1.3vw,19px)/1 var(--display);letter-spacing:.04em}
+/* «/ box» — не лишний текст, а часть цены: иначе непонятно, что 4000 за весь комплект */
+.pricetag small{font:500 .62em/1 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5)}
 @media (max-width:860px){ .cta .pricetag{margin-top:8px;font-size:17px} }
 
 /* ── ТЕКСТЫ ПРАВИЛ: вёрстка внутри окна ─────────────────── */
@@ -426,8 +428,7 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
   <div class="pin">
     <div class="wrap">
       <div class="copy">
-        <h2 id="medal-title" class="reveal" data-r="title">"The Tree"*</h2>
-        <p class="desc">A standout accessory built around a complex, sculptural bas-relief. It features a highly detailed, silver-finished barren tree with an intricate root system over a pitch-black core. A heavy, 3D-crafted piece with a distinct industrial vibe to elevate any fit.</p>
+        <h2 id="medal-title" class="reveal" data-r="title">Brelok</h2>
       </div>
       <div class="spin medalbox reveal stagebox" data-r="item">
         <canvas id="medalCv" role="img" aria-label="Neverland medal. Swipe or use arrow keys to turn it from the logo side to the tree side"></canvas>
@@ -435,8 +436,7 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
       </div>
       <div class="cta reveal" data-r="credit">
         <button type="button" class="shopnow" data-shop aria-haspopup="dialog" aria-controls="co">Buy box</button>
-        <p class="pricetag" data-price>4 000 ₴</p>
-        <p class="fine">*Available as a complete collector's bundle.</p>
+        <p class="pricetag"><span data-price>4 000 ₴</span><small> / box</small></p>
       </div>
     </div>
   </div>
@@ -450,13 +450,11 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
         <span class="teehint reveal" id="teeHint" data-r="open">Swipe the tee to rotate</span>
       </div>
       <div class="copy">
-        <h2 id="tee-title" class="reveal" data-r="title">Never Land Oversized Tee*</h2>
-        <p class="desc">A premium black tee with a relaxed, oversized streetwear silhouette. Keeps it clean on the front with a compact chest logo, while the back carries a massive, statement print of the tree design. Bold lines, maximum comfort, and pure monochrome aesthetic.</p>
+        <h2 id="tee-title" class="reveal" data-r="title">Futbolka</h2>
       </div>
       <div class="cta reveal" data-r="credit">
         <button type="button" class="shopnow" data-shop aria-haspopup="dialog" aria-controls="co">Buy box</button>
-        <p class="pricetag" data-price>4 000 ₴</p>
-        <p class="fine">*Available as a complete collector's bundle.</p>
+        <p class="pricetag"><span data-price>4 000 ₴</span><small> / box</small></p>
       </div>
     </div>
   </div>
@@ -489,10 +487,9 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
     <button type="button" class="tlnav prev" id="tlPrev" aria-label="Tracks 1–9" aria-controls="tlA">←</button>
     <button type="button" class="tlnav next" id="tlNext" aria-label="Tracks 10–17" aria-controls="tlB">→</button>
     <div class="cdcap">
-      <h2 id="cd-title">"Never Land" CD Release*</h2>
+      <h2 id="cd-title">Disk</h2>
       <button type="button" class="shopnow" data-shop aria-haspopup="dialog" aria-controls="co">Buy box</button>
-      <p class="pricetag" data-price>4 000 ₴</p>
-      <p class="fine">*Available as a complete collector's bundle.</p>
+      <p class="pricetag"><span data-price>4 000 ₴</span><small> / box</small></p>
     </div>
   </div>
   <audio id="player" preload="none"></audio>
@@ -1101,9 +1098,9 @@ document.querySelectorAll('[data-shop]').forEach(b=>b.addEventListener('click',o
 /* ══ PRODUCTS ══════════════════════════════════════════ */
 /* ── продуктовые блоки: слова описания режем на span ── */
 const prods=[...document.querySelectorAll('.prod')].map(el=>{
-  const d=el.querySelector('.desc');
-  d.innerHTML=d.textContent.trim().split(/\s+/).map(w=>`<span class="w">${w}</span>`).join(' ');
-  return {el, words:[...d.querySelectorAll('.w')], parts:[...el.querySelectorAll('[data-r]')]};
+  const d=el.querySelector('.desc');          // описаний может и не быть — только подпись
+  if(d) d.innerHTML=d.textContent.trim().split(/\s+/).map(w=>`<span class="w">${w}</span>`).join(' ');
+  return {el, words:d?[...d.querySelectorAll('.w')]:[], parts:[...el.querySelectorAll('[data-r]')]};
 });
 
 /* ── появление блока за один скролл ── */
