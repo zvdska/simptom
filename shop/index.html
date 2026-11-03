@@ -6,27 +6,54 @@
 <title>NEVER LAND — Sимптом</title>
 <meta name="description" content="Never Land by Sимптом — collector's box: CD, The Tree medal and oversized tee.">
 <meta name="theme-color" content="#000000">
+<link rel="icon" href="img/logo-round.webp" type="image/webp">
+<link rel="apple-touch-icon" href="img/logo-round.webp">
 <link rel="preload" href="fonts/AvianoBlack.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="video/intro.mp4" as="video" type="video/mp4">
+<link rel="preconnect" href="https://api.monobank.ua">
 <style>
-@font-face{font-family:'Aviano';src:url('fonts/AvianoBlack.woff2') format('woff2');font-weight:900;font-display:swap}
+/* Manrope — для нижнего меню. Два файла вместо одного: браузер качает
+   только нужный алфавит. Лежит рядом, к Google Fonts сайт не ходит. */
+@font-face{font-family:'Manrope';src:url('fonts/Manrope500-latin.woff2') format('woff2');font-weight:500;font-display:swap;
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F,U+20A0-20CF,U+2122}
+@font-face{font-family:'Manrope';src:url('fonts/Manrope500-cyrillic.woff2') format('woff2');font-weight:500;font-display:swap;
+  unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:'Aviano';src:url('fonts/AvianoBlack.woff2') format('woff2');font-weight:900;font-display:swap;
+  /* в Aviano нет кириллицы — отдаём ей только латиницу, цифры, знаки и валюты,
+     иначе украинские буквы подменяются латинскими капительными глифами */
+  unicode-range:U+0000-024F,U+1E00-1EFF,U+2000-20CF,U+2122,U+2190-21BB}
 :root{
   --bg:#000; --fg:#fff; --dim:rgba(255,255,255,.55);
   --pad:clamp(16px,3vw,44px);
   --display:'Aviano',Georgia,serif;
   --text:'Google Sans','Product Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --ui:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --ease:cubic-bezier(.2,.75,.15,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{background:#000;color:#fff}
 body{font-family:var(--display);-webkit-font-smoothing:antialiased;overflow:hidden;height:100svh}
 /* два экрана рядом: Buy слева, Products справа */
-.panes{display:flex;width:200vw;height:100svh;transition:transform .95s var(--ease);will-change:transform}
+/* ── ФОНОВОЕ ВИДЕО ГЛАВНОГО ЭКРАНА ──────────────────────────
+   Лежит отдельно от .panes: у .panes есть transform, а он становится
+   точкой отсчёта для position:fixed — видео растянуло бы на 200vw. */
+.bgv{position:fixed;inset:0;z-index:0;overflow:hidden;background:#000;
+  opacity:0;transition:opacity 1.4s ease}
+body.ready .bgv{opacity:1}
+body.on-products .bgv{opacity:0}
+.bgv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* затемнение сверху под шапку и снизу под кнопку с подвалом */
+.bgv::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to bottom,
+    rgba(0,0,0,.6) 0,rgba(0,0,0,0) 24%,rgba(0,0,0,0) 40%,
+    rgba(0,0,0,.55) 68%,rgba(0,0,0,.88) 88%,rgba(0,0,0,.96) 100%)}
+
+.panes{position:relative;z-index:1;display:flex;width:200vw;height:100svh;transition:transform .95s var(--ease);will-change:transform}
 body.on-products .panes{transform:translateX(-100vw)}
 .pane{flex:none;width:100vw;height:100svh;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch}
 #pane-buy{display:flex;flex-direction:column}
-#pane-buy>main{flex:1 0 auto}
+#pane-buy>main{flex:1 1 auto;min-height:0}
 body.intro .pane{overflow:hidden}
 /* стрелки у края экрана для перехода между разделами (компьютер) */
 .pgo{position:fixed;z-index:18;top:50%;translate:0 -50%;display:flex;align-items:center;gap:12px;
@@ -72,9 +99,13 @@ body.ready .nav{opacity:1}
 body.scrolled .topfade{opacity:1}
 
 /* ── ГЛАВНЫЙ ЭКРАН ───────────────────────────────────────── */
-main{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:clamp(96px,13vh,140px) var(--pad) clamp(24px,4.5vh,56px)}
-/* композиция вещей: футболка — медаль — диск */
+/* видео — главное, поэтому кнопка уходит вниз, а подвал садится под неё:
+   весь экран Buy помещается в один вид, скроллить не нужно */
+main{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:clamp(96px,13vh,140px) var(--pad) clamp(30px,5.5vh,58px)}
+/* композиция вещей: футболка — медаль — диск.
+   Сейчас НЕ используется: на главной вместо неё фоновое видео.
+   Чтобы вернуть — восстановить <nav class="items"> в разметке. */
 .items{position:relative;width:min(860px,92vw,(100svh - 470px)*2.33);aspect-ratio:1000/430}
 .items>*{position:absolute;display:block;opacity:0;transition:opacity .9s ease,transform 1.1s var(--ease)}
 .it-tee{left:-5.2%;top:-10.7%;width:42.6%;mix-blend-mode:lighten;transform:translateX(-36px)}
@@ -102,7 +133,7 @@ body.ready .it-cd{transition-delay:.2s}
 .shopnow:focus-visible{outline:2px solid #fff;outline-offset:5px}
 .shopnow:disabled{opacity:.5;cursor:default}
 .shopnow[hidden]{display:none}
-.buybox{margin-top:clamp(28px,6vh,80px);opacity:0;transform:translateY(16px);transition:background .25s,color .25s,opacity .9s ease .75s,transform .9s var(--ease) .75s}
+.buybox{margin-top:0;opacity:0;transform:translateY(16px);transition:background .25s,color .25s,opacity .9s ease .75s,transform .9s var(--ease) .75s}
 body.ready .buybox{opacity:1;transform:none}
 .place{width:100%;margin-top:4px;font-size:18px;letter-spacing:.06em;padding:18px 20px 16px}
 
@@ -118,12 +149,16 @@ body.ready footer{opacity:1}
 .social a:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .social svg{width:20px;height:20px;fill:currentColor}
 .legal{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
-  font:900 clamp(11px,1vw,15px)/1.6 var(--display);letter-spacing:.05em;color:rgba(255,255,255,.9)}
+  font:500 clamp(10.5px,.92vw,12.5px)/1.7 var(--ui);letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.82)}
 .legal li{display:flex;align-items:center}
-.legal li+li::before{content:'';width:1px;height:1em;background:rgba(255,255,255,.7);margin:0 clamp(10px,1vw,16px)}
+.legal li+li::before{content:'';width:1px;height:.95em;background:rgba(255,255,255,.3);margin:0 clamp(12px,1.2vw,20px)}
 .legal button{all:unset;cursor:pointer;background:linear-gradient(#fff,#fff) left 92%/0 1px no-repeat;transition:background-size .25s}
 .legal button:hover{background-size:100% 1px}
 .legal button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+/* кто продавец — требование ст. 7 ЗУ «Про електронну комерцію» */
+.selline{font:500 clamp(9.5px,.78vw,11px)/1.6 var(--ui);letter-spacing:.11em;text-transform:uppercase;
+  color:rgba(255,255,255,.4)}
 
 
 /* ── PRODUCTS (из первой версии) ─────────────────────────── */
@@ -165,9 +200,7 @@ body.ready footer{opacity:1}
 #teeCv.drag{cursor:grabbing}
 .teehint,.spinhint{font:900 11px/1 var(--display);color:var(--dim);letter-spacing:.06em}
 #teeCv:focus-visible{outline:2px solid #fff;outline-offset:4px}
-  font:900 11px/1 var(--display);color:var(--dim);letter-spacing:.06em}
 
-#tee-title{font-size:clamp(34px,4.2vw,64px)}
 #tee-title{font-size:clamp(34px,4.2vw,64px)}
 @media (max-width:860px){#tee-title{font-size:24px}}
 .cta .shopnow{margin-top:clamp(22px,4vh,40px);font-size:clamp(22px,2vw,32px)}
@@ -236,7 +269,7 @@ body.ready footer{opacity:1}
 dialog.doc{margin:auto;width:min(640px,calc(100% - 32px));max-height:min(80svh,760px);background:#0a0a0a;color:#fff;
   border:1px solid rgba(255,255,255,.18);padding:clamp(22px,4vw,40px);overflow-y:auto}
 dialog.doc::backdrop{background:rgba(0,0,0,.75)}
-dialog.doc h2{font:900 clamp(24px,3vw,34px)/1.05 var(--display);padding-right:48px}
+dialog.doc h2{font:900 clamp(24px,3vw,34px)/1.1 var(--display);padding-right:66px}
 dialog.doc .body{margin-top:20px;font:400 15px/1.65 var(--text);color:rgba(255,255,255,.82)}
 dialog.doc .body p+p{margin-top:12px}
 dialog.doc .body a{text-decoration:underline}
@@ -324,6 +357,49 @@ body.lock{overflow:hidden}
   .legal{flex-direction:column;gap:4px}
   .legal li+li::before{display:none}
 }
+/* ── ЦЕНА ───────────────────────────────────────────────── */
+/* подвал лежит поверх видео: на светлых кадрах его держит тень */
+footer .wordmark{filter:drop-shadow(0 2px 12px rgba(0,0,0,.85))}
+footer .legal,footer .selline{text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.8)}
+footer .social a{filter:drop-shadow(0 2px 10px rgba(0,0,0,.85))}
+/* в блоках Products — рядом с кнопкой */
+.cta .pricetag{margin-top:12px;font:900 clamp(16px,1.5vw,22px)/1 var(--display);letter-spacing:.04em}
+.cdcap .pricetag{margin:0;font:900 clamp(15px,1.3vw,19px)/1 var(--display);letter-spacing:.04em}
+@media (max-width:860px){ .cta .pricetag{margin-top:8px;font-size:17px} }
+
+/* ── ТЕКСТЫ ПРАВИЛ: вёрстка внутри окна ─────────────────── */
+dialog.doc .body h3{margin:26px 0 0;font:900 15px/1.3 var(--display);letter-spacing:.03em;color:#fff}
+dialog.doc .body h3:first-child{margin-top:0}
+dialog.doc .body h4{margin:18px 0 0;font:900 13px/1.35 var(--display);letter-spacing:.03em;color:rgba(255,255,255,.95)}
+dialog.doc .body .lead{color:rgba(255,255,255,.6)}
+dialog.doc .body strong{color:#fff}
+dialog.doc .body ul,dialog.doc .body ol{margin:10px 0 0 20px}
+dialog.doc .body li{margin-top:7px}
+dialog.doc .body table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
+dialog.doc .body th,dialog.doc .body td{text-align:left;padding:8px 12px 8px 0;vertical-align:top;
+  border-bottom:1px solid rgba(255,255,255,.12)}
+dialog.doc .body th{font-weight:600;color:#fff}
+/* незаполненные реквизиты видно сразу — их надо заменить до запуска */
+dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,196,0,.16);
+  border:1px solid rgba(255,196,0,.55);color:#ffd451;font-size:12.5px}
+
+/* ── СОГЛАСИЕ С ОФЕРТОЙ ─────────────────────────────────── */
+.agree{display:flex;gap:11px;align-items:flex-start;margin-top:2px}
+.agree input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;margin-top:1px;
+  border:1px solid rgba(255,255,255,.45);background:transparent;cursor:pointer;position:relative}
+.agree input:checked{background:#fff;border-color:#fff}
+.agree input:checked::after{content:'';position:absolute;left:6px;top:2px;width:5px;height:10px;
+  border:solid #000;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.agree input:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.agree label{font:400 13px/1.5 var(--text);color:rgba(255,255,255,.8);cursor:pointer}
+.agreelinks{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:7px}
+.agreelinks button{all:unset;cursor:pointer;font:900 11px/1 var(--display);letter-spacing:.05em;
+  color:rgba(255,255,255,.65);background:linear-gradient(#fff,#fff) left 125%/0 1px no-repeat;
+  transition:color .2s,background-size .25s}
+.agreelinks button:hover{color:#fff;background-size:100% 1px}
+.agreelinks button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.agree.bad input{border-color:#ff6b6b}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -337,6 +413,10 @@ body.lock{overflow:hidden}
   <button type="button" id="skip" tabindex="-1">Skip</button>
 </div>
 
+<div class="bgv" id="bgv" aria-hidden="true">
+  <video id="bgVid" autoplay muted loop playsinline preload="auto" disablepictureinpicture></video>
+</div>
+
 <div class="topfade" aria-hidden="true"></div>
 <a class="hlogo" href="#" id="hlogo" aria-label="Never Land — back to top"><img src="img/logo-round.webp" alt="Never Land" width="360" height="360"></a>
 <nav class="nav" aria-label="Main">
@@ -348,12 +428,6 @@ body.lock{overflow:hidden}
 <div class="pane" id="pane-buy" aria-label="Buy">
 <main>
   <h1 class="sr">Never Land — collector's box by Sимптом</h1>
-  <nav class="items" aria-label="What's in the box">
-    <a class="it-tee" href="#p-tee" aria-label="Oversized tee — see details"><img src="img/tee.webp" alt="" width="760" height="791"></a>
-    <a class="it-cd" href="#p-cd" aria-label="Never Land CD — see details"><img src="img/cd.webp" alt="" width="866" height="603"></a>
-    <a class="it-medal" href="#p-medal" aria-label="The Tree medal — see details"><img src="img/medal.webp" alt="" width="755" height="928"></a>
-  </nav>
-  <p class="ihint">Tap an item to take a closer look</p>
   <button type="button" class="shopnow buybox" id="shopNow" aria-haspopup="dialog" aria-controls="co">Buy box</button>
 </main>
 <footer>
@@ -361,11 +435,13 @@ body.lock{overflow:hidden}
   <ul class="social" id="social"></ul>
   <ul class="legal">
     <li>© 2026 SIMPTOM</li>
-    <li><button type="button" data-doc="privacy">Privacy Policy</button></li>
-    <li><button type="button" data-doc="cookies">Cookies Policy</button></li>
-    <li><button type="button" data-doc="shipping">Shipping Policy</button></li>
-    <li><button type="button" data-doc="contact">Contact Us</button></li>
+    <li><button type="button" data-doc="offer">Публічна оферта</button></li>
+    <li><button type="button" data-doc="shipping">Доставка і повернення</button></li>
+    <li><button type="button" data-doc="privacy">Конфіденційність</button></li>
+    <li><button type="button" data-doc="cookies">Cookies</button></li>
+    <li><button type="button" data-doc="contact">Контакти</button></li>
   </ul>
+  <p class="selline" lang="uk">ФОП Дудулад Оксана Анатоліївна · РНОКПП 2556839688</p>
 </footer>
 </div>
 <div class="pane" id="pane-products" aria-label="Products" inert>
@@ -387,6 +463,7 @@ body.lock{overflow:hidden}
       </div>
       <div class="cta reveal" data-r="credit">
         <button type="button" class="shopnow" data-shop aria-haspopup="dialog" aria-controls="co">Buy box</button>
+        <p class="pricetag" data-price>4 000 ₴</p>
         <p class="fine">*Available as a complete collector's bundle.</p>
       </div>
     </div>
@@ -406,6 +483,7 @@ body.lock{overflow:hidden}
       </div>
       <div class="cta reveal" data-r="credit">
         <button type="button" class="shopnow" data-shop aria-haspopup="dialog" aria-controls="co">Buy box</button>
+        <p class="pricetag" data-price>4 000 ₴</p>
         <p class="fine">*Available as a complete collector's bundle.</p>
       </div>
     </div>
@@ -441,6 +519,7 @@ body.lock{overflow:hidden}
     <div class="cdcap">
       <h2 id="cd-title">"Never Land" CD Release*</h2>
       <button type="button" class="shopnow" data-shop aria-haspopup="dialog" aria-controls="co">Buy box</button>
+      <p class="pricetag" data-price>4 000 ₴</p>
       <p class="fine">*Available as a complete collector's bundle.</p>
     </div>
   </div>
@@ -453,26 +532,201 @@ body.lock{overflow:hidden}
 <button type="button" class="pgo next" id="goProducts">Products →</button>
 <button type="button" class="pgo prev" id="goBuy">← Buy</button>
 
-<!-- Тексты правил: замените на свои -->
-<dialog class="doc" id="doc-privacy" aria-labelledby="t-privacy">
-  <button type="button" class="x" data-x aria-label="Close">✕</button>
-  <h2 id="t-privacy">Privacy Policy</h2>
-  <div class="body"><p>The full privacy policy will be published here soon.</p></div>
+<!-- ══ ПРАВОВЫЕ ТЕКСТЫ ══════════════════════════════════════
+     Жёлтым (.todo) отмечено то, что осталось подставить:
+     адрес ФОПа, запись в ЄДР, почта и телефон.
+     Без них оферта недействительна — заменить до запуска.      -->
+
+<dialog class="doc" id="doc-offer" aria-labelledby="t-offer" lang="uk">
+  <button type="button" class="x" data-x aria-label="Закрити">✕</button>
+  <h2 id="t-offer">Публічна оферта</h2>
+  <div class="body">
+    <p class="lead">Договір купівлі-продажу товарів дистанційним способом</p>
+
+    <h3>1. Загальні положення</h3>
+    <p>1.1. Цей документ є публічною офертою (пропозицією) Фізичної особи-підприємця Дудулад Оксани Анатоліївни (далі — Продавець) укласти договір купівлі-продажу товарів дистанційним способом на умовах, викладених нижче.</p>
+    <p>1.2. Оферта є публічним договором у розумінні статей 633, 641, 642 Цивільного кодексу України та Закону України «Про електронну комерцію».</p>
+    <p>1.3. Акцептом (прийняттям) оферти є проставлення покупцем позначки про ознайомлення з умовами оферти під час оформлення замовлення на Сайті та оплата замовлення. З моменту акцепту договір вважається укладеним, а покупець — таким, що погодився з усіма його умовами.</p>
+    <p>1.4. Продавець має право змінювати умови оферти. Нова редакція набирає чинності з моменту публікації на Сайті. До вже оформлених замовлень застосовується редакція, чинна на момент акцепту.</p>
+
+    <h3>2. Терміни</h3>
+    <p>2.1. <strong>Сайт</strong> — інтернет-сторінка, на якій розміщено товари Продавця та опубліковано цю оферту.</p>
+    <p>2.2. <strong>Товар</strong> — одяг та аксесуари (мерч), представлені на Сайті.</p>
+    <p>2.3. <strong>Покупець</strong> — дієздатна фізична особа, яка оформила замовлення на Сайті.</p>
+    <p>2.4. <strong>Замовлення</strong> — належно оформлений запит Покупця на придбання товару із зазначенням способу доставки та контактних даних.</p>
+
+    <h3>3. Предмет договору</h3>
+    <p>3.1. Продавець зобов'язується передати у власність Покупця товар, а Покупець — прийняти його та оплатити на умовах цього договору.</p>
+    <p>3.2. Продавець не несе відповідальності за невідповідність очікуванням Покупця щодо відтінку товару, спричинену налаштуваннями кольоропередачі його екрана.</p>
+    <p>3.3. Розміри товару наведені в описі кожної позиції. Покупець самостійно обирає розмір до оформлення замовлення.</p>
+
+    <h3>4. Ціна товару</h3>
+    <p>4.1. Ціни вказані в гривні та включають усі податки й обов'язкові платежі. Продавець є платником єдиного податку третьої групи за ставкою 5% і не є платником ПДВ.</p>
+    <p>4.2. Вартість доставки до ціни товару не входить і оплачується Покупцем окремо згідно з тарифами перевізника, якщо на Сайті прямо не зазначено інше.</p>
+    <p>4.3. Продавець має право змінювати ціни. Ціна замовлення, яке вже оплачене, зміні не підлягає.</p>
+
+    <h3>5. Оформлення та оплата замовлення</h3>
+    <p>5.1. Покупець оформлює замовлення на Сайті, зазначаючи прізвище та ім'я, номер телефону, спосіб і адресу доставки.</p>
+    <p>5.2. Оплата здійснюється банківською карткою через платіжний сервіс. Продавець не отримує й не зберігає дані картки Покупця — їх обробляє банк-еквайр.</p>
+    <p>5.3. Замовлення вважається оплаченим з моменту зарахування коштів. Після цього Покупцю надсилається фіскальний чек у спосіб, зазначений під час оформлення.</p>
+    <p>5.4. Якщо замовлений товар відсутній, Продавець повідомляє про це Покупця та повертає кошти протягом трьох банківських днів або, за згодою Покупця, пропонує заміну.</p>
+
+    <h3>6. Доставка</h3>
+    <p>6.1. Доставка здійснюється перевізником «Нова Пошта» на відділення або за адресою, вказаною Покупцем.</p>
+    <p>6.2. Продавець передає товар перевізнику протягом 1–2 робочих днів з дня зарахування оплати. Строк доставки визначається перевізником і від Продавця не залежить.</p>
+    <p>6.3. Ризик випадкового пошкодження або втрати товару переходить до Покупця з моменту передання товару перевізнику.</p>
+    <p>6.4. Покупець зобов'язаний оглянути відправлення у відділенні перевізника до його отримання. Претензії щодо механічних пошкоджень упаковки чи товару після отримання відправлення без складання акта перевізником не приймаються.</p>
+
+    <h3>7. Права та обов'язки сторін</h3>
+    <p>7.1. Продавець зобов'язаний передати товар належної якості, у погодженій кількості та комплектності, у строк, визначений пунктом 6.2.</p>
+    <p>7.2. Продавець має право відмовити в обслуговуванні, якщо Покупець зазначив завідомо недостовірні дані або систематично не викуповує оформлені замовлення.</p>
+    <p>7.3. Покупець зобов'язаний надати достовірні дані для доставки та оплатити замовлення.</p>
+    <p>7.4. Покупець має право на повернення та обмін товару на умовах розділу 8.</p>
+
+    <h3>8. Повернення товару та коштів</h3>
+    <p>8.1. Покупець має право повернути або обміняти товар належної якості протягом 14 днів з дня отримання, не рахуючи дня купівлі, за умови що товар не використовувався, збережено його товарний вигляд, споживчі властивості, бирки, пломби й ярлики, а також є розрахунковий документ (стаття 9 Закону України «Про захист прав споживачів»).</p>
+    <p>8.2. Обміну та поверненню не підлягають товари, включені до переліку, затвердженого постановою Кабінету Міністрів України від 19.03.1994 № 172, зокрема панчішно-шкарпеткові вироби та натільна білизна.</p>
+    <p>8.3. Для повернення Покупець звертається на <span class="todo">[EMAIL]</span> із зазначенням номера замовлення та причини. Продавець повідомляє порядок відправлення.</p>
+    <p>8.4. Вартість зворотного пересилання товару належної якості оплачує Покупець.</p>
+    <p>8.5. Кошти повертаються протягом семи днів з дня отримання Продавцем повернутого товару, на той самий рахунок або картку, з якої була здійснена оплата.</p>
+    <p>8.6. У разі виявлення недоліків товару Покупець має права, передбачені статтею 8 Закону України «Про захист прав споживачів»: на безоплатне усунення недоліків, заміну товару або повернення коштів. Зворотне пересилання товару неналежної якості оплачує Продавець.</p>
+
+    <h3>9. Відповідальність сторін</h3>
+    <p>9.1. Сторони несуть відповідальність згідно із законодавством України.</p>
+    <p>9.2. Продавець не несе відповідальності за збитки, спричинені неправильним використанням, пранням або зберіганням товару Покупцем усупереч рекомендаціям на ярлику.</p>
+    <p>9.3. Загальна відповідальність Продавця обмежується вартістю оплаченого замовлення.</p>
+
+    <h3>10. Форс-мажор</h3>
+    <p>10.1. Сторони звільняються від відповідальності за невиконання зобов'язань, якщо воно спричинене обставинами непереборної сили, зокрема воєнними діями, пошкодженням критичної інфраструктури, відключеннями електропостачання, рішеннями органів влади, які унеможливлюють виконання.</p>
+    <p>10.2. Сторона, для якої настали такі обставини, повідомляє про це другу сторону протягом розумного строку.</p>
+
+    <h3>11. Строк дії договору та реквізити</h3>
+    <p>11.1. Договір набирає чинності з моменту акцепту і діє до повного виконання сторонами зобов'язань.</p>
+    <p>11.2. Спори вирішуються шляхом переговорів, а в разі недосягнення згоди — у порядку, встановленому законодавством України.</p>
+    <p>11.3. Реквізити Продавця:</p>
+    <table>
+      <tr><th>Найменування</th><td>ФОП Дудулад Оксана Анатоліївна</td></tr>
+      <tr><th>РНОКПП</th><td>2556839688</td></tr>
+      <tr><th>Адреса</th><td><span class="todo">[АДРЕСА]</span></td></tr>
+      <tr><th>Запис в ЄДР</th><td><span class="todo">[ДАТА І НОМЕР ЗАПИСУ]</span></td></tr>
+      <tr><th>IBAN</th><td>UA483220010000026004380101158, АТ «УНІВЕРСАЛ БАНК», МФО 322001</td></tr>
+      <tr><th>Електронна пошта</th><td><span class="todo">[EMAIL]</span></td></tr>
+      <tr><th>Телефон</th><td><span class="todo">[ТЕЛЕФОН]</span></td></tr>
+      <tr><th>Система оподаткування</th><td>Єдиний податок, третя група, 5%, не платник ПДВ</td></tr>
+    </table>
+  </div>
 </dialog>
-<dialog class="doc" id="doc-cookies" aria-labelledby="t-cookies">
-  <button type="button" class="x" data-x aria-label="Close">✕</button>
-  <h2 id="t-cookies">Cookies Policy</h2>
-  <div class="body"><p>The full cookies policy will be published here soon.</p></div>
+
+<dialog class="doc" id="doc-shipping" aria-labelledby="t-shipping" lang="uk">
+  <button type="button" class="x" data-x aria-label="Закрити">✕</button>
+  <h2 id="t-shipping">Доставка і повернення</h2>
+  <div class="body">
+    <p class="lead">Те, що в оферті написано юридичною мовою, тут сказано людською.</p>
+
+    <h3>Доставка</h3>
+    <p>Відправляємо «Новою Поштою» — на відділення, у поштомат або кур'єром на адресу.</p>
+    <ul>
+      <li>Замовлення передаємо перевізнику протягом <strong>1–2 робочих днів</strong> після оплати.</li>
+      <li>Номер накладної надійде на вказаний номер телефону.</li>
+      <li>Доставку оплачує отримувач за тарифами перевізника.</li>
+      <li>Строк дороги залежить від «Нової Пошти» і зазвичай становить 1–3 дні по Україні.</li>
+    </ul>
+    <p><strong>Важливо:</strong> огляньте посилку у відділенні до того, як забрати її. Якщо усередині пошкодження — відразу попросіть скласти акт. Після отримання без акта перевізник претензій не приймає, і ми теж нічого не зможемо зробити.</p>
+
+    <h3>Якщо не підійшло</h3>
+    <p>Маєте <strong>14 днів</strong> з дня отримання, щоб повернути або обміняти річ, якщо вона не підійшла за розміром, фасоном чи кольором.</p>
+    <p>Умови прості: річ не носили й не прали, бирки та ярлики на місці, зберігся товарний вигляд і є чек.</p>
+    <p>Що робити:</p>
+    <ol>
+      <li>Напишіть на <span class="todo">[EMAIL]</span> — номер замовлення і що саме не так.</li>
+      <li>Ми надішлемо, куди відправляти.</li>
+      <li>Після того як посилка дійде до нас, повернемо кошти на ту саму картку протягом <strong>7 днів</strong>.</li>
+    </ol>
+    <p>Зворотну пересилку в такому разі оплачує покупець.</p>
+
+    <h3>Якщо товар з браком</h3>
+    <p>Тут інакше: <strong>зворотну пересилку оплачуємо ми</strong>. На вибір — заміна на таку саму річ, усунення недоліку або повернення грошей. Фото браку пришліть разом із листом — так швидше.</p>
+
+    <h3>Що повернути не вийде</h3>
+    <p>За постановою Кабміну № 172 не підлягають обміну та поверненню шкарпетки та натільна білизна належної якості. Це не наше рішення, це закон. На брак це обмеження не поширюється.</p>
+  </div>
 </dialog>
-<dialog class="doc" id="doc-shipping" aria-labelledby="t-shipping">
-  <button type="button" class="x" data-x aria-label="Close">✕</button>
-  <h2 id="t-shipping">Shipping Policy</h2>
-  <div class="body"><p>We ship across Ukraine with Nova Poshta. The full shipping policy will be published here soon.</p></div>
+
+<dialog class="doc" id="doc-privacy" aria-labelledby="t-privacy" lang="uk">
+  <button type="button" class="x" data-x aria-label="Закрити">✕</button>
+  <h2 id="t-privacy">Політика конфіденційності</h2>
+  <div class="body">
+    <p class="lead">Володілець персональних даних — ФОП Дудулад Оксана Анатоліївна, <span class="todo">[EMAIL]</span>. Ця політика пояснює, які дані збирає сайт і що з ними відбувається.</p>
+
+    <h3>1. Які дані збираються</h3>
+    <table>
+      <tr><th>Дані</th><th>Навіщо</th></tr>
+      <tr><td>Прізвище та ім'я</td><td>Оформлення відправлення на одержувача</td></tr>
+      <tr><td>Номер телефону</td><td>Зв'язок щодо замовлення, сповіщення перевізника</td></tr>
+      <tr><td>Відділення або адреса доставки</td><td>Передання перевізнику</td></tr>
+      <tr><td>Електронна пошта</td><td>Надсилання фіскального чека та підтвердження замовлення</td></tr>
+    </table>
+    <p>Дані банківської картки Продавець не отримує і не зберігає: їх обробляє банк-еквайр на своєму боці.</p>
+
+    <h3>2. Підстава обробки</h3>
+    <p>Обробка здійснюється для виконання договору купівлі-продажу, стороною якого є суб'єкт даних, а також на підставі його згоди, наданої проставленням позначки під час оформлення замовлення (Закон України «Про захист персональних даних»).</p>
+
+    <h3>3. Кому передаються дані</h3>
+    <ul>
+      <li><strong>Перевізнику</strong> — прізвище, ім'я, телефон, відділення чи адреса, для доставки.</li>
+      <li><strong>Банку-еквайру</strong> — дані, потрібні для проведення платежу.</li>
+      <li><strong>Оператору програмного РРО</strong> — дані, потрібні для видачі фіскального чека.</li>
+      <li><strong>Органам державної влади</strong> — лише на письмову вимогу в межах закону.</li>
+    </ul>
+    <p>Дані не продаються та не передаються для реклами третім особам.</p>
+
+    <h3>4. Строк зберігання</h3>
+    <p>Дані зберігаються стільки, скільки потрібно для виконання замовлення та протягом строків зберігання документів, установлених податковим законодавством. Після цього вони видаляються.</p>
+
+    <h3>5. Права суб'єкта даних</h3>
+    <p>Згідно зі статтею 8 Закону України «Про захист персональних даних» покупець має право знати, хто й навіщо обробляє його дані, отримати доступ до них, вимагати виправлення, видалення або обмеження обробки, а також відкликати згоду. Для цього достатньо написати на <span class="todo">[EMAIL]</span>.</p>
+
+    <h3>6. Файли cookie та аналітика</h3>
+    <p>Сайт може використовувати файли cookie, потрібні для роботи кошика, і сервіси веб-аналітики для знеособленої статистики відвідувань. Їх можна вимкнути в налаштуваннях браузера; кошик при цьому працювати не буде.</p>
+  </div>
 </dialog>
-<dialog class="doc" id="doc-contact" aria-labelledby="t-contact">
-  <button type="button" class="x" data-x aria-label="Close">✕</button>
-  <h2 id="t-contact">Contact Us</h2>
-  <div class="body" id="contactBody"></div>
+
+<dialog class="doc" id="doc-cookies" aria-labelledby="t-cookies" lang="uk">
+  <button type="button" class="x" data-x aria-label="Закрити">✕</button>
+  <h2 id="t-cookies">Файли cookie</h2>
+  <div class="body">
+    <p class="lead">Коротко: сайт не показує рекламу й не передає ваші дані рекламним мережам. Те, що зберігається, потрібне або для роботи замовлення, або для знеособленої статистики.</p>
+
+    <h3>Що саме зберігається</h3>
+    <table>
+      <tr><th>Навіщо</th><th>Що це</th></tr>
+      <tr><td>Оформлення замовлення</td><td>Номер замовлення зберігається у памʼяті браузера (sessionStorage), щоб після повернення зі сторінки оплати показати вам статус. Стирається, коли ви закриваєте вкладку.</td></tr>
+      <tr><td>Статистика відвідувань</td><td>Знеособлені дані про те, скільки людей заходило і з яких сторінок. Без імен, телефонів і адрес.</td></tr>
+    </table>
+
+    <h3>Як відмовитися</h3>
+    <p>Файли cookie та памʼять сайтів вимикаються в налаштуваннях браузера, окремо для цього сайту. Статистику можна заблокувати будь-яким блокувальником. Врахуйте: якщо вимкнути памʼять сайту, сторінка «дякуємо за замовлення» після оплати не покаже статус — саме замовлення й оплата при цьому не постраждають.</p>
+
+    <h3>Сторонні сервіси</h3>
+    <p>Сторінку оплати відкриває банк-еквайр на своєму домені й застосовує власні правила щодо cookie. Доставку обслуговує «Нова Пошта». Ми не керуємо їхніми файлами cookie.</p>
+  </div>
+</dialog>
+
+<dialog class="doc" id="doc-contact" aria-labelledby="t-contact" lang="uk">
+  <button type="button" class="x" data-x aria-label="Закрити">✕</button>
+  <h2 id="t-contact">Контакти</h2>
+  <div class="body">
+    <p class="lead">Пишіть з будь-якого питання — про розмір, статус замовлення або повернення. Відповідаємо у робочі дні.</p>
+    <table>
+      <tr><th>Продавець</th><td>ФОП Дудулад Оксана Анатоліївна</td></tr>
+      <tr><th>РНОКПП</th><td>2556839688</td></tr>
+      <tr><th>Адреса</th><td><span class="todo">[АДРЕСА]</span></td></tr>
+      <tr><th>Пошта</th><td><span class="todo">[EMAIL]</span></td></tr>
+      <tr><th>Телефон</th><td><span class="todo">[ТЕЛЕФОН]</span></td></tr>
+      <tr><th>Instagram</th><td><a href="https://instagram.com/simptomaponika" target="_blank" rel="noopener">@simptomaponika</a></td></tr>
+    </table>
+    <p>Для звернень щодо персональних даних і повернень використовуйте пошту — так залишається письмовий слід, і ми зможемо підтвердити строки.</p>
+  </div>
 </dialog>
 
 <div id="co" role="dialog" aria-modal="true" aria-labelledby="co-title" aria-hidden="true">
@@ -542,6 +796,21 @@ body.lock{overflow:hidden}
       </fieldset>
 
       <div class="total"><span>Total</span><b id="coTotal"></b></div>
+
+      <!-- акцепт оферты: без него договор не считается заключённым (ст. 642 ЦКУ) -->
+      <div class="agree" id="agreeBox">
+        <input type="checkbox" id="agree" name="agree">
+        <div>
+          <label for="agree" lang="uk">Я ознайомився з умовами продажу та погоджуюсь на обробку персональних даних</label>
+          <p class="agreelinks" lang="uk">
+            <button type="button" data-doc="offer">Публічна оферта</button>
+            <button type="button" data-doc="shipping">Доставка і повернення</button>
+            <button type="button" data-doc="privacy">Конфіденційність</button>
+          </p>
+        </div>
+      </div>
+      <span class="err" id="e-agree" aria-live="polite"></span>
+
       <button type="submit" class="shopnow place" id="place">Pay with monobank</button>
       <p class="conote" id="coNote">You'll be taken to a secure monobank page to pay by card, Apple Pay or Google Pay.</p>
     </form>
@@ -560,13 +829,11 @@ body.lock{overflow:hidden}
 const CFG = {
   /* ссылки в подвале: пустая строка — иконка не показывается */
   links:{
-    instagram:'https://instagram.com/',
-    youtube:'https://youtube.com/',
-    spotify:'https://open.spotify.com/',
-    soundcloud:'https://soundcloud.com/',
+    instagram:'https://instagram.com/simptomaponika',
+    youtube:'https://music.youtube.com/@simptomaponika',
+    spotify:'https://open.spotify.com/artist/4bI1b116KZGjJl5Dy7Lsjy',
+    soundcloud:'',
   },
-  /* Contact Us: пустые строки не показываются */
-  contact:{ email:'', telegram:'', instagram:'' },
   /* круг логотипа в кадре видео (в пикселях исходника 1920×1080) */
   intro:{ w:1920, h:1080, cx:960, cy:531.5, d:830 },
   teeFrames:160,                               // tee/t001.webp … t160.webp — полный оборот
@@ -576,14 +843,18 @@ const CFG = {
   revealMobile:{ title:0, text:[200,1300], item:1300, open:1800, credit:1700 },
   previewLen:20,                               // длина превью трека, сек
   audio:n=>`audio/${n}.mp3`,                   // превью: audio/01.mp3 … 17.mp3
-  order:{ price:300, currency:'$', maxQty:5,
-    /* адрес сервера заказов (Cloudflare Worker из папки server/), без слэша в конце */
+  /* цена одной коробки в гривнах. Здесь — чтобы её было видно без сервера;
+     при оплате главной считается цена из PRICE_UAH на воркере, подделать с сайта нельзя */
+  order:{ price:4000, maxQty:5,
+    /* адрес сервера заказов (Cloudflare Worker из папки server/), без слэша в конце.
+       Пока стоит заглушка — чекаут честно скажет, что оплата ещё не подключена */
     api:'https://neverland-shop.YOUR-SUBDOMAIN.workers.dev' },
 };
 
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.min(Math.max(v,a),b);
-const money=v=>CFG.order.currency+v.toLocaleString('en-US');
+/* цены всегда в гривнах: 4000 → «4 000 ₴» */
+const fmtUAH=n=>n.toLocaleString('uk-UA').replace(/\u00a0/g,' ')+' ₴';
 
 /* ── соцсети ── */
 const ICONS={"instagram": "M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077", "youtube": "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z", "spotify": "M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z", "soundcloud": "M23.999 14.165c-.052 1.796-1.612 3.169-3.4 3.169h-8.18a.68.68 0 0 1-.675-.683V7.862a.747.747 0 0 1 .452-.724s.75-.513 2.333-.513a5.364 5.364 0 0 1 2.763.755 5.433 5.433 0 0 1 2.57 3.54c.282-.08.574-.121.868-.12.884 0 1.73.358 2.347.992s.948 1.49.922 2.373ZM10.721 8.421c.247 2.98.427 5.697 0 8.672a.264.264 0 0 1-.53 0c-.395-2.946-.22-5.718 0-8.672a.264.264 0 0 1 .53 0ZM9.072 9.448c.285 2.659.37 4.986-.006 7.655a.277.277 0 0 1-.55 0c-.331-2.63-.256-5.02 0-7.655a.277.277 0 0 1 .556 0Zm-1.663-.257c.27 2.726.39 5.171 0 7.904a.266.266 0 0 1-.532 0c-.38-2.69-.257-5.21 0-7.904a.266.266 0 0 1 .532 0Zm-1.647.77a26.108 26.108 0 0 1-.008 7.147.272.272 0 0 1-.542 0 27.955 27.955 0 0 1 0-7.147.275.275 0 0 1 .55 0Zm-1.67 1.769c.421 1.865.228 3.5-.029 5.388a.257.257 0 0 1-.514 0c-.21-1.858-.398-3.549 0-5.389a.272.272 0 0 1 .543 0Zm-1.655-.273c.388 1.897.26 3.508-.01 5.412-.026.28-.514.283-.54 0-.244-1.878-.347-3.54-.01-5.412a.283.283 0 0 1 .56 0Zm-1.668.911c.4 1.268.257 2.292-.026 3.572a.257.257 0 0 1-.514 0c-.241-1.262-.354-2.312-.023-3.572a.283.283 0 0 1 .563 0Z"};
@@ -591,21 +862,34 @@ const NAMES={instagram:'Instagram',youtube:'YouTube',spotify:'Spotify',soundclou
 $('social').innerHTML=Object.entries(CFG.links).filter(([,u])=>u).map(([k,u])=>
   `<li><a href="${u}" target="_blank" rel="noopener" aria-label="${NAMES[k]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[k]}"/></svg></a></li>`).join('');
 
-/* ── контакты ── */
-(()=>{
-  const c=CFG.contact, out=[];
-  if(c.email) out.push(`<p>Email: <a href="mailto:${c.email}">${c.email}</a></p>`);
-  if(c.telegram) out.push(`<p>Telegram: <a href="https://t.me/${c.telegram.replace(/^@/,'')}" target="_blank" rel="noopener">@${c.telegram.replace(/^@/,'')}</a></p>`);
-  if(c.instagram) out.push(`<p>Instagram: <a href="https://instagram.com/${c.instagram.replace(/^@/,'')}" target="_blank" rel="noopener">@${c.instagram.replace(/^@/,'')}</a></p>`);
-  $('contactBody').innerHTML=out.join('')||'<p>Contacts will be published here soon.</p>';
-})();
-
 /* ── окна с правилами ── */
 document.querySelectorAll('[data-doc]').forEach(b=>b.addEventListener('click',()=>$('doc-'+b.dataset.doc).showModal()));
 document.querySelectorAll('dialog.doc').forEach(d=>{
   d.querySelector('[data-x]').addEventListener('click',()=>d.close());
   d.addEventListener('click',e=>{ if(e.target===d) d.close(); });          // клик по фону
 });
+
+/* ══ ФОНОВОЕ ВИДЕО ГЛАВНОГО ЭКРАНА ═══════════════════════
+   Под телефон и под пк — разные ролики. Атрибут media у <source>
+   внутри <video> браузеры не поддерживают (он работает только
+   в <picture>), поэтому нужный ролик подставляем сами. */
+(()=>{
+  const v=$('bgVid'); if(!v) return;
+  const base=innerWidth>innerHeight?'bg-desktop':'bg-mobile';
+  [['mp4','video/mp4'],['webm','video/webm']].forEach(([ext,type])=>{
+    const s=document.createElement('source');
+    s.src='video/'+base+'.'+ext; s.type=type; v.appendChild(s);
+  });
+  v.muted=true; v.defaultMuted=true; v.load();
+  // кому движение мешает — показываем застывший первый кадр
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){ v.removeAttribute('autoplay'); return; }
+  const kick=()=>v.play?.().catch(()=>{});
+  kick();
+  addEventListener('load',kick);
+  document.addEventListener('touchstart',kick,{once:true});
+  // телефон засыпает и ставит видео на паузу — возвращаемся и продолжаем
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) kick(); });
+})();
 
 /* ══ ИНТРО ══════════════════════════════════════════════
    1. видео на весь экран, круг логотипа по центру;
@@ -656,14 +940,16 @@ hlogo.addEventListener('click',e=>{ e.preventDefault(); if(typeof go==='function
 
 /* ── CHECKOUT ── */
 const co=$('co'), cof=$('cof'); let qty=1, lastFocus=null;
-let priceUAH=0;   // берётся с сервера; оплата идёт в гривнах
-const fmtUAH=n=>n.toLocaleString('uk-UA').replace(/\u00a0/g,' ')+' ₴';
+/* цена из CFG видна сразу, даже если сервер недоступен; ответил сервер — берём его цену */
+let priceUAH=CFG.order.price;
 const setQty=n=>{ qty=clamp(n,1,CFG.order.maxQty); $('qVal').textContent=qty;
-  $('coTotal').textContent=priceUAH?fmtUAH(priceUAH*qty):money(CFG.order.price*qty); };
-const API=(CFG.order.api||'').replace(/\/+$/,'');
+  $('coTotal').textContent=fmtUAH(priceUAH*qty); };
+/* незаполненную заглушку адреса воркера считаем «оплата не подключена» */
+const API=/YOUR-SUBDOMAIN/.test(CFG.order.api||'')?'':(CFG.order.api||'').replace(/\/+$/,'');
 const apiGet=path=>fetch(API+path).then(r=>{if(!r.ok) throw new Error(r.status); return r.json();});
-if(API) apiGet('/config').then(c=>{ priceUAH=c.priceUAH||0; setQty(qty); }).catch(()=>{});
-setQty(1);
+const paintPrice=()=>document.querySelectorAll('[data-price]').forEach(el=>el.textContent=fmtUAH(priceUAH));
+if(API) apiGet('/config').then(c=>{ if(c.priceUAH){ priceUAH=c.priceUAH; paintPrice(); } setQty(qty); }).catch(()=>{});
+paintPrice(); setQty(1);
 $('qMinus').onclick=()=>setQty(qty-1); $('qPlus').onclick=()=>setQty(qty+1);
 function openCo(){
   lastFocus=document.activeElement; co.classList.add('open'); co.setAttribute('aria-hidden','false');
@@ -675,7 +961,11 @@ function closeCo(){
   lastFocus&&lastFocus.focus();
 }
 co.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeCo));
-addEventListener('keydown',e=>{ if(e.key==='Escape'&&co.classList.contains('open')) closeCo(); });
+/* Escape внутри окна с правилами должен закрывать только это окно,
+   а не весь чекаут вместе с заполненной формой */
+addEventListener('keydown',e=>{ if(e.key!=='Escape') return;
+  if(document.querySelector('dialog.doc[open]')) return;
+  if(co.classList.contains('open')) closeCo(); });
 // фокус не уходит за пределы панели
 co.addEventListener('keydown',e=>{
   if(e.key!=='Tab') return;
@@ -702,7 +992,7 @@ var validate=function(){
   first&&first.focus();
   return ok;
 };
-cof.addEventListener('input',e=>{ const f=e.target.closest('.f'); if(f&&f.classList.contains('bad')){f.classList.remove('bad');f.querySelector('.err').textContent='';} if(e.target.name==='size'){$('sz').classList.remove('bad');$('e-size').textContent='';} });
+cof.addEventListener('input',e=>{ const f=e.target.closest('.f'); if(f&&f.classList.contains('bad')){f.classList.remove('bad');f.querySelector('.err').textContent='';} if(e.target.name==='size'){$('sz').classList.remove('bad');$('e-size').textContent='';} if(e.target.id==='agree'){$('agreeBox').classList.remove('bad');$('e-agree').textContent='';} });
 
 /* ── Нова пошта: автодополнение города и отделения ── */
 function Combo(box,{load,render,onPick,minLen=0}){
@@ -766,6 +1056,11 @@ validate=function(){
     const el=$(box);
     if(!$(ref).value){ ok=false; el.classList.add('bad'); el.querySelector('.err').textContent=el.querySelector('input').value.trim()?msg:'Required'; }
   });
+  // без акцепта оферты заказ не создаётся
+  const ag=$('agree');
+  $('agreeBox').classList.toggle('bad',!ag.checked);
+  $('e-agree').textContent=ag.checked?'':'Please accept the terms to continue';
+  if(!ag.checked){ ok=false; if(document.activeElement===document.body) ag.focus(); }
   return ok;
 };
 
@@ -777,7 +1072,7 @@ const store={ set:v=>{try{sessionStorage.setItem(SKEY,JSON.stringify(v));}catch(
 
 cof.addEventListener('submit',async e=>{
   e.preventDefault(); if(!validate()) return;
-  if(!API){ alert('Checkout is not connected yet.'); return; }
+  if(!API){ $('coNote').textContent='Online payment is not connected yet — message us on Instagram and we will take your order by hand.'; return; }
   const d=Object.fromEntries(new FormData(cof));
   const btn=$('place'); btn.disabled=true; btn.textContent='Creating payment…';
   try{
