@@ -794,9 +794,8 @@ const CFG = {
   /* цена одной коробки в гривнах. Здесь — чтобы её было видно без сервера;
      при оплате главной считается цена из PRICE_UAH на воркере, подделать с сайта нельзя */
   order:{ price:4000, maxQty:5,
-    /* адрес сервера заказов (Cloudflare Worker из папки server/), без слэша в конце.
-       Пока стоит заглушка — чекаут честно скажет, что оплата ещё не подключена */
-    api:'https://neverland-shop.YOUR-SUBDOMAIN.workers.dev' },
+    /* адрес сервера заказов (Cloudflare Worker из папки server/), без слэша в конце */
+    api:'https://neverland-shop.concert-grebz.workers.dev' },
 };
 
 const $=id=>document.getElementById(id);
