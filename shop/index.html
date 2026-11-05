@@ -118,11 +118,12 @@ body.ready .it-cd{transition-delay:.2s}
 
 /* кнопка BUY BOX — прямоугольник с тонкой рамкой, как в макете */
 .shopnow{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
-  background:#000;color:#fff;border:2px solid #fff;border-radius:0;text-transform:uppercase;
-  padding:.42em 1.05em .36em;font:900 clamp(28px,3.2vw,54px)/1 var(--display);letter-spacing:.04em;
-  transition:background .25s,color .25s,transform .2s,opacity .8s ease}
-@media (hover:hover){.shopnow:hover{background:#fff;color:#000}}
-.shopnow:active{background:#fff;color:#000;transform:scale(.98)}
+  background:#0b0b0b;color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:999px;
+  text-transform:uppercase;padding:.95em 2.1em;
+  font:500 clamp(11px,1vw,13px)/1 var(--ui);letter-spacing:.16em;
+  transition:background .25s,color .25s,border-color .25s,transform .2s,opacity .8s ease}
+@media (hover:hover){.shopnow:hover{background:#fff;color:#000;border-color:#fff}}
+.shopnow:active{background:#fff;color:#000;border-color:#fff;transform:scale(.97)}
 .shopnow:focus-visible{outline:2px solid #fff;outline-offset:5px}
 .shopnow:disabled{opacity:.5;cursor:default}
 .shopnow[hidden]{display:none}
@@ -148,121 +149,117 @@ body.ready footer{opacity:1}
 .legal button{all:unset;cursor:pointer;background:linear-gradient(#fff,#fff) left 92%/0 1px no-repeat;transition:background-size .25s}
 .legal button:hover{background-size:100% 1px}
 .legal button:focus-visible{outline:2px solid #fff;outline-offset:3px}
-/* кто продавец — требование ст. 7 ЗУ «Про електронну комерцію» */
-.selline{font:500 clamp(8.5px,.66vw,9.5px)/1.7 var(--ui);letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(255,255,255,.34)}
 
 
 /* ── PRODUCTS (из первой версии) ─────────────────────────── */
-.prod{position:relative}
-.prod .pin{position:relative;height:100svh;min-height:560px;overflow:hidden;display:grid;align-items:center;padding:0 var(--pad)}
-.wrap{max-width:1440px;width:100%;margin:0 auto;display:grid;align-items:center;
-  grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(24px,5vw,80px)}
-
-.copy h2{font:900 clamp(40px,5.6vw,84px)/.9 var(--display)}
-.desc{margin-top:clamp(24px,5vh,56px);font:900 clamp(15px,1.45vw,21px)/1.55 var(--display);max-width:34em;letter-spacing:.01em}
-.prod .desc .w{opacity:.12;transition:opacity .45s ease}
-.desc .w.on{opacity:1}
-.credit{margin-top:clamp(28px,6vh,64px);font:900 13px/1 var(--display);color:var(--dim)}
-.reveal{opacity:0;translate:0 18px;transition:opacity .7s ease,translate .7s cubic-bezier(.2,.75,.15,1)}
-.reveal.on{opacity:1;translate:0 0}
-
-.spin{display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2vh,20px)}
-#medalCv{width:min(100%,62svh);aspect-ratio:920/946;display:block;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;
-  filter:drop-shadow(0 30px 40px rgba(0,0,0,.7))}
-#medalCv.drag{cursor:grabbing}
-#medalCv:focus-visible{outline:2px solid #fff;outline-offset:4px}
 
 
 .fine{margin-top:clamp(18px,3vh,32px);font:900 11px/1.6 var(--display);color:rgba(255,255,255,.45);max-width:44em;letter-spacing:.02em}
-.prod .wrap{grid-template-areas:"copy item" "cta item";grid-template-rows:auto auto;row-gap:0}
-.prod .wrap>.copy{grid-area:copy;align-self:end}
-.prod .wrap>.stagebox{grid-area:item}
-.prod .wrap>.cta{grid-area:cta;align-self:start}
-.wrap.flip{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);grid-template-areas:"item copy" "item cta"}
-.cta .shopnow{margin-top:clamp(22px,4vh,40px)}
-.cta .fine{margin-top:12px}
 
-/* футболка + ползунок */
-.tee{display:flex;flex-direction:column;align-items:center;gap:clamp(14px,3vh,28px)}
-#teeCv{width:min(100%,62svh);aspect-ratio:760/791;display:block;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
-#teeCv.drag{cursor:grabbing}
-.teehint,.spinhint{font:900 11px/1 var(--display);color:var(--dim);letter-spacing:.06em}
-#teeCv:focus-visible{outline:2px solid #fff;outline-offset:4px}
 
-#tee-title{font-size:clamp(34px,4.2vw,64px)}
-@media (max-width:860px){#tee-title{font-size:24px}}
-.cta .shopnow{margin-top:clamp(22px,4vh,40px);font-size:clamp(22px,2vw,32px)}
-#p-cd{position:relative}
-#p-cd .pin{position:relative;height:100svh;min-height:560px;overflow:hidden}
-.case{position:absolute;top:50%;left:0;height:59vh;aspect-ratio:2272/1018;will-change:transform;transition:transform 1s cubic-bezier(.2,.75,.15,1);
-  filter:drop-shadow(0 40px 70px rgba(0,0,0,.6))}
-.case img{width:100%;height:100%;display:block}
-.tl{position:absolute;top:50%;translate:0 -50%;list-style:none;text-align:center;
-  font:900 clamp(15px,1.5vw,30px)/1.42 var(--display);transition:opacity .6s ease,transform .8s cubic-bezier(.2,.75,.15,1)}
-.tl.a{left:0;width:44%}
-.tl.b{left:58.3%;width:41.7%}
-.tl.off{opacity:0;pointer-events:none}
-.tl.a.off{transform:translateX(-24px)} .tl.b.off{transform:translateX(24px)}
-.tl button{all:unset;cursor:pointer;color:rgba(255,255,255,.9);position:relative;padding:0 .1em;
-  background:linear-gradient(#fff,#fff) left bottom/0 1px no-repeat;transition:color .2s}
-.tl button:hover{color:#fff;background-size:100% 1px}
-.tl button:focus-visible{outline:2px solid #fff;outline-offset:3px}
-.tl li.play button{color:#fff}
-.tl li .st{display:inline-block;width:0;overflow:visible;white-space:nowrap;
-  font-size:.42em;letter-spacing:.06em;color:var(--dim);vertical-align:middle;translate:.8em 0}
-.cdcap{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(22px + env(safe-area-inset-bottom,0px));
-  display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;pointer-events:none}
-.cdcap h2{font:900 13px/1 var(--display);letter-spacing:.06em;color:var(--dim)}
-.cdcap .fine{margin:0;text-align:right;max-width:40em}
-.tlnav{display:grid;place-items:center;position:absolute;z-index:2;top:50%;translate:0 -50%;width:52px;height:52px;border-radius:50%;
-  border:2px solid #fff;background:#000;color:#fff;font:400 22px/1 var(--text);cursor:pointer;transition:opacity .3s,background .25s,color .25s}
-@media (hover:hover){.tlnav:not(:disabled):hover{background:#fff;color:#000}}
-.tlnav.prev{left:calc(var(--pad) * .5)}.tlnav.next{right:calc(var(--pad) * .5)}
-.tlnav:disabled{opacity:0;pointer-events:none}
-.tlnav:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+
+
+/* ── КАРТОЧКИ ТОВАРОВ ────────────────────────────────────── */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.8vw,26px);
+  padding:clamp(70px,11vh,130px) var(--pad) 0;max-width:1500px;margin:0 auto}
+.card{display:flex;flex-direction:column;min-width:0}
+.shot{position:relative;aspect-ratio:1;border-radius:clamp(14px,1.4vw,20px);overflow:hidden;
+  background:#070707;border:1px solid rgba(255,255,255,.07)}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity .45s ease}
+.shot img:first-child,.shot img.on{opacity:1}
+.shot.multi{cursor:pointer}
+.shot.multi img.on~img{opacity:0}
+/* точки лежат прямо на фото, снизу по центру */
+.dots{position:absolute;left:0;right:0;bottom:11px;z-index:2;display:flex;justify-content:center;gap:6px;
+  pointer-events:none}
+.dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.35);
+  box-shadow:0 1px 4px rgba(0,0,0,.9);transition:background .25s,transform .25s}
+.dots i.on{background:#fff;transform:scale(1.15)}
+/* лёгкая подложка, чтобы точки читались на светлом кадре */
+.shot.multi::after{content:'';position:absolute;left:0;right:0;bottom:0;height:62px;pointer-events:none;
+  background:linear-gradient(to top,rgba(0,0,0,.5),rgba(0,0,0,0))}
+.card h3{margin-top:clamp(10px,1.4vh,16px);text-align:center;
+  font:500 clamp(11px,.95vw,13px)/1 var(--ui);letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.75)}
+.cardsbuy{display:flex;flex-direction:column;align-items:center;
+  padding:clamp(34px,6vh,64px) var(--pad) clamp(60px,10vh,110px)}
+
 @media (max-width:860px){
-  /* телефон: блок не закреплён, трек-лист листается стрелками, бокс едет вслед */
-  #p-cd .pin{min-height:600px}
-  .case{top:auto;bottom:max(19svh,150px);height:min(27svh,46vw);transition:transform .9s cubic-bezier(.2,.75,.15,1)}
-  .tl{top:calc(96px + env(safe-area-inset-top,0px));translate:0 0;font-size:clamp(14px,4.2vw,19px)}
-  .tl.a,.tl.b{left:52px;width:calc(100% - 104px)}
-  .tlnav{top:calc(96px + 104px + env(safe-area-inset-top,0px));translate:0 0;width:44px;height:44px;font-size:20px}
-  .tlnav.prev{left:6px}.tlnav.next{right:6px}
-  .tlnav:disabled{opacity:.2;pointer-events:none}
-  .cdcap{flex-direction:column;align-items:flex-start;gap:8px}
-  .cdcap .fine{text-align:left}
+  /* телефон: одна карточка по центру, соседние видно наполовину */
+  .cards{display:flex;grid-template-columns:none;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding:clamp(70px,11vh,130px) 19vw 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .cards::-webkit-scrollbar{display:none}
+  .card{flex:0 0 62vw;scroll-snap-align:center}
+  .card h3{font-size:10.5px;letter-spacing:.14em}
 }
-
-.cdcap{pointer-events:auto;align-items:center}
-.cdcap .shopnow{font-size:clamp(20px,1.6vw,26px)}
-@media (max-width:860px){
-  .wrap{grid-template-columns:1fr;gap:18px}
-  /* мобильные: текст → предмет → Buy → сноска */
-  .prod .wrap,.wrap.flip{grid-template-columns:1fr;grid-template-areas:"copy" "item" "cta";row-gap:10px;text-align:center}
-  .prod .desc{margin-left:auto;margin-right:auto}
-  .prod .pin{align-items:center;padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
-  #medalCv{width:min(100%,36svh)}
-  #teeCv{width:min(100%,35svh)}
-  .cta .shopnow{margin-top:4px;font-size:24px}
-  .cta .fine{margin:8px auto 0}
-  .tee{gap:8px}
-  .fine{font-size:10px;margin-top:14px}
-  .copy h2{font-size:28px}
-  .desc{margin-top:12px;font-size:12.5px;line-height:1.5}
-  .credit{margin-top:22px}
-}
-@media (max-width:860px){ .cdcap{align-items:flex-start} }
 
 /* ── ОКНА С ПРАВИЛАМИ ────────────────────────────────────── */
-dialog.doc{margin:auto;width:min(640px,calc(100% - 32px));max-height:min(80svh,760px);background:#0a0a0a;color:#fff;
-  border:1px solid rgba(255,255,255,.18);padding:clamp(22px,4vw,40px);overflow-y:auto}
-dialog.doc::backdrop{background:rgba(0,0,0,.75)}
-dialog.doc h2{font:900 clamp(24px,3vw,34px)/1.1 var(--display);padding-right:66px}
-dialog.doc .body{margin-top:20px;font:400 15px/1.65 var(--text);color:rgba(255,255,255,.82)}
+/* Лист в духе apple: матовое стекло, крупный радиус, заголовок
+   стоит на месте, прокручивается только текст. Хедер получает
+   волосяную линию, когда под ним уже уехал текст. */
+dialog.doc{margin:auto;width:min(620px,calc(100% - 28px));max-height:min(84svh,780px);
+  padding:0;border:0;border-radius:22px;overflow:hidden;color:#fff;
+  background:rgba(16,16,16,.84);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:0 0 0 1px rgba(255,255,255,.1) inset,0 34px 90px -22px rgba(0,0,0,.95)}
+dialog.doc[open]{display:flex;flex-direction:column}
+dialog.doc::backdrop{background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+
+dialog.doc h2{flex:none;margin:0;font:900 clamp(21px,2.4vw,27px)/1.18 var(--display);
+  padding:clamp(25px,3.2vw,33px) 74px clamp(15px,1.8vw,19px) clamp(22px,3.6vw,36px);
+  border-bottom:1px solid transparent;transition:border-color .3s ease}
+dialog.doc.scrolled h2{border-bottom-color:rgba(255,255,255,.11)}
+dialog.doc .body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;
+  padding:clamp(14px,1.6vw,18px) clamp(22px,3.6vw,36px) clamp(26px,3.4vw,36px);
+  font:400 15px/1.7 var(--text);color:rgba(255,255,255,.78)}
+dialog.doc .body::-webkit-scrollbar{width:11px}
+dialog.doc .body::-webkit-scrollbar-track{background:transparent}
+dialog.doc .body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:11px;
+  border:3px solid transparent;background-clip:content-box}
 dialog.doc .body p+p{margin-top:12px}
-dialog.doc .body a{text-decoration:underline}
-dialog.doc .x{position:absolute;top:16px;right:16px}
+dialog.doc .body a{text-decoration:underline;text-decoration-color:rgba(255,255,255,.4);text-underline-offset:3px}
+
+/* круглая кнопка закрытия — как в листах apple */
+dialog.doc .x{position:absolute;z-index:2;top:clamp(19px,2.4vw,25px);right:clamp(18px,2.4vw,24px);
+  width:30px;height:30px;border:0;border-radius:50%;background:rgba(255,255,255,.1);
+  color:rgba(255,255,255,.7);font:400 13px/1 var(--text);
+  transition:background .2s,color .2s,scale .15s}
+dialog.doc .x:hover{background:rgba(255,255,255,.2);color:#fff}
+dialog.doc .x:active{scale:.9}
+
+/* край текста растворяется, пока ниже ещё что-то есть */
+dialog.doc::after{content:'';position:absolute;left:0;right:0;bottom:0;height:58px;z-index:1;
+  pointer-events:none;opacity:0;transition:opacity .3s ease;
+  background:linear-gradient(to top,rgba(16,16,16,.96),rgba(16,16,16,0))}
+dialog.doc.more::after{opacity:1}
+
+@keyframes docIn{from{opacity:0;scale:.96;translate:0 12px}to{opacity:1;scale:1;translate:0 0}}
+@keyframes docOut{to{opacity:0;scale:.975}}
+@keyframes docBd{from{opacity:0}to{opacity:1}}
+dialog.doc[open]{animation:docIn .34s var(--ease) both}
+dialog.doc[open]::backdrop{animation:docBd .34s ease both}
+dialog.doc.closing{animation:docOut .2s ease both}
+dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
+
+/* на телефоне — лист снизу, с «ручкой» наверху */
+@media (max-width:640px){
+  dialog.doc{width:100%;max-width:none;max-height:92svh;margin:auto 0 0;border-radius:20px 20px 0 0;
+    box-shadow:0 0 0 1px rgba(255,255,255,.1) inset,0 -22px 60px rgba(0,0,0,.8)}
+  dialog.doc::before{content:'';position:absolute;z-index:3;top:9px;left:50%;translate:-50% 0;
+    width:36px;height:4px;border-radius:4px;background:rgba(255,255,255,.22)}
+  dialog.doc h2{padding:30px 62px 14px 20px;font-size:20px}
+  dialog.doc .x{top:24px;right:16px}
+  dialog.doc .body{padding:14px 20px calc(28px + env(safe-area-inset-bottom,0px))}
+  @keyframes docIn{from{opacity:0;translate:0 100%}to{opacity:1;translate:0 0}}
+  @keyframes docOut{to{opacity:0;translate:0 42%}}
+}
+@media (prefers-reduced-motion:reduce){
+  dialog.doc[open],dialog.doc[open]::backdrop,
+  dialog.doc.closing,dialog.doc.closing::backdrop{animation:none}
+}
 
 /* ── ОФОРМЛЕНИЕ ЗАКАЗА (как в первой версии) ─────────────── */
 /* ── CHECKOUT ───────────────────────────────────────────── */
@@ -319,6 +316,48 @@ dialog.doc .x{position:absolute;top:16px;right:16px}
   background:linear-gradient(#fff,#fff) left 125%/0 1px no-repeat;transition:color .2s,background-size .25s}
 .sizelink:hover{color:#fff;background-size:100% 1px}
 .sizelink:focus-visible{outline:2px solid #fff;outline-offset:3px}
+/* переключатель на два положения: телеграм или инстаграм */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.02)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{display:grid;place-items:center;padding:9px 6px;border-radius:9px;cursor:pointer;
+  font:500 12.5px/1 var(--ui);letter-spacing:.02em;color:rgba(255,255,255,.6);
+  transition:background .2s,color .2s}
+@media (hover:hover){.seg label:hover{color:#fff}}
+.seg input:checked+label{background:#fff;color:#000}
+.seg input:focus-visible+label{outline:2px solid #fff;outline-offset:2px}
+.seg.bad{border-color:#ff6b6b}
+
+/* выбор оплаты: строки с галочкой, как в настройках iOS */
+.pay{display:flex;flex-direction:column;gap:10px}
+.pay>input+label:not(.paybtn){border:1px solid rgba(255,255,255,.16);border-radius:14px;
+  background:rgba(255,255,255,.02)}
+/* карта оформлена кнопкой оплаты, а не пунктом списка */
+.paybtn{border-radius:14px;background:#fff;border:1px solid #fff;
+  transition:transform .18s ease,opacity .25s,box-shadow .25s}
+.paybtn b{color:#000!important;font-weight:600!important;font-size:15px!important}
+.paybtn i{color:rgba(0,0,0,.52)!important}
+.pay input:checked+.paybtn{box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+@media (hover:hover){.paybtn:hover{background:#fff}}
+.paybtn:active{transform:scale(.985)}
+.pay input:disabled+.paybtn{background:rgba(255,255,255,.12);border-color:transparent;cursor:not-allowed}
+.pay input:disabled+.paybtn b{color:rgba(255,255,255,.55)!important}
+.pay input:disabled+.paybtn i{color:rgba(255,255,255,.35)!important}
+.pay input{position:absolute;opacity:0;pointer-events:none}
+.pay label{display:flex;flex-direction:column;gap:3px;align-items:center;text-align:center;
+  padding:15px 18px;cursor:pointer;position:relative;transition:background .2s,border-color .2s}
+.pay label b{font:500 14px/1.2 var(--ui);letter-spacing:.02em;color:#fff}
+.pay label i{font:400 12px/1.3 var(--text);font-style:normal;color:rgba(255,255,255,.45)}
+@media (hover:hover){.pay label:hover{background:rgba(255,255,255,.04)}}
+.pay input:checked+label:not(.paybtn){background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.45)}
+.pay input:focus-visible+label{outline:2px solid #fff;outline-offset:-2px}
+.pay.bad>input+label:not(.paybtn){border-color:#ff6b6b}
+/* реквизиты на экране «заказ принят» */
+.paydet{margin-top:10px;padding:13px 15px;border:1px solid rgba(255,255,255,.18);border-radius:12px;
+  font:500 15px/1.45 var(--ui);letter-spacing:.02em;color:#fff;word-break:break-all;
+  background:rgba(255,255,255,.04)}
+.paynote{margin-top:12px;font:400 13px/1.5 var(--text);color:rgba(255,255,255,.55)}
+
 .total{display:flex;justify-content:space-between;align-items:baseline;padding-top:18px;border-top:1px solid rgba(255,255,255,.12)}
 .total span{font:900 13px/1 var(--display);color:var(--dim)}
 .total b{font:900 28px/1 var(--display)}
@@ -342,37 +381,35 @@ body.lock{overflow:hidden}
   .it-tee{left:-9.2%;top:-7.4%;width:74.8%}
   .it-medal{left:20%;top:19%;width:44%}
   .it-cd{left:37%;top:53%;width:64%}
-  .shopnow{font-size:30px}
   .legal{flex-direction:column;gap:4px}
   .legal li+li::before{display:none}
 }
 /* ── ЦЕНА ───────────────────────────────────────────────── */
 /* подвал лежит поверх видео: на светлых кадрах его держит тень */
 footer .wordmark{filter:drop-shadow(0 2px 12px rgba(0,0,0,.85))}
-footer .legal,footer .selline{text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.8)}
+footer .legal{text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.8)}
 footer .social a{filter:drop-shadow(0 2px 10px rgba(0,0,0,.85))}
-/* в блоках Products — рядом с кнопкой */
-.cta .pricetag{margin-top:12px;font:900 clamp(16px,1.5vw,22px)/1 var(--display);letter-spacing:.04em}
-.cdcap .pricetag{margin:0;font:900 clamp(15px,1.3vw,19px)/1 var(--display);letter-spacing:.04em}
-/* «/ box» — не лишний текст, а часть цены: иначе непонятно, что 4000 за весь комплект */
-.pricetag small{font:500 .62em/1 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5)}
-@media (max-width:860px){ .cta .pricetag{margin-top:8px;font-size:17px} }
 
 /* ── ТЕКСТЫ ПРАВИЛ: вёрстка внутри окна ─────────────────── */
-dialog.doc .body h3{margin:26px 0 0;font:900 15px/1.3 var(--display);letter-spacing:.03em;color:#fff}
+dialog.doc .body h3{margin:28px 0 9px;font:900 14.5px/1.3 var(--display);letter-spacing:.04em;color:#fff}
 dialog.doc .body h3:first-child{margin-top:0}
-dialog.doc .body h4{margin:18px 0 0;font:900 13px/1.35 var(--display);letter-spacing:.03em;color:rgba(255,255,255,.95)}
-dialog.doc .body .lead{color:rgba(255,255,255,.6)}
+dialog.doc .body h4{margin:18px 0 7px;font:900 13px/1.35 var(--display);letter-spacing:.03em;color:rgba(255,255,255,.95)}
+/* подзаголовок документа отделён линией, как в системных окнах */
+dialog.doc .body .lead{color:rgba(255,255,255,.55);font-size:14px;
+  padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,.08)}
 dialog.doc .body strong{color:#fff}
 dialog.doc .body ul,dialog.doc .body ol{margin:10px 0 0 20px}
 dialog.doc .body li{margin-top:7px}
-dialog.doc .body table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
-dialog.doc .body th,dialog.doc .body td{text-align:left;padding:8px 12px 8px 0;vertical-align:top;
-  border-bottom:1px solid rgba(255,255,255,.12)}
-dialog.doc .body th{font-weight:600;color:#fff}
+dialog.doc .body table{width:100%;border-collapse:collapse;margin-top:16px;font-size:14px;
+  background:rgba(255,255,255,.04);border-radius:14px;overflow:hidden}
+dialog.doc .body th,dialog.doc .body td{text-align:left;padding:11px 14px;vertical-align:top;
+  border-bottom:1px solid rgba(255,255,255,.07)}
+dialog.doc .body tr:last-child th,dialog.doc .body tr:last-child td{border-bottom:0}
+dialog.doc .body th{font-weight:500;color:rgba(255,255,255,.55);white-space:nowrap;width:1%}
+dialog.doc .body td{color:#fff}
 /* незаполненные реквизиты видно сразу — их надо заменить до запуска */
-dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,196,0,.16);
-  border:1px solid rgba(255,196,0,.55);color:#ffd451;font-size:12.5px}
+dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;background:rgba(255,196,0,.14);
+  border:1px solid rgba(255,196,0,.45);color:#ffd451;font-size:12.5px}
 
 /* ── СОГЛАСИЕ С ОФЕРТОЙ ─────────────────────────────────── */
 .agree{display:flex;gap:11px;align-items:flex-start;margin-top:2px}
@@ -382,10 +419,10 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
 .agree input:checked::after{content:'';position:absolute;left:6px;top:2px;width:5px;height:10px;
   border:solid #000;border-width:0 2px 2px 0;transform:rotate(45deg)}
 .agree input:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.agree label{font:400 13px/1.5 var(--text);color:rgba(255,255,255,.8);cursor:pointer}
+.agree label{font:400 13px/1.5 var(--ui);color:rgba(255,255,255,.8);cursor:pointer}
 .agreelinks{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:7px}
-.agreelinks button{all:unset;cursor:pointer;font:900 11px/1 var(--display);letter-spacing:.05em;
-  color:rgba(255,255,255,.65);background:linear-gradient(#fff,#fff) left 125%/0 1px no-repeat;
+.agreelinks button{all:unset;cursor:pointer;font:400 12.5px/1.4 var(--ui);letter-spacing:.01em;
+  color:rgba(255,255,255,.55);background:linear-gradient(#fff,#fff) left 115%/0 1px no-repeat;
   transition:color .2s,background-size .25s}
 .agreelinks button:hover{color:#fff;background-size:100% 1px}
 .agreelinks button:focus-visible{outline:2px solid #fff;outline-offset:3px}
@@ -414,76 +451,34 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
 </main>
 
 <div id="products">
-<section class="prod" id="p-medal" aria-labelledby="medal-title">
-  <div class="pin">
-    <div class="wrap">
-      <div class="copy">
-        <h2 id="medal-title" class="reveal" data-r="title">Brelok</h2>
-      </div>
-      <div class="spin medalbox reveal stagebox" data-r="item">
-        <canvas id="medalCv" role="img" aria-label="Neverland medal. Swipe or use arrow keys to turn it from the logo side to the tree side"></canvas>
-        <span class="spinhint reveal" data-r="open">Swipe to turn the medal</span>
-      </div>
-      <div class="cta reveal" data-r="credit">
-        <button type="button" class="shopnow" data-shop aria-haspopup="dialog" aria-controls="co">Buy box</button>
-        <p class="pricetag"><span data-price>4 000 ₴</span><small> / box</small></p>
-      </div>
-    </div>
-  </div>
-</section>
+  <div class="cards" id="cards">
 
-<section class="prod" id="p-tee" aria-labelledby="tee-title">
-  <div class="pin">
-    <div class="wrap flip">
-      <div class="tee stagebox reveal" data-r="item">
-        <canvas id="teeCv" role="img" aria-label="Neverland oversized tee, 360° view. Swipe or use arrow keys to rotate"></canvas>
-        <span class="teehint reveal" id="teeHint" data-r="open">Swipe the tee to rotate</span>
-      </div>
-      <div class="copy">
-        <h2 id="tee-title" class="reveal" data-r="title">Futbolka</h2>
-      </div>
-      <div class="cta reveal" data-r="credit">
-        <button type="button" class="shopnow" data-shop aria-haspopup="dialog" aria-controls="co">Buy box</button>
-        <p class="pricetag"><span data-price>4 000 ₴</span><small> / box</small></p>
-      </div>
-    </div>
-  </div>
-</section>
+    <article class="card">
+      <div class="shot"><img src="img/p-tee-1.webp" alt="Never Land oversized tee" width="1000" height="1000" loading="lazy">
+        <img src="img/p-tee-2.webp" alt="Never Land tee, chest logo and tree print" width="1000" height="1000" loading="lazy">
+        <div class="dots" aria-hidden="true"></div></div>
+      <h3>Futbolka</h3>
+    </article>
 
-<section id="p-cd" aria-labelledby="cd-title">
-  <div class="pin">
-    <div class="case" id="case"><img src="img/cd-open.webp" alt="Never Land CD, open jewel case: booklet with the logo and the disc" width="2272" height="1018"></div>
-    <ol class="tl a" id="tlA">
-        <li data-n="01"><button type="button" aria-label="Play 20-second preview: Never Land">Never Land</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="02"><button type="button" aria-label="Play 20-second preview: Radar">Radar</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="03"><button type="button" aria-label="Play 20-second preview: T-1000">T-1000</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="04"><button type="button" aria-label="Play 20-second preview: Offline (ft T-Fest)">Offline (ft T-Fest)</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="05"><button type="button" aria-label="Play 20-second preview: Black Friday">Black Friday</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="06"><button type="button" aria-label="Play 20-second preview: White (ft 4erdak)">White (ft 4erdak)</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="07"><button type="button" aria-label="Play 20-second preview: Perekur">Perekur</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="08"><button type="button" aria-label="Play 20-second preview: Alisha Interlude (ft Alisha T)">Alisha Interlude (ft Alisha T)</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="09"><button type="button" aria-label="Play 20-second preview: Storoni">Storoni</button><span class="st" aria-live="polite"></span></li>
-    </ol>
-    <ol class="tl b off" id="tlB" start="10">
-        <li data-n="10"><button type="button" aria-label="Play 20-second preview: Ya ne skuchal">Ya ne skuchal</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="11"><button type="button" aria-label="Play 20-second preview: Gravity (ft Alisha T)">Gravity (ft Alisha T)</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="12"><button type="button" aria-label="Play 20-second preview: Bilet (interlude)">Bilet (interlude)</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="13"><button type="button" aria-label="Play 20-second preview: Kak eto bilo">Kak eto bilo</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="14"><button type="button" aria-label="Play 20-second preview: Oda">Oda</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="15"><button type="button" aria-label="Play 20-second preview: Kartizol">Kartizol</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="16"><button type="button" aria-label="Play 20-second preview: Signali">Signali</button><span class="st" aria-live="polite"></span></li>
-        <li data-n="17"><button type="button" aria-label="Play 20-second preview: Da budet tak">Da budet tak</button><span class="st" aria-live="polite"></span></li>
-    </ol>
-    <button type="button" class="tlnav prev" id="tlPrev" aria-label="Tracks 1–9" aria-controls="tlA">←</button>
-    <button type="button" class="tlnav next" id="tlNext" aria-label="Tracks 10–17" aria-controls="tlB">→</button>
-    <div class="cdcap">
-      <h2 id="cd-title">Disk</h2>
-      <button type="button" class="shopnow" data-shop aria-haspopup="dialog" aria-controls="co">Buy box</button>
-      <p class="pricetag"><span data-price>4 000 ₴</span><small> / box</small></p>
-    </div>
+    <article class="card">
+      <div class="shot"><img src="img/p-brelok.webp" alt="Never Land keychain" width="1000" height="1000" loading="lazy"></div>
+      <h3>Brelok</h3>
+    </article>
+
+    <article class="card">
+      <div class="shot"><img src="img/p-disk.webp" alt="Never Land CD" width="1000" height="1000" loading="lazy"></div>
+      <h3>Disk</h3>
+    </article>
+
+    <article class="card">
+      <div class="shot"><img src="img/p-stickers.webp" alt="Never Land sticker pack" width="1000" height="1000" loading="lazy"></div>
+      <h3>Sticker pack</h3>
+    </article>
+
   </div>
-  <audio id="player" preload="none"></audio>
-</section>
+  <div class="cardsbuy">
+    <button type="button" class="shopnow" data-shop aria-haspopup="dialog" aria-controls="co">Buy box</button>
+  </div>
 </div>
 
 <footer>
@@ -496,7 +491,6 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
     <li><button type="button" data-doc="cookies">Cookies</button></li>
     <li><button type="button" data-doc="contact">Контакти</button></li>
   </ul>
-  <p class="selline" lang="uk">ФОП Дудулад Оксана Анатоліївна · РНОКПП 2556839688</p>
 </footer>
 
 <!-- ══ ПРАВОВЫЕ ТЕКСТЫ ══════════════════════════════════════
@@ -725,7 +719,7 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
     </div>
 
     <div class="sum">
-      <img src="img/box.webp" alt="" width="744" height="434">
+      <img src="img/box-order.webp" alt="" width="560" height="560">
       <div>
         <b>Never Land Box</b>
         <small>CD · "The Tree" Medal · Oversized Tee</small>
@@ -753,7 +747,16 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
           <label class="f"><span>Phone</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+380" required><span class="err"></span></label>
           <label class="f"><span>Email <i>optional</i></span><input name="email" type="email" autocomplete="email"><span class="err"></span></label>
         </div>
-        <label class="f"><span>Telegram / Instagram <i>optional</i></span><input name="handle" placeholder="@username" autocapitalize="off"><span class="err"></span></label>
+        <div class="f">
+          <span>Where to write you</span>
+          <div class="seg" id="net">
+            <input type="radio" name="net" id="net-tg" value="telegram"><label for="net-tg">Telegram</label>
+            <input type="radio" name="net" id="net-ig" value="instagram"><label for="net-ig">Instagram</label>
+          </div>
+          <span class="err" id="e-net" aria-live="polite"></span>
+        </div>
+        <label class="f"><span>Username</span><input name="handle" value="@" required
+          placeholder="@username" autocapitalize="off" autocomplete="off" spellcheck="false"><span class="err"></span></label>
       </fieldset>
 
       <fieldset>
@@ -764,6 +767,19 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
           <span class="err"></span></label>
         <label class="f"><span>Comment <i>optional</i></span><textarea name="comment" rows="2"></textarea></label>
         <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      </fieldset>
+
+      <fieldset>
+        <legend>Payment</legend>
+        <div class="pay" id="pay">
+          <input type="radio" name="pay" id="pay-card" value="card">
+          <label for="pay-card" class="paybtn"><b>Pay by card</b><i>Apple&nbsp;Pay, Google&nbsp;Pay, Visa / Mastercard</i></label>
+          <input type="radio" name="pay" id="pay-crypto" value="crypto">
+          <label for="pay-crypto"><b>Crypto</b><i>USDT · TRC-20</i></label>
+          <input type="radio" name="pay" id="pay-transfer" value="transfer">
+          <label for="pay-transfer"><b>IBAN</b><i>transfer to card</i></label>
+        </div>
+        <span class="err" id="e-pay" aria-live="polite"></span>
       </fieldset>
 
       <div class="total"><span>Total</span><b id="coTotal"></b></div>
@@ -782,7 +798,7 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
       </div>
       <span class="err" id="e-agree" aria-live="polite"></span>
 
-      <button type="submit" class="shopnow place" id="place">Pay with monobank</button>
+      <button type="submit" class="shopnow place" id="place">Pay</button>
       <p class="conote" id="coNote">You'll be taken to a secure monobank page to pay by card, Apple Pay or Google Pay.</p>
     </form>
 
@@ -817,9 +833,17 @@ const CFG = {
   revealMobile:{ title:0, text:[200,1300], item:1300, open:1800, credit:1700 },
   previewLen:20,                               // длина превью трека, сек
   audio:n=>`audio/${n}.mp3`,                   // превью: audio/01.mp3 … 17.mp3
+  /* куда платить, если выбрали не карту. Подставьте свои реквизиты. */
+  payInfo:{
+    crypto:{ title:'USDT · TRC-20', value:'[КРИПТО-КОШЕЛЁК]',
+             note:'Send the exact amount and message us the transaction hash.' },
+    transfer:{ title:'IBAN', value:'UA48 3220 0100 0002 6004 3801 0115 8',
+               note:'Отримувач: ФОП Дудулад Оксана Анатоліївна. У призначенні платежу вкажіть номер замовлення. '
+                    +'Після переказу надішліть нам квитанцію.' },
+  },
   /* цена одной коробки в гривнах. Здесь — чтобы её было видно без сервера;
      при оплате главной считается цена из PRICE_UAH на воркере, подделать с сайта нельзя */
-  order:{ price:4000, maxQty:1,
+  order:{ price:3750, maxQty:1,
     /* адрес сервера заказов (Cloudflare Worker из папки server/), без слэша в конце */
     api:'https://neverland-shop.concert-grebz.workers.dev' },
 };
@@ -836,10 +860,31 @@ $('social').innerHTML=Object.entries(CFG.links).filter(([,u])=>u).map(([k,u])=>
   `<li><a href="${u}" target="_blank" rel="noopener" aria-label="${NAMES[k]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[k]}"/></svg></a></li>`).join('');
 
 /* ── окна с правилами ── */
-document.querySelectorAll('[data-doc]').forEach(b=>b.addEventListener('click',()=>$('doc-'+b.dataset.doc).showModal()));
+/* закрываем не мгновенно, а с обратной анимацией: close() сам её не ждёт,
+   поэтому сначала класс .closing, через 200 мс — собственно close() */
+const closeDoc=d=>{ if(d.classList.contains('closing')) return;
+  d.classList.add('closing');
+  setTimeout(()=>{ d.classList.remove('closing'); d.close(); },200); };
+
+/* .scrolled — линия под заголовком, .more — затемнение у нижнего края */
+const syncDoc=(d,body)=>{
+  d.classList.toggle('scrolled',body.scrollTop>4);
+  d.classList.toggle('more',body.scrollHeight-body.scrollTop-body.clientHeight>8);
+};
+document.querySelectorAll('[data-doc]').forEach(b=>b.addEventListener('click',()=>{
+  const d=$('doc-'+b.dataset.doc), body=d.querySelector('.body');
+  if(body) body.scrollTop=0;
+  d.showModal();
+  if(body) syncDoc(d,body);
+}));
 document.querySelectorAll('dialog.doc').forEach(d=>{
-  d.querySelector('[data-x]').addEventListener('click',()=>d.close());
-  d.addEventListener('click',e=>{ if(e.target===d) d.close(); });          // клик по фону
+  d.querySelector('[data-x]').addEventListener('click',()=>closeDoc(d));
+  d.addEventListener('click',e=>{ if(e.target===d) closeDoc(d); });        // клик по фону
+  d.addEventListener('cancel',e=>{ e.preventDefault(); closeDoc(d); });    // Escape
+  const body=d.querySelector('.body');
+  if(!body) return;
+  body.addEventListener('scroll',()=>syncDoc(d,body),{passive:true});
+  addEventListener('resize',()=>{ if(d.open) syncDoc(d,body); });
 });
 
 /* ══ ФОНОВОЕ ВИДЕО ГЛАВНОГО ЭКРАНА ═══════════════════════
@@ -941,17 +986,35 @@ const loadStock=()=>API?apiGet('/stock').then(paintStock).catch(()=>{}):Promise.
 /* пока эквайринг не одобрен, сервер принимает заказ и мы связываемся вручную —
    кнопка и подпись под ней должны говорить об этом честно */
 let payments=true;
+const payMethod=()=>{ const r=cof.querySelector('input[name=pay]:checked'); return r?r.value:''; };
 function labelPlace(){
+  const m=payMethod(), card=m==='card';
   $('place').disabled=false;
-  $('place').textContent=payments?'Pay with monobank':'Place order';
-  $('coNote').textContent=payments
-    ? "You'll be taken to a secure monobank page to pay by card, Apple Pay or Google Pay."
-    : "Card payment is being connected. Leave your order and we'll message you to arrange payment.";
+  $('place').textContent=(card&&payments)?'Pay':'Place order';
+  $('coNote').textContent=
+    card&&payments  ? "You'll be taken to a secure monobank page to pay by card, Apple Pay or Google Pay."
+  : m==='crypto'    ? "We'll show the wallet right after you place the order."
+  : m==='transfer'  ? "We'll show the IBAN right after you place the order."
+  : payments        ? 'Choose how you want to pay.'
+                    : 'Card payment is being connected. Crypto and IBAN work now.';
 }
+/* карта недоступна, пока нет эквайринга — честно гасим строку, а не обещаем */
+function paintPay(){
+  const card=$('pay-card');
+  card.disabled=!payments;
+  card.parentElement.querySelector('label[for=pay-card] i').textContent =
+    payments ? 'Apple\u00a0Pay, Google\u00a0Pay, Visa / Mastercard' : 'Being connected';
+
+  if(!payments&&card.checked){ card.checked=false; }
+}
+cof.addEventListener('change',e=>{
+  if(e.target.name==='pay'){ $('pay').classList.remove('bad'); $('e-pay').textContent=''; labelPlace(); }
+  if(e.target.name==='net'){ $('net').classList.remove('bad'); $('e-net').textContent=''; }
+});
 if(API) apiGet('/config').then(c=>{
   if(c.priceUAH){ priceUAH=c.priceUAH; paintPrice(); }
   if(c.payments===false) payments=false;
-  labelPlace(); setQty(qty);
+  paintPay(); labelPlace(); setQty(qty);
 }).catch(()=>{});
 loadStock();
 paintPrice(); setQty(1);
@@ -991,6 +1054,7 @@ var validate=function(){
     if(inp.required&&!v) msg='Required';
     else if(inp.name==='phone'&&v&&v.replace(/\D/g,'').length<10) msg='Check the number';
     else if(inp.name==='email'&&v&&!/^\S+@\S+\.\S+$/.test(v)) msg='Check the email';
+    else if(inp.name==='handle'&&v.replace(/^@+/,'').trim().length<2) msg='Enter your @username';
     inp.parentElement.classList.toggle('bad',!!msg);
     const slot=inp.parentElement.querySelector('.err'); if(slot) slot.textContent=msg;
     if(msg){ok=false; first=first||inp;}
@@ -1004,6 +1068,16 @@ const escH=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const _validate=validate;
 validate=function(){
   let ok=_validate();
+  // куда писать покупателю — тоже обязательно
+  const net=cof.querySelector('input[name=net]:checked');
+  $('net').classList.toggle('bad',!net);
+  $('e-net').textContent=net?'':'Telegram or Instagram?';
+  if(!net) ok=false;
+  // способ оплаты обязателен
+  const pm=payMethod();
+  $('pay').classList.toggle('bad',!pm);
+  $('e-pay').textContent=pm?'':'Choose how you want to pay';
+  if(!pm) ok=false;
   // без акцепта оферты заказ не создаётся
   const ag=$('agree');
   $('agreeBox').classList.toggle('bad',!ag.checked);
@@ -1013,6 +1087,13 @@ validate=function(){
 };
 
 /* ── оформление: заказ → сервер → страница оплаты monobank ── */
+/* собачку не стираем и не задваиваем */
+(()=>{
+  const h=cof.querySelector('input[name=handle]');
+  h.addEventListener('focus',()=>{ if(h.value==='@') setTimeout(()=>h.setSelectionRange(1,1),0); });
+  h.addEventListener('input',()=>{ h.value='@'+h.value.replace(/\s+/g,'').replace(/@/g,''); });
+})();
+
 const SKEY='nl-order';
 const store={ set:v=>{try{sessionStorage.setItem(SKEY,JSON.stringify(v));}catch(_){}},
               get:()=>{try{return JSON.parse(sessionStorage.getItem(SKEY)||'null');}catch(_){return null;}},
@@ -1027,7 +1108,7 @@ cof.addEventListener('submit',async e=>{
     const r=await fetch(API+'/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...d,qty})});
     const res=await r.json().catch(()=>({}));
     if(r.status===409){
-      btn.disabled=false; btn.textContent=payments?'Pay with monobank':'Place order';
+      btn.disabled=false; btn.textContent=payments?'Pay':'Place order';
       if(res.error==='one_per_person'){          // этот человек уже взял коробку
         const f=cof.querySelector('input[name=phone]').parentElement;
         f.classList.add('bad'); f.querySelector('.err').textContent='1 box 1 hands';
@@ -1041,17 +1122,22 @@ cof.addEventListener('submit',async e=>{
       return;
     }
     if(!r.ok) throw new Error(res.message||'Could not place the order');
-    if(res.manual){            // карта ещё не подключена — заказ принят, напишем сами
+    if(res.manual){            // оплата не картой — показываем реквизиты сразу
+      const info=CFG.payInfo[payMethod()];
       $('doneTitle').textContent='Order received';
-      $('doneText').innerHTML='Thank you! Your order <span class="oid">'+escH(res.orderId)+'</span> is in. '
-        +"We'll message you shortly to arrange payment and delivery.";
+      $('doneText').innerHTML='Order <span class="oid">'+escH(res.orderId)+'</span> · '+fmtUAH(res.total||priceUAH)
+        + (info
+            ? '<p style="margin-top:18px">'+escH(info.title)+'</p>'
+              +'<p class="paydet">'+escH(info.value)+'</p>'
+              +'<p class="paynote">'+escH(info.note)+'</p>'
+            : "<p style=\"margin-top:18px\">We'll message you shortly to arrange payment and delivery.</p>");
       $('payAgain').hidden=true; co.classList.add('ok'); return;
     }
     if(!res.pageUrl) throw new Error(res.message||'Could not create the payment');
     store.set({orderId:res.orderId,invoiceId:res.invoiceId,pageUrl:res.pageUrl});
     location.href=res.pageUrl;                                  // → monobank
   }catch(err){
-    btn.disabled=false; btn.textContent=payments?'Pay with monobank':'Place order';
+    btn.disabled=false; btn.textContent=payments?'Pay':'Place order';
     $('coNote').textContent=(err.message||'Something went wrong')+'. Please try again or DM us.';
   }
 });
@@ -1079,127 +1165,35 @@ cof.addEventListener('submit',async e=>{
 $('shopNow').addEventListener('click',openCo);
 document.querySelectorAll('[data-shop]').forEach(b=>b.addEventListener('click',openCo));
 
-/* ══ PRODUCTS ══════════════════════════════════════════ */
-/* ── продуктовые блоки: слова описания режем на span ── */
-const prods=[...document.querySelectorAll('.prod')].map(el=>{
-  const d=el.querySelector('.desc');          // описаний может и не быть — только подпись
-  if(d) d.innerHTML=d.textContent.trim().split(/\s+/).map(w=>`<span class="w">${w}</span>`).join(' ');
-  return {el, words:d?[...d.querySelectorAll('.w')]:[], parts:[...el.querySelectorAll('[data-r]')]};
+/* ══ КАРТОЧКИ ТОВАРОВ ══════════════════════════════════
+   У футболки два кадра. Вместо вложенной горизонтальной прокрутки
+   (на телефоне она дерётся с прокруткой самой ленты) — тап по фото
+   и точки под ним. */
+document.querySelectorAll('.card').forEach(card=>{
+  const shot=card.querySelector('.shot');
+  const imgs=[...shot.querySelectorAll('img')];
+  if(imgs.length<2) return;
+  const dots=card.querySelector('.dots');
+  imgs.forEach((_,i)=>dots.insertAdjacentHTML('beforeend','<i'+(i?'':' class="on"')+'></i>'));
+  const pips=[...dots.querySelectorAll('i')];
+  let n=0;
+  const show=i=>{ n=(i+imgs.length)%imgs.length;
+    imgs.forEach((im,k)=>im.classList.toggle('on',k===n));
+    pips.forEach((d,k)=>d.classList.toggle('on',k===n)); };
+  shot.classList.add('multi');
+  shot.tabIndex=0;
+  shot.setAttribute('role','button');
+  shot.setAttribute('aria-label','Next photo');
+  shot.addEventListener('click',()=>show(n+1));
+  shot.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='Enter'){ e.preventDefault(); show(n+1); }
+    if(e.key==='ArrowLeft'){ e.preventDefault(); show(n-1); }
+  });
+  show(0);
 });
 
-/* ── появление блока за один скролл ── */
-const pio=new IntersectionObserver(es=>es.forEach(e=>{
-  if(!e.isIntersecting) return; pio.unobserve(e.target);
-  const p=prods.find(x=>x.el===e.target), R=innerWidth<=860?CFG.revealMobile:CFG.reveal;
-  p.parts.forEach(x=>setTimeout(()=>{ if(!x.dataset.used) x.classList.add('on'); },R[x.dataset.r]));
-  const step=R.text[1]/Math.max(1,p.words.length);
-  p.words.forEach((w,i)=>setTimeout(()=>w.classList.add('on'),R.text[0]+i*step));
-}),{threshold:.45});
-prods.forEach(p=>pio.observe(p.el));
-
-
-/* ── вращалки: футболка и медаль ──
-   loop:true  — крутится по кругу (футболка, полный оборот)
-   loop:false — ходит туда-сюда между первым и последним кадром (медаль) */
-function Spinner(cv,src,o){
-  const cx=cv.getContext('2d'), N=src.length, hint=cv.parentElement.querySelector('.spinhint,.teehint');
-  const imgs=src.map(s=>{const im=new Image(); im.onload=()=>{prev=-1}; im.src=s; return im;});
-  let prev=-1, ang=0, angT=0, vel=0, drag=null, inertia=false;
-  const mod=(v,n)=>((v%n)+n)%n;
-  const lim=v=>o.loop?v:clamp(v,0,N-1);
-  function size(){const d=Math.min(devicePixelRatio||1,2);cv.width=Math.round(cv.clientWidth*d);cv.height=Math.round(cv.clientHeight*d);prev=-1;}
-  function draw(f){
-    const im=imgs[f]; if(!im||!im.naturalWidth) return;
-    cx.clearRect(0,0,cv.width,cv.height);
-    const k=Math.min(cv.width/im.naturalWidth,cv.height/im.naturalHeight),w=im.naturalWidth*k,h=im.naturalHeight*k;
-    cx.drawImage(im,(cv.width-w)/2,(cv.height-h)/2,w,h);
-  }
-  function used(){ if(hint){hint.dataset.used='1'; hint.classList.remove('on');} }
-  function tick(){
-    if(inertia&&!drag){ const n=lim(angT+vel); if(n===angT) inertia=false; angT=n; vel*=.94; if(Math.abs(vel)<.02) inertia=false; }
-    ang+=(angT-ang)*.25; if(Math.abs(angT-ang)<.02) ang=angT;
-    const f=o.loop?Math.round(mod(ang,N))%N:clamp(Math.round(ang),0,N-1);
-    if(f!==prev){prev=f; draw(f);}
-  }
-  cv.tabIndex=0;
-  cv.addEventListener('keydown',e=>{
-    if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return;
-    e.preventDefault(); angT=lim(angT+(e.key==='ArrowRight'?1:-1)*o.step*N); inertia=false; used();
-  });
-  const PX=()=>cv.clientWidth*o.span/N;   // px на кадр
-  cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,a:angT,lt:performance.now()};vel=0;inertia=false;cv.setPointerCapture(e.pointerId);cv.classList.add('drag');});
-  cv.addEventListener('pointermove',e=>{
-    if(!drag) return;
-    const now=performance.now(), dx=e.clientX-drag.x, na=lim(drag.a-dx/PX());
-    vel=(na-angT)/Math.max(1,(now-drag.lt)/16.7); drag.lt=now; angT=na; if(Math.abs(dx)>6) used();
-  });
-  const end=()=>{ if(!drag) return; drag=null; cv.classList.remove('drag'); vel=clamp(vel,-3,3); inertia=Math.abs(vel)>.05; };
-  cv.addEventListener('pointerup',end); cv.addEventListener('pointercancel',end);
-  addEventListener('resize',size); size();
-  return {tick};
-}
-const seqNames=(n,f)=>Array.from({length:n},(_,i)=>f(i));
-const spinners=[
-  /* медаль: medal/One_00000.webp … One_00064.webp, туда-сюда */
-  Spinner($('medalCv'), seqNames(CFG.medalFrames,i=>`medal/One_${String(i).padStart(5,'0')}.webp`), {loop:false, span:.9, step:1/8}),
-  /* футболка: полный оборот по кругу */
-  Spinner($('teeCv'), seqNames(CFG.teeFrames,i=>`tee/t${String(i+1).padStart(3,'0')}.webp`), {loop:true, span:1.25, step:1/16}),
-];
-
-/* ── CD: стрелки (или свайп) листают трек-лист, бокс едет следом ── */
-const cdSec=$('p-cd'), caseEl=$('case'), tlA=$('tlA'), tlB=$('tlB');
-let cdPage=0;                                  // 0 — треки 1–9, 1 — треки 10–17
-function setCdPage(n){
-  cdPage=n; $('tlPrev').disabled=n===0; $('tlNext').disabled=n===1;
-}
-$('tlPrev').onclick=()=>setCdPage(0); $('tlNext').onclick=()=>setCdPage(1);
-setCdPage(0);
-// свайп по блоку на телефоне тоже листает
-(()=>{ let sx=null,sy=0; const pin=cdSec.querySelector('.pin');
-  pin.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
-  pin.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy; sx=null;
-    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5) setCdPage(dx<0?1:0); },{passive:true});
-})();
-function cdTick(){
-  const W=innerWidth, cw=caseEl.offsetWidth, narrow=W<=860;
-  const x0=narrow?W*.06:W*.44;                 // треки 1–9: видна левая часть (буклет)
-  const x1=narrow?W*.94-cw:W*.583-cw;          // треки 10–17: видна правая часть (диск)
-  caseEl.style.transform=`translate(${(cdPage?x1:x0).toFixed(1)}px,${narrow?0:'-50%'})`;
-  tlA.classList.toggle('off',cdPage===1); tlB.classList.toggle('off',cdPage===0);
-}
-
-/* ── CD: 20-секундные превью ──
-   Файлы: audio/01.mp3 … 17.mp3. Нет файла — у трека появится «soon». */
-const player=$('player'); let curT=null, raf=0;
-const fmt=s=>`0:${String(Math.floor(s)).padStart(2,'0')}`;
-function stopTrack(){
-  player.pause(); cancelAnimationFrame(raf);
-  if(curT){curT.classList.remove('play'); const b=curT.querySelector('button'); b.style.backgroundSize=''; curT.querySelector('.st').textContent='';}
-  curT=null;
-}
-function tickTrack(){
-  if(!curT) return;
-  const t=player.currentTime, L=CFG.previewLen;
-  curT.querySelector('button').style.backgroundSize=`${Math.min(t/L,1)*100}% 1px`;
-  curT.querySelector('.st').textContent=fmt(Math.max(0,L-t));
-  if(t>=L) return stopTrack();
-  raf=requestAnimationFrame(tickTrack);
-}
-document.querySelectorAll('.tl li').forEach(li=>li.querySelector('button').addEventListener('click',()=>{
-  const was=curT===li; stopTrack(); if(was) return;
-  if(li.dataset.na){ li.querySelector('.st').textContent='soon'; return; }
-  curT=li; li.classList.add('play'); li.querySelector('.st').textContent='…';
-  player.src=CFG.audio(li.dataset.n); player.currentTime=0;
-  player.play().then(()=>{raf=requestAnimationFrame(tickTrack);}).catch(()=>{});
-}));
-player.addEventListener('ended',stopTrack);
-player.addEventListener('error',()=>{
-  if(!curT) return; const li=curT; stopTrack(); li.dataset.na='1'; li.querySelector('.st').textContent='soon';
-});
-
-
-/* общий цикл: вращалки + бокс диска */
-(function loop(){ spinners.forEach(sp=>sp.tick()); cdTick(); requestAnimationFrame(loop); })();
+/* на телефоне лента открывается на первой карточке, а не посередине */
+(()=>{ const c=$('cards'); if(c) c.scrollLeft=0; })();
 
 /* ══ ПРОКРУТКА ══════════════════════════════════════════ */
 /* «What's inside» ведёт к разделам с вещами */
