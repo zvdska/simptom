@@ -283,6 +283,8 @@ dialog.doc .x{position:absolute;top:16px;right:16px}
 .sum img{width:96px;height:auto}
 .sum b{display:block;font:900 17px/1.2 var(--display)}
 .sum small{display:block;margin-top:6px;font:900 11px/1.5 var(--display);color:var(--dim)}
+.onehand{margin-top:10px;font:500 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.55)}
 .qty{display:flex;align-items:center;gap:0;margin-top:10px;width:max-content;border:1px solid rgba(255,255,255,.25)}
 .qty button{all:unset;cursor:pointer;width:34px;height:34px;display:grid;place-items:center;font:400 18px/1 var(--text)}
 .qty button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
@@ -309,6 +311,14 @@ dialog.doc .x{position:absolute;top:16px;right:16px}
 .sz input:checked+label{background:#fff;color:#000;border-color:#fff}
 .sz input:focus-visible+label{outline:2px solid #fff;outline-offset:2px}
 .sz.bad label{border-color:#ff6b6b}
+/* распроданный размер: виден, но выбрать нельзя */
+.sz input:disabled+label{opacity:.3;cursor:not-allowed;text-decoration:line-through}
+.sz input:disabled+label:hover{border-color:rgba(255,255,255,.25)}
+.sizelink{all:unset;cursor:pointer;margin-top:10px;font:500 11px/1 var(--ui);letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.55);
+  background:linear-gradient(#fff,#fff) left 125%/0 1px no-repeat;transition:color .2s,background-size .25s}
+.sizelink:hover{color:#fff;background-size:100% 1px}
+.sizelink:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .total{display:flex;justify-content:space-between;align-items:baseline;padding-top:18px;border-top:1px solid rgba(255,255,255,.12)}
 .total span{font:900 13px/1 var(--display);color:var(--dim)}
 .total b{font:900 28px/1 var(--display)}
@@ -669,6 +679,26 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
   </div>
 </dialog>
 
+<dialog class="doc" id="doc-sizes" aria-labelledby="t-sizes" lang="uk">
+  <button type="button" class="x" data-x aria-label="Закрити">✕</button>
+  <h2 id="t-sizes">Розмірна сітка</h2>
+  <div class="body">
+    <p class="lead">Заміри футболки в сантиметрах, у розкладеному вигляді. Крій оверсайз —
+      якщо любите вільніше, беріть розмір більший.</p>
+    <table>
+      <tr><th></th><th>S</th><th>M</th><th>L</th><th>XL</th></tr>
+      <tr><th>Ширина грудей</th><td>58</td><td>61</td><td>64</td><td>67</td></tr>
+      <tr><th>Довжина виробу</th><td>70,5</td><td>73</td><td>75,5</td><td>77,5</td></tr>
+      <tr><th>Плече</th><td>19</td><td>20,5</td><td>21</td><td>21,5</td></tr>
+      <tr><th>Довжина рукава</th><td>19</td><td>20</td><td>21,5</td><td>22</td></tr>
+      <tr><th>Пройма</th><td>18</td><td>19</td><td>21</td><td>23</td></tr>
+      <tr><th>Від центру спини до краю рукава</th><td>34,5</td><td>37</td><td>39,5</td><td>40,5</td></tr>
+    </table>
+    <p>Ширина грудей міряється під пахвами по рівній поверхні, довжина — по спинці від шва
+      коміра донизу. Допуск на пошив ±1,5 см: це норма, а не брак.</p>
+  </div>
+</dialog>
+
 <dialog class="doc" id="doc-contact" aria-labelledby="t-contact" lang="uk">
   <button type="button" class="x" data-x aria-label="Закрити">✕</button>
   <h2 id="t-contact">Контакти</h2>
@@ -699,11 +729,7 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
       <div>
         <b>Never Land Box</b>
         <small>CD · "The Tree" Medal · Oversized Tee</small>
-        <div class="qty" role="group" aria-label="Quantity">
-          <button type="button" id="qMinus" aria-label="Decrease quantity">−</button>
-          <output id="qVal" aria-live="polite">1</output>
-          <button type="button" id="qPlus" aria-label="Increase quantity">+</button>
-        </div>
+        <p class="onehand">1 box 1 hands</p>
       </div>
     </div>
 
@@ -715,8 +741,8 @@ dialog.doc .body .todo{display:inline-block;padding:1px 6px;background:rgba(255,
           <input type="radio" name="size" id="z-M" value="M"><label for="z-M">M</label>
           <input type="radio" name="size" id="z-L" value="L"><label for="z-L">L</label>
           <input type="radio" name="size" id="z-XL" value="XL"><label for="z-XL">XL</label>
-          <input type="radio" name="size" id="z-XXL" value="XXL"><label for="z-XXL">XXL</label>
         </div>
+        <button type="button" class="sizelink" data-doc="sizes">Size guide</button>
         <div class="f"><span class="err" id="e-size" aria-live="polite"></span></div>
       </fieldset>
 
@@ -793,7 +819,7 @@ const CFG = {
   audio:n=>`audio/${n}.mp3`,                   // превью: audio/01.mp3 … 17.mp3
   /* цена одной коробки в гривнах. Здесь — чтобы её было видно без сервера;
      при оплате главной считается цена из PRICE_UAH на воркере, подделать с сайта нельзя */
-  order:{ price:4000, maxQty:5,
+  order:{ price:4000, maxQty:1,
     /* адрес сервера заказов (Cloudflare Worker из папки server/), без слэша в конце */
     api:'https://neverland-shop.concert-grebz.workers.dev' },
 };
@@ -893,12 +919,25 @@ hlogo.addEventListener('click',e=>{ e.preventDefault(); scrollTo({top:0,behavior
 const co=$('co'), cof=$('cof'); let qty=1, lastFocus=null;
 /* цена из CFG видна сразу, даже если сервер недоступен; ответил сервер — берём его цену */
 let priceUAH=CFG.order.price;
-const setQty=n=>{ qty=clamp(n,1,CFG.order.maxQty); $('qVal').textContent=qty;
-  $('coTotal').textContent=fmtUAH(priceUAH*qty); };
+const setQty=n=>{ qty=clamp(n,1,CFG.order.maxQty); $('coTotal').textContent=fmtUAH(priceUAH*qty); };
 /* незаполненную заглушку адреса воркера считаем «оплата не подключена» */
 const API=/YOUR-SUBDOMAIN/.test(CFG.order.api||'')?'':(CFG.order.api||'').replace(/\/+$/,'');
 const apiGet=path=>fetch(API+path).then(r=>{if(!r.ok) throw new Error(r.status); return r.json();});
 const paintPrice=()=>document.querySelectorAll('[data-price]').forEach(el=>el.textContent=fmtUAH(priceUAH));
+/* какие размеры ещё можно купить — решает сервер, на сайте остатки не хранятся */
+function paintStock(map){
+  let any=false;
+  document.querySelectorAll('#sz input[name=size]').forEach(inp=>{
+    const free=map[inp.value]!==false;
+    inp.disabled=!free;
+    if(!free&&inp.checked) inp.checked=false;
+    if(free) any=true;
+  });
+  const btn=$('place');
+  if(!any){ btn.disabled=true; btn.textContent='Sold out';
+    $('coNote').textContent='Everything is sold out. Follow us for the next drop.'; }
+}
+const loadStock=()=>API?apiGet('/stock').then(paintStock).catch(()=>{}):Promise.resolve();
 /* пока эквайринг не одобрен, сервер принимает заказ и мы связываемся вручную —
    кнопка и подпись под ней должны говорить об этом честно */
 let payments=true;
@@ -914,10 +953,11 @@ if(API) apiGet('/config').then(c=>{
   if(c.payments===false) payments=false;
   labelPlace(); setQty(qty);
 }).catch(()=>{});
+loadStock();
 paintPrice(); setQty(1);
-$('qMinus').onclick=()=>setQty(qty-1); $('qPlus').onclick=()=>setQty(qty+1);
 function openCo(){
   lastFocus=document.activeElement; co.classList.add('open'); co.setAttribute('aria-hidden','false');
+  loadStock();
   document.body.classList.add('lock'); setTimeout(()=>co.querySelector('.panel').focus(),50);
 }
 function closeCo(){
@@ -986,6 +1026,20 @@ cof.addEventListener('submit',async e=>{
   try{
     const r=await fetch(API+'/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...d,qty})});
     const res=await r.json().catch(()=>({}));
+    if(r.status===409){
+      btn.disabled=false; btn.textContent=payments?'Pay with monobank':'Place order';
+      if(res.error==='one_per_person'){          // этот человек уже взял коробку
+        const f=cof.querySelector('input[name=phone]').parentElement;
+        f.classList.add('bad'); f.querySelector('.err').textContent='1 box 1 hands';
+        $('coNote').textContent='You already have an order. 1 box 1 hands.';
+      }else{                                     // размер разобрали, пока заполняли форму
+        await loadStock();
+        $('sz').classList.add('bad');
+        $('e-size').textContent='This size has just sold out — pick another';
+        $('coNote').textContent='Someone took the last one while you were filling the form.';
+      }
+      return;
+    }
     if(!r.ok) throw new Error(res.message||'Could not place the order');
     if(res.manual){            // карта ещё не подключена — заказ принят, напишем сами
       $('doneTitle').textContent='Order received';
