@@ -207,14 +207,14 @@ dialog.doc{margin:auto;width:min(620px,calc(100% - 28px));max-height:min(84svh,7
 dialog.doc[open]{display:flex;flex-direction:column}
 dialog.doc::backdrop{background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 
-dialog.doc h2{flex:none;margin:0;font:900 clamp(21px,2.4vw,27px)/1.18 var(--display);
+dialog.doc h2{flex:none;margin:0;font:600 clamp(20px,2.2vw,25px)/1.25 var(--ui);letter-spacing:-.01em;
   padding:clamp(25px,3.2vw,33px) 74px clamp(15px,1.8vw,19px) clamp(22px,3.6vw,36px);
   border-bottom:1px solid transparent;transition:border-color .3s ease}
 dialog.doc.scrolled h2{border-bottom-color:rgba(255,255,255,.11)}
 dialog.doc .body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;
   padding:clamp(14px,1.6vw,18px) clamp(22px,3.6vw,36px) clamp(26px,3.4vw,36px);
-  font:400 15px/1.7 var(--text);color:rgba(255,255,255,.78)}
+  font:400 15px/1.7 var(--ui);color:rgba(255,255,255,.78)}
 dialog.doc .body::-webkit-scrollbar{width:11px}
 dialog.doc .body::-webkit-scrollbar-track{background:transparent}
 dialog.doc .body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:11px;
@@ -398,9 +398,9 @@ footer .legal{text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.8)}
 footer .social a{filter:drop-shadow(0 2px 10px rgba(0,0,0,.85))}
 
 /* ── ТЕКСТЫ ПРАВИЛ: вёрстка внутри окна ─────────────────── */
-dialog.doc .body h3{margin:28px 0 9px;font:900 14.5px/1.3 var(--display);letter-spacing:.04em;color:#fff}
+dialog.doc .body h3{margin:28px 0 9px;font:600 15px/1.4 var(--ui);letter-spacing:0;color:#fff}
 dialog.doc .body h3:first-child{margin-top:0}
-dialog.doc .body h4{margin:18px 0 7px;font:900 13px/1.35 var(--display);letter-spacing:.03em;color:rgba(255,255,255,.95)}
+dialog.doc .body h4{margin:18px 0 7px;font:600 13.5px/1.45 var(--ui);color:rgba(255,255,255,.95)}
 /* подзаголовок документа отделён линией, как в системных окнах */
 dialog.doc .body .lead{color:rgba(255,255,255,.55);font-size:14px;
   padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -415,6 +415,11 @@ dialog.doc .body tr:last-child th,dialog.doc .body tr:last-child td{border-botto
 dialog.doc .body th{font-weight:500;color:rgba(255,255,255,.55);white-space:nowrap;width:1%}
 dialog.doc .body td{color:#fff}
 /* незаполненные реквизиты видно сразу — их надо заменить до запуска */
+/* единственный канал связи — показываем его крупно, а не строкой таблицы */
+dialog.doc .body .tgline{margin:4px 0 2px;padding:18px;border-radius:14px;text-align:center;
+  background:rgba(255,255,255,.05);font:500 17px/1.2 var(--ui);letter-spacing:.01em}
+dialog.doc .body .tgline a{color:#fff;text-decoration:none}
+@media (hover:hover){dialog.doc .body .tgline a:hover{text-decoration:underline;text-underline-offset:4px}}
 dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;background:rgba(255,196,0,.14);
   border:1px solid rgba(255,196,0,.45);color:#ffd451;font-size:12.5px}
 
@@ -554,7 +559,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
     <h3>8. Повернення товару та коштів</h3>
     <p>8.1. Покупець має право повернути або обміняти товар належної якості протягом 14 днів з дня отримання, не рахуючи дня купівлі, за умови що товар не використовувався, збережено його товарний вигляд, споживчі властивості, бирки, пломби й ярлики, а також є розрахунковий документ (стаття 9 Закону України «Про захист прав споживачів»).</p>
     <p>8.2. Обміну та поверненню не підлягають товари, включені до переліку, затвердженого постановою Кабінету Міністрів України від 19.03.1994 № 172, зокрема панчішно-шкарпеткові вироби та натільна білизна.</p>
-    <p>8.3. Для повернення Покупець звертається на <span class="todo">[EMAIL]</span> із зазначенням номера замовлення та причини. Продавець повідомляє порядок відправлення.</p>
+    <p>8.3. Для повернення Покупець звертається у Telegram <a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a> із зазначенням номера замовлення та причини. Продавець повідомляє порядок відправлення.</p>
     <p>8.4. Вартість зворотного пересилання товару належної якості оплачує Покупець.</p>
     <p>8.5. Кошти повертаються протягом семи днів з дня отримання Продавцем повернутого товару, на той самий рахунок або картку, з якої була здійснена оплата.</p>
     <p>8.6. У разі виявлення недоліків товару Покупець має права, передбачені статтею 8 Закону України «Про захист прав споживачів»: на безоплатне усунення недоліків, заміну товару або повернення коштів. Зворотне пересилання товару неналежної якості оплачує Продавець.</p>
@@ -578,8 +583,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
       <tr><th>Адреса</th><td><span class="todo">[АДРЕСА]</span></td></tr>
       <tr><th>Запис в ЄДР</th><td><span class="todo">[ДАТА І НОМЕР ЗАПИСУ]</span></td></tr>
       <tr><th>IBAN</th><td>UA483220010000026004380101158, АТ «УНІВЕРСАЛ БАНК», МФО 322001</td></tr>
-      <tr><th>Електронна пошта</th><td><span class="todo">[EMAIL]</span></td></tr>
-      <tr><th>Телефон</th><td><span class="todo">[ТЕЛЕФОН]</span></td></tr>
+      <tr><th>Telegram</th><td><a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a></td></tr>
       <tr><th>Система оподаткування</th><td>Єдиний податок, третя група, 5%, не платник ПДВ</td></tr>
     </table>
   </div>
@@ -606,7 +610,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
     <p>Умови прості: річ не носили й не прали, бирки та ярлики на місці, зберігся товарний вигляд і є чек.</p>
     <p>Що робити:</p>
     <ol>
-      <li>Напишіть у Telegram <a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a> або на <span class="todo">[EMAIL]</span> — номер замовлення і що саме не так.</li>
+      <li>Напишіть у Telegram <a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a> — номер замовлення і що саме не так.</li>
       <li>Ми надішлемо, куди відправляти.</li>
       <li>Після того як посилка дійде до нас, повернемо кошти на ту саму картку протягом <strong>7 днів</strong>.</li>
     </ol>
@@ -624,7 +628,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
   <button type="button" class="x" data-x aria-label="Закрити">✕</button>
   <h2 id="t-privacy">Політика конфіденційності</h2>
   <div class="body">
-    <p class="lead">Володілець персональних даних — ФОП Дудулад Оксана Анатоліївна, <span class="todo">[EMAIL]</span>. Ця політика пояснює, які дані збирає сайт і що з ними відбувається.</p>
+    <p class="lead">Володілець персональних даних — ФОП Дудулад Оксана Анатоліївна, зв'язок у Telegram <a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a>. Ця політика пояснює, які дані збирає сайт і що з ними відбувається.</p>
 
     <h3>1. Які дані збираються</h3>
     <table>
@@ -652,7 +656,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
     <p>Дані зберігаються стільки, скільки потрібно для виконання замовлення та протягом строків зберігання документів, установлених податковим законодавством. Після цього вони видаляються.</p>
 
     <h3>5. Права суб'єкта даних</h3>
-    <p>Згідно зі статтею 8 Закону України «Про захист персональних даних» покупець має право знати, хто й навіщо обробляє його дані, отримати доступ до них, вимагати виправлення, видалення або обмеження обробки, а також відкликати згоду. Для цього достатньо написати на <span class="todo">[EMAIL]</span>.</p>
+    <p>Згідно зі статтею 8 Закону України «Про захист персональних даних» покупець має право знати, хто й навіщо обробляє його дані, отримати доступ до них, вимагати виправлення, видалення або обмеження обробки, а також відкликати згоду. Для цього достатньо написати у Telegram <a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a>.</p>
 
     <h3>6. Файли cookie та аналітика</h3>
     <p>Сайт може використовувати файли cookie, потрібні для роботи кошика, і сервіси веб-аналітики для знеособленої статистики відвідувань. Їх можна вимкнути в налаштуваннях браузера; кошик при цьому працювати не буде.</p>
@@ -704,17 +708,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
   <button type="button" class="x" data-x aria-label="Закрити">✕</button>
   <h2 id="t-contact">Контакти</h2>
   <div class="body">
-    <p class="lead">Пишіть з будь-якого питання — про розмір, статус замовлення або повернення. Найшвидше — у Telegram, відповідаємо у робочі дні.</p>
-    <table>
-      <tr><th>Продавець</th><td>ФОП Дудулад Оксана Анатоліївна</td></tr>
-      <tr><th>РНОКПП</th><td>2556839688</td></tr>
-      <tr><th>Адреса</th><td><span class="todo">[АДРЕСА]</span></td></tr>
-      <tr><th>Telegram</th><td><a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a></td></tr>
-      <tr><th>Пошта</th><td><span class="todo">[EMAIL]</span></td></tr>
-      <tr><th>Телефон</th><td><span class="todo">[ТЕЛЕФОН]</span></td></tr>
-      <tr><th>Instagram</th><td><a href="https://instagram.com/simptomaponika" target="_blank" rel="noopener">@simptomaponika</a></td></tr>
-    </table>
-    <p>Для звернень щодо персональних даних і повернень використовуйте пошту — так залишається письмовий слід, і ми зможемо підтвердити строки.</p>
+    <p class="tgline"><a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a></p>
   </div>
 </dialog>
 
