@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Shop NEVER LAND</title>
-<meta name="description" content="Never Land by Sимптом — collector's box: CD, The Tree medal and oversized tee.">
+<meta name="description" content="NEVER LAND SHOP — official merch.">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="img/logo-round.webp" type="image/webp">
 <link rel="apple-touch-icon" href="img/logo-round.webp">
@@ -129,6 +129,7 @@ body.ready .it-cd{transition-delay:.2s}
 .shopnow[hidden]{display:none}
 .buybox{margin-top:0;opacity:0;transform:translateY(16px);transition:background .25s,color .25s,opacity .9s ease .75s,transform .9s var(--ease) .75s}
 body.ready .buybox{opacity:1;transform:none}
+body.ready .buybox:disabled{opacity:.45}
 .place{width:100%;margin-top:4px;font-size:18px;letter-spacing:.06em;padding:18px 20px 16px}
 
 /* ── ПОДВАЛ ─────────────────────────────────────────────── */
@@ -279,14 +280,17 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
   border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
 .sum img{width:96px;height:auto}
 .sum b{display:block;font:900 17px/1.2 var(--display)}
-.sum small{display:block;margin-top:6px;font:900 11px/1.5 var(--display);color:var(--dim)}
+.inbox{margin-top:8px;display:grid;gap:3px;list-style:none;
+  font:500 11px/1.45 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.62)}
+/* количество не кричим капсом — так видно, где счёт, а где название */
+.inbox i{font-style:normal;text-transform:none;color:rgba(255,255,255,.4)}
 .onehand{margin-top:10px;font:500 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;
   color:rgba(255,255,255,.55)}
 .qty{display:flex;align-items:center;gap:0;margin-top:10px;width:max-content;border:1px solid rgba(255,255,255,.25)}
 .qty button{all:unset;cursor:pointer;width:34px;height:34px;display:grid;place-items:center;font:400 18px/1 var(--text)}
 .qty button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
 .qty output{min-width:28px;text-align:center;font:900 14px/1 var(--display)}
-.cof{margin-top:26px;display:grid;gap:18px}
+.cof{margin-top:26px;display:grid;gap:30px}
 .cof fieldset{border:0;display:grid;gap:22px}
 .cof legend{font:900 12px/1 var(--display);letter-spacing:.08em;color:var(--dim);margin-bottom:12px}
 .f{display:grid;gap:6px}
@@ -375,7 +379,23 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
 #co.ok .done{display:block}
 .done h3{font:900 clamp(28px,3.4vw,44px)/1 var(--display)}
 .done p{margin-top:18px;font:400 16px/1.55 var(--text);color:rgba(255,255,255,.8)}
-.done .oid{font:900 14px/1 var(--display);color:#fff}
+.done .dlead{font:400 16px/1.55 var(--ui)}
+
+/* Чек: что именно куплено и за сколько. Человеку нужно с чем-то сверяться,
+   когда менеджер напишет, а нам — на что ссылаться в переписке. */
+.receipt{margin-top:22px;border:1px solid rgba(255,255,255,.14);border-radius:14px;overflow:hidden}
+.receipt .rrow{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:13px 16px}
+.receipt .rid{border-bottom:1px solid rgba(255,255,255,.1)}
+.receipt .rrow span{font:400 12px/1.3 var(--ui);letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.45)}
+.receipt .rlist{margin:0;padding:13px 16px;list-style:none;display:grid;gap:5px;
+  font:500 11px/1.45 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.receipt .rlist i{font-style:normal;text-transform:none;color:rgba(255,255,255,.4)}
+.receipt .rtotal{border-top:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04)}
+.receipt .rtotal b{font:500 17px/1 var(--ui);letter-spacing:.01em;color:#fff}
+.payttl{margin-top:22px!important;font:500 12px/1.3 var(--ui)!important;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.45)!important}
+.done .oid{font:500 14px/1 var(--ui);letter-spacing:.04em;color:#fff}
 body.lock{overflow:hidden}
 .shopnow[hidden]{display:none}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
@@ -724,7 +744,12 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
       <img src="img/box-order.webp" alt="" width="560" height="560">
       <div>
         <b>Never Land Box</b>
-        <small>CD · "The Tree" Medal · Oversized Tee</small>
+        <ul class="inbox">
+          <li><i>x1</i> CD &laquo;Never Land&raquo;</li>
+          <li><i>x1</i> Футболка</li>
+          <li><i>x1</i> Sticker pack</li>
+          <li><i>x1</i> Брелок</li>
+        </ul>
         <p class="onehand">1 box 1 hands</p>
       </div>
     </div>
@@ -743,7 +768,6 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
       </fieldset>
 
       <fieldset>
-        <legend>Contact</legend>
         <label class="f"><span>Full name</span><input name="name" autocomplete="name" required><span class="err"></span></label>
         <div class="row2">
           <label class="f"><span>Phone</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+380" required><span class="err"></span></label>
@@ -762,9 +786,8 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
       </fieldset>
 
       <fieldset>
-        <legend>Delivery</legend>
         <label class="f"><span>City</span><input name="city" required
-          autocomplete="address-level2" placeholder="Запоріжжя"><span class="err"></span></label>
+          autocomplete="address-level2" placeholder="Kyiv"><span class="err"></span></label>
         <div class="f">
           <span>Carrier</span>
           <div class="seg" id="car">
@@ -814,7 +837,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
 
     <div class="done" aria-live="polite">
       <h3 id="doneTitle">Order received</h3>
-      <p id="doneText">Thank you! Your order <span class="oid" id="oid"></span> is in. We'll contact you shortly to confirm details and delivery.</p>
+      <div id="doneText"></div>
       <button type="button" class="shopnow place" id="payAgain" hidden style="margin-top:28px">Try paying again</button>
       <button type="button" class="shopnow place" data-close style="margin-top:28px">Back to site</button>
     </div>
@@ -854,7 +877,7 @@ const CFG = {
   },
   /* цена одной коробки в гривнах. Здесь — чтобы её было видно без сервера;
      при оплате главной считается цена из PRICE_UAH на воркере, подделать с сайта нельзя */
-  order:{ price:3750, maxQty:1,
+  order:{ price:3799, maxQty:1,
     /* адрес сервера заказов (Cloudflare Worker из папки server/), без слэша в конце */
     api:'https://neverland-shop.concert-grebz.workers.dev' },
 };
@@ -992,12 +1015,33 @@ function paintStock(map){
   const btn=$('place');
   if(!any){ btn.disabled=true; btn.textContent='Sold out';
     $('coNote').textContent='Everything is sold out. Follow us for the next drop.'; }
+  /* Обе кнопки «Buy box» — на главной и в продуктах. Если боксов нет, человек
+     не должен открывать форму и узнавать об этом уже внутри. */
+  document.querySelectorAll('#shopNow,[data-shop]').forEach(b=>{
+    b.disabled=!any;
+    b.textContent=any?'Buy box':'Sold out';
+  });
 }
 const loadStock=()=>API?apiGet('/stock').then(paintStock).catch(()=>{}):Promise.resolve();
 /* пока эквайринг не одобрен, сервер принимает заказ и мы связываемся вручную —
    кнопка и подпись под ней должны говорить об этом честно */
 let payments=true;
 const payMethod=()=>{ const r=cof.querySelector('input[name=pay]:checked'); return r?r.value:''; };
+/* Состав бокса в одном месте: он показывается и в чекауте, и в чеке,
+   и расходиться эти два списка не должны. */
+const BOX=['CD «Never Land»','Футболка','Sticker pack','Брелок'];
+const chosenSize=()=>{ const r=cof.querySelector('input[name=size]:checked'); return r?r.value:''; };
+function receipt(id,total,size){
+  const items=BOX.map(n=> n==='Футболка'&&size ? n+' · '+size : n);
+  return '<div class="receipt">'
+    +'<div class="rrow rid"><span>Замовлення</span><b class="oid">'+escH(id)+'</b></div>'
+    +'<ul class="rlist">'+items.map(n=>'<li><i>x1</i> '+escH(n)+'</li>').join('')+'</ul>'
+    +'<div class="rrow rtotal"><span>Разом</span><b>'+fmtUAH(total)+'</b></div>'
+    +'</div>';
+}
+const THANKS='<p class="dlead">Ми отримали ваше замовлення. '
+  +'Наш менеджер зв\'яжеться з вами для підтвердження.</p>';
+
 function labelPlace(){
   const m=payMethod(), card=m==='card';
   $('place').disabled=false;
@@ -1155,25 +1199,25 @@ cof.addEventListener('submit',async e=>{
     }
     if(res.manual){            // оплата не картой — показываем реквизиты сразу
       const info=CFG.payInfo[payMethod()];
-      $('doneTitle').textContent='Order received';
-      $('doneText').innerHTML='Order <span class="oid">'+escH(res.orderId)+'</span> · '+fmtUAH(res.total||priceUAH)
+      $('doneTitle').textContent='Дякуємо!';
+      $('doneText').innerHTML=THANKS+receipt(res.orderId,res.total||priceUAH,chosenSize())
         + (info
-            ? '<p style="margin-top:18px">'+escH(info.title)+'</p>'
+            ? '<p class="payttl">'+escH(info.title)+'</p>'
               +'<p class="paydet">'+escH(info.value)+'</p>'
               +'<p class="paynote">'+escH(info.note)+'</p>'
-            : "<p style=\"margin-top:18px\">We'll write you shortly to arrange payment and delivery. Questions — @neverlandsupport on Telegram.</p>");
+            : '<p class="paynote">Питання — @neverlandsupport у Telegram.</p>');
       $('payAgain').hidden=true; co.classList.add('ok'); return;
     }
     if(!res.pageUrl) throw new Error(res.message||'Could not create the payment');
-    store.set({orderId:res.orderId,invoiceId:res.invoiceId,pageUrl:res.pageUrl});
+    store.set({orderId:res.orderId,invoiceId:res.invoiceId,pageUrl:res.pageUrl,size:chosenSize(),total:res.total||priceUAH});
     /* Диплинк monobank:// открывает приложение сразу на подтверждении платежа,
        но работает только на телефоне и только если приложение установлено.
        Поэтому показываем его как выбор, а не как единственный путь: промахнуться
        здесь — значит оставить человека на пустом экране с уже списанной бронью. */
     const onPhone=matchMedia('(pointer:coarse)').matches;
     if(res.appUrl&&onPhone){
-      $('doneTitle').textContent='Ready to pay';
-      $('doneText').innerHTML='Order <span class="oid">'+escH(res.orderId)+'</span> · '+fmtUAH(res.total||priceUAH)
+      $('doneTitle').textContent='Готово до оплати';
+      $('doneText').innerHTML=receipt(res.orderId,res.total||priceUAH,chosenSize())
         +'<a class="monobtn" href="'+escH(res.appUrl)+'">Сплатити через mono</a>'
         +'<a class="paylink" href="'+escH(res.pageUrl)+'">Оплатити карткою, Apple Pay або Google Pay</a>'
         +'<p class="paynote">Розмір у броні 15 хвилин — стільки живе рахунок.</p>';
@@ -1194,17 +1238,23 @@ cof.addEventListener('submit',async e=>{
   const show=(title,text,again)=>{ $('doneTitle').textContent=title; $('doneText').innerHTML=text;
     $('payAgain').hidden=!again; co.classList.add('ok'); openCo(); };
   const idH=`<span class="oid">${escH(id)}</span>`;
-  if(!saved||saved.orderId!==id||!API){ show('Thank you','Your order '+idH+' is in. We\'ll message you to confirm the payment and delivery.'); return; }
+  // чек собираем из того, что сохранили перед уходом на монобанк
+  const bill=()=> saved ? receipt(id,saved.total||priceUAH,saved.size||'') : '';
+  if(!saved||saved.orderId!==id||!API){ show('Дякуємо!',THANKS+bill()); return; }
   $('payAgain').onclick=()=>{ location.href=saved.pageUrl; };
-  show('Checking payment…','One moment — confirming your payment with monobank.');
+  show('Перевіряємо оплату…','<p class="dlead">Хвилинку — підтверджуємо платіж у monobank.</p>');
   for(let i=0;i<8;i++){
     let st='';
     try{ st=(await apiGet('/status?inv='+encodeURIComponent(saved.invoiceId))).status; }catch(_){}
-    if(st==='success'){ store.del(); show('Paid — thank you!','Order '+idH+' is confirmed. We\'ll message you with the Nova Poshta tracking number once it ships.'); return; }
-    if(st==='failure'||st==='expired'||st==='reversed'){ show('Payment didn\'t go through','Order '+idH+' is not paid yet. You can try again — nothing was charged.',true); return; }
+    if(st==='success'){ const b=bill(); store.del();
+      show('Оплачено, дякуємо!','<p class="dlead">Замовлення підтверджено. Наш менеджер зв\'яжеться з вами, '
+        +'а номер накладної надішлемо, щойно бокс поїде.</p>'+b); return; }
+    if(st==='failure'||st==='expired'||st==='reversed'){
+      show('Платіж не пройшов','<p class="dlead">Замовлення '+idH+' ще не оплачене. Можна спробувати ще раз — '
+        +'нічого не списано.</p>',true); return; }
     await new Promise(r=>setTimeout(r,2500));
   }
-  show('Payment is processing','Order '+idH+' is saved. As soon as monobank confirms the payment, we\'ll message you.',true);
+  show('Платіж обробляється','<p class="dlead">Замовлення збережено. Щойно monobank підтвердить оплату, ми напишемо.</p>'+bill(),true);
 })();
 $('shopNow').addEventListener('click',openCo);
 document.querySelectorAll('[data-shop]').forEach(b=>b.addEventListener('click',openCo));
