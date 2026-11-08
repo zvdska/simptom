@@ -424,8 +424,16 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
 .total i{display:block;margin-top:4px;font:400 12.5px/1.3 var(--ui);font-style:normal;color:rgba(255,255,255,.45)}
 .total b{font:500 26px/1 var(--ui);letter-spacing:-.01em;white-space:nowrap}
 /* единственное действие на экране — поэтому заливкой, а не обводкой */
+/* Сумма вынесена в правую секцию: видно, сколько спишется, прямо на кнопке */
 .place{width:100%;margin-top:4px;background:#fff;color:#000;border-color:#fff;border-radius:14px;
-  padding:1.15em 2em;font-weight:600;letter-spacing:.04em}
+  padding:0;font-weight:600;letter-spacing:.04em;display:flex;align-items:stretch;overflow:hidden}
+.pl-t{flex:1;display:grid;place-items:center;padding:1.15em 1.4em}
+.pl-a{display:grid;place-items:center;padding:1.15em 1.4em;white-space:nowrap;
+  border-left:1px solid rgba(0,0,0,.18);background:rgba(0,0,0,.05)}
+.pl-a:empty{display:none}
+.place:disabled .pl-a{border-left-color:rgba(255,255,255,.18)}
+.paymarks{margin-top:12px;text-align:center;font:500 11px/1 var(--ui);letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(255,255,255,.38)}
 .place:hover{background:rgba(255,255,255,.88);color:#000}
 .place:disabled{background:rgba(255,255,255,.14);border-color:transparent;color:rgba(255,255,255,.5)}
 .conote{font:400 13px/1.5 var(--text);color:var(--dim)}
@@ -536,6 +544,25 @@ dialog.doc .body .tgline{margin:4px 0 2px;padding:18px;border-radius:14px;text-a
   background:rgba(255,255,255,.05);font:500 17px/1.2 var(--ui);letter-spacing:.01em}
 dialog.doc .body .tgline a{color:#fff;text-decoration:none}
 @media (hover:hover){dialog.doc .body .tgline a:hover{text-decoration:underline;text-underline-offset:4px}}
+/* Схема розмірів: літери на кресленні й у таблиці — одні й ті самі,
+   інакше цифри нічого не пояснюють. */
+.sizefig{display:block;width:100%;height:auto;margin:20px 0 4px}
+.sizefig .gar{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.42);stroke-width:2;
+  stroke-linejoin:round;stroke-linecap:round}
+.sizefig .ms{stroke:rgba(255,255,255,.85);stroke-width:1.4;fill:none}
+.sizefig .axis{stroke:rgba(255,255,255,.25);stroke-width:1;stroke-dasharray:5 6;fill:none}
+.sizefig .tick{stroke:rgba(255,255,255,.5);stroke-width:1.4;fill:none}
+.sizefig .mk circle{fill:#141416;stroke:rgba(255,255,255,.7);stroke-width:1.2}
+.sizefig .mk text{fill:#fff;font:500 12px/1 var(--ui);text-anchor:middle;dominant-baseline:central}
+dialog.doc .body .tscroll{overflow-x:auto;margin-top:16px;scrollbar-width:thin}
+dialog.doc .body .tscroll table{margin-top:0;min-width:340px}
+dialog.doc .body .sizetab th{white-space:normal;width:auto}
+dialog.doc .body .sizetab td{text-align:center;white-space:nowrap}
+/* float, а не inline-grid: иначе при переносе буква остаётся одна на строке */
+dialog.doc .body .sizetab th i{float:left;display:grid;place-items:center;width:19px;height:19px;
+  margin:1px 9px 0 0;border-radius:50%;border:1px solid rgba(255,255,255,.4);
+  font:500 10.5px/1 var(--ui);font-style:normal;color:#fff}
+
 dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;background:rgba(255,196,0,.14);
   border:1px solid rgba(255,196,0,.45);color:#ffd451;font-size:12.5px}
 
@@ -806,15 +833,41 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
   <div class="body">
     <p class="lead">Заміри футболки в сантиметрах, у розкладеному вигляді. Крій оверсайз —
       якщо любите вільніше, беріть розмір більший.</p>
-    <table>
+    <svg class="sizefig" viewBox="0 0 320 250" role="img"
+         aria-label="Схема футболки з літерними позначками замірів А–Е, що відповідають таблиці нижче">
+      <path class="gar" d="M140 40 L91 48 L41 74 L55 112 L85 97 L85 216 L235 216 L235 97 L265 112
+                           L279 74 L229 48 L180 40 C172 62 148 62 140 40 Z"/>
+      <!-- А — ширина грудей -->
+      <path class="ms" d="M85 110 H235"/><path class="tick" d="M85 102v16M235 102v16"/>
+      <!-- Б — довжина виробу -->
+      <path class="ms" d="M300 40 V216"/><path class="tick" d="M292 40h16M292 216h16"/>
+      <!-- В — плече -->
+      <path class="ms" d="M138 29 L89 37"/><path class="tick" d="M136 21l5 16M86 29l5 16"/>
+      <!-- Г — довжина рукава -->
+      <path class="ms" d="M84 38 L34 64"/><path class="tick" d="M80 30l7 15M30 56l7 15"/>
+      <!-- Д — пройма -->
+      <path class="ms" d="M99 48 V97"/><path class="tick" d="M91 48h16M91 97h16"/>
+      <path class="axis" d="M160 44 V212"/>
+      <!-- Е — від центру спини до краю рукава -->
+      <path class="ms" d="M41 86 H160"/><path class="tick" d="M41 78v16M160 78v16"/>
+      <g class="mk">
+        <circle cx="196" cy="110" r="11"/><text x="196" y="110">А</text>
+        <circle cx="300" cy="128" r="11"/><text x="300" y="128">Б</text>
+        <circle cx="113" cy="24" r="11"/><text x="113" y="24">В</text>
+        <circle cx="57" cy="44" r="11"/><text x="57" y="44">Г</text>
+        <circle cx="99" cy="68" r="11"/><text x="99" y="68">Д</text>
+        <circle cx="132" cy="86" r="11"/><text x="132" y="86">Е</text>
+      </g>
+    </svg>
+    <div class="tscroll"><table class="sizetab">
       <tr><th></th><th>S</th><th>M</th><th>L</th><th>XL</th></tr>
-      <tr><th>Ширина грудей</th><td>58</td><td>61</td><td>64</td><td>67</td></tr>
-      <tr><th>Довжина виробу</th><td>70,5</td><td>73</td><td>75,5</td><td>77,5</td></tr>
-      <tr><th>Плече</th><td>19</td><td>20,5</td><td>21</td><td>21,5</td></tr>
-      <tr><th>Довжина рукава</th><td>19</td><td>20</td><td>21,5</td><td>22</td></tr>
-      <tr><th>Пройма</th><td>18</td><td>19</td><td>21</td><td>23</td></tr>
-      <tr><th>Від центру спини до краю рукава</th><td>34,5</td><td>37</td><td>39,5</td><td>40,5</td></tr>
-    </table>
+      <tr><th><i>А</i>Ширина грудей</th><td>58</td><td>61</td><td>64</td><td>67</td></tr>
+      <tr><th><i>Б</i>Довжина виробу</th><td>70,5</td><td>73</td><td>75,5</td><td>77,5</td></tr>
+      <tr><th><i>В</i>Плече</th><td>19</td><td>20,5</td><td>21</td><td>21,5</td></tr>
+      <tr><th><i>Г</i>Довжина рукава</th><td>19</td><td>20</td><td>21,5</td><td>22</td></tr>
+      <tr><th><i>Д</i>Пройма</th><td>18</td><td>19</td><td>21</td><td>23</td></tr>
+      <tr><th><i>Е</i>Від центру спини<br>до краю рукава</th><td>34,5</td><td>37</td><td>39,5</td><td>40,5</td></tr>
+    </table></div>
     <p>Ширина грудей міряється під пахвами по рівній поверхні, довжина — по спинці від шва
       коміра донизу. Допуск на пошив ±1,5 см: це норма, а не брак.</p>
   </div>
@@ -936,7 +989,10 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
       </div>
       <span class="err" id="e-agree" aria-live="polite"></span>
 
-      <button type="submit" class="shopnow place" id="place">Pay</button>
+      <button type="submit" class="shopnow place" id="place">
+        <span class="pl-t">Pay</span><span class="pl-a" id="placeAmt"></span>
+      </button>
+      <p class="paymarks">Visa · Mastercard</p>
       <p class="conote" id="coNote">You'll be taken to a secure monobank page to pay by card, Apple Pay or Google Pay.</p>
     </form>
 
@@ -1096,7 +1152,11 @@ hlogo.addEventListener('click',e=>{ e.preventDefault(); scrollTo({top:0,behavior
 const co=$('co'), cof=$('cof'); let qty=1, lastFocus=null;
 /* цена из CFG видна сразу, даже если сервер недоступен; ответил сервер — берём его цену */
 let priceUAH=CFG.order.price;
-const setQty=n=>{ qty=clamp(n,1,CFG.order.maxQty); $('coTotal').textContent=fmtUAH(priceUAH*qty); };
+const setQty=n=>{ qty=clamp(n,1,CFG.order.maxQty);
+  $('coTotal').textContent=fmtUAH(priceUAH*qty);
+  $('placeAmt').textContent=fmtUAH(priceUAH*qty); };
+/* Подпись кнопки меняем только так: прямой textContent снёс бы секцию с суммой */
+const setPlace=t=>{ $('place').querySelector('.pl-t').textContent=t; };
 /* незаполненную заглушку адреса воркера считаем «оплата не подключена» */
 const API=/YOUR-SUBDOMAIN/.test(CFG.order.api||'')?'':(CFG.order.api||'').replace(/\/+$/,'');
 const apiGet=path=>fetch(API+path).then(r=>{if(!r.ok) throw new Error(r.status); return r.json();});
@@ -1111,7 +1171,7 @@ function paintStock(map){
     if(free) any=true;
   });
   const btn=$('place');
-  if(!any){ btn.disabled=true; btn.textContent='Sold out';
+  if(!any){ btn.disabled=true; setPlace('Sold out');
     $('coNote').textContent='Everything is sold out. Follow us for the next drop.'; }
   /* Обе кнопки «Buy box» — на главной и в продуктах. Если боксов нет, человек
      не должен открывать форму и узнавать об этом уже внутри. */
@@ -1180,7 +1240,7 @@ function ticket(id,total,size,{head=true,lead=''}={}){
 function labelPlace(){
   const m=payMethod(), card=m==='card';
   $('place').disabled=false;
-  $('place').textContent=(card&&payments)?'Pay':'Place order';
+  setPlace((card&&payments)?'Pay':'Place order');
   $('coNote').textContent=
     card&&payments  ? "You'll be taken to a secure monobank page to pay by card, Apple Pay or Google Pay."
   : m==='crypto'    ? 'The manager will send the wallet in Telegram after you place the order.'
@@ -1300,12 +1360,12 @@ cof.addEventListener('submit',async e=>{
   e.preventDefault(); if(!validate()) return;
   if(!API){ $('coNote').textContent='Online payment is not connected yet — write us on Telegram @neverlandsupport and we will take your order by hand.'; return; }
   const d=Object.fromEntries(new FormData(cof));
-  const btn=$('place'); btn.disabled=true; btn.textContent=payments?'Creating payment…':'Sending order…';
+  const btn=$('place'); btn.disabled=true; setPlace(payments?'Creating payment…':'Sending order…');
   try{
     const r=await fetch(API+'/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...d,qty})});
     const res=await r.json().catch(()=>({}));
     if(r.status===409){
-      btn.disabled=false; btn.textContent=payments?'Pay':'Place order';
+      btn.disabled=false; setPlace(payments?'Pay':'Place order');
       if(res.error==='one_per_person'){          // этот человек уже взял коробку
         const f=cof.querySelector('input[name=phone]').parentElement;
         f.classList.add('bad'); f.querySelector('.err').textContent='1 box 1 hands';
@@ -1323,7 +1383,7 @@ cof.addEventListener('submit',async e=>{
       const FIELD={ bad_name:'name', bad_phone:'phone', bad_city:'city', bad_branch:'branch', bad_handle:'handle' };
       const nm=FIELD[res.error], inp=nm&&cof.querySelector('[name='+nm+']');
       if(inp){
-        btn.disabled=false; btn.textContent=payments?'Pay':'Place order';
+        btn.disabled=false; setPlace(payments?'Pay':'Place order');
         const f=inp.parentElement; f.classList.add('bad');
         const slot=f.querySelector('.err'); if(slot) slot.textContent=res.message||'Check this field';
         $('coNote').textContent=''; inp.focus();
@@ -1358,7 +1418,7 @@ cof.addEventListener('submit',async e=>{
     }
     location.href=res.pageUrl;                                  // → monobank
   }catch(err){
-    btn.disabled=false; btn.textContent=payments?'Pay':'Place order';
+    btn.disabled=false; setPlace(payments?'Pay':'Place order');
     $('coNote').textContent=(err.message||'Something went wrong')+'. Please try again or write @neverlandsupport on Telegram.';
   }
 });
