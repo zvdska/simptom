@@ -126,6 +126,12 @@ body.ready .it-cd{transition-delay:.2s}
 .shopnow:active{background:#fff;color:#000;border-color:#fff;transform:scale(.97)}
 .shopnow:focus-visible{outline:2px solid #fff;outline-offset:5px}
 .shopnow:disabled{opacity:.5;cursor:default}
+/* «Coming soon» — не кнопка, а объявление: приглушена, без отклика на наведение */
+.shopnow.soon{opacity:1;cursor:default;border-color:rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05);color:rgba(255,255,255,.7)}
+.shopnow.soon:hover,.shopnow.soon:active{background:rgba(255,255,255,.05);
+  color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.14);transform:none}
+body.ready .buybox.soon{opacity:1}
 .shopnow[hidden]{display:none}
 .buybox{margin-top:0;opacity:0;transform:translateY(16px);transition:background .25s,color .25s,opacity .9s ease .75s,transform .9s var(--ease) .75s}
 body.ready .buybox{opacity:1;transform:none}
@@ -1038,6 +1044,10 @@ const CFG = {
   audio:n=>`audio/${n}.mp3`,                   // превью: audio/01.mp3 … 17.mp3
   /* цена одной коробки в гривнах. Здесь — чтобы её было видно без сервера;
      при оплате главной считается цена из PRICE_UAH на воркере, подделать с сайта нельзя */
+  /* Витрина до открытия: кнопки покупки заменяются плашкой. Переключается
+     и отсюда, и переменной SHOP_SOON в Cloudflare — чтобы открыть магазин,
+     не трогая сайт. Значение с сервера главнее. */
+  soon:true,
   order:{ price:3799, maxQty:1,
     /* адрес сервера заказов (Cloudflare Worker из папки server/), без слэша в конце */
     api:'https://neverland-shop.concert-grebz.workers.dev' },
@@ -1183,14 +1193,16 @@ function paintStock(map){
   /* Обе кнопки «Buy box» — на главной и в продуктах. Если боксов нет, человек
      не должен открывать форму и узнавать об этом уже внутри. */
   document.querySelectorAll('#shopNow,[data-shop]').forEach(b=>{
-    b.disabled=!any;
-    b.textContent=any?'Buy box':'Sold out';
+    b.disabled=soon||!any;
+    b.classList.toggle('soon',soon);
+    b.textContent=soon?'Coming soon':(any?'Buy box':'Sold out');
   });
 }
 const loadStock=()=>API?apiGet('/stock').then(paintStock).catch(()=>{}):Promise.resolve();
 /* пока эквайринг не одобрен, сервер принимает заказ и мы связываемся вручную —
    кнопка и подпись под ней должны говорить об этом честно */
 let payments=true;
+let soon=CFG.soon===true;
 const payMethod=()=>{ const r=cof.querySelector('input[name=pay]:checked'); return r?r.value:''; };
 /* Состав бокса в одном месте: он показывается и в чекауте, и в чеке,
    и расходиться эти два списка не должны. */
@@ -1270,7 +1282,8 @@ cof.addEventListener('change',e=>{
 if(API) apiGet('/config').then(c=>{
   if(c.priceUAH){ priceUAH=c.priceUAH; paintPrice(); }
   if(c.payments===false) payments=false;
-  paintPay(); labelPlace(); setQty(qty);
+  if(typeof c.soon==='boolean') soon=c.soon;
+  paintPay(); labelPlace(); setQty(qty); loadStock();
 }).catch(()=>{});
 loadStock();
 paintPrice(); setQty(1);
