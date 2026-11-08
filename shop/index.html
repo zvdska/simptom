@@ -264,28 +264,79 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
 
 /* ── ОФОРМЛЕНИЕ ЗАКАЗА (как в первой версии) ─────────────── */
 /* ── CHECKOUT ───────────────────────────────────────────── */
-#co{position:fixed;inset:0;z-index:40;display:flex;justify-content:flex-end;visibility:hidden}
+/* ── ЧЕКАУТ ─────────────────────────────────────────────────
+   На большом экране — карточка по центру поверх размытой страницы.
+   На телефоне — лист, который выезжает снизу. Шапка стоит на месте,
+   прокручивается только содержимое: иначе в длинной форме пропадает
+   крестик, и закрыть окно нечем. */
+#co{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+  padding:clamp(16px,3vh,40px) 16px;visibility:hidden}
 #co.open{visibility:visible}
-#co .scrim{position:absolute;inset:0;background:rgba(0,0,0,.7);opacity:0;transition:opacity .4s}
+#co .scrim{position:absolute;inset:0;background:rgba(0,0,0,.62);opacity:0;transition:opacity .4s;
+  -webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%)}
 #co.open .scrim{opacity:1}
-#co .panel{position:relative;width:min(560px,100%);height:100%;background:#0a0a0a;border-left:1px solid rgba(255,255,255,.12);
-  overflow-y:auto;overscroll-behavior:contain;transform:translateX(100%);transition:transform .55s cubic-bezier(.2,.75,.15,1);
-  padding:calc(28px + env(safe-area-inset-top,0px)) clamp(20px,4vw,40px) calc(40px + env(safe-area-inset-bottom,0px))}
-#co.open .panel{transform:none}
-.cohead{display:flex;justify-content:space-between;align-items:center;gap:16px}
-.cohead h2{font:900 clamp(26px,3vw,38px)/1 var(--display)}
-.x{all:unset;cursor:pointer;width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.25);font:400 20px/1 var(--text)}
-.x:hover{border-color:#fff}.x:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.sum{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center;margin-top:28px;padding:16px 0;
-  border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
-.sum img{width:96px;height:auto}
-.sum b{display:block;font:900 17px/1.2 var(--display)}
+#co .panel{position:relative;display:flex;flex-direction:column;overflow:hidden;
+  width:min(620px,100%);max-height:min(88svh,920px);background:#0b0b0b;
+  border:1px solid rgba(255,255,255,.1);border-radius:28px;
+  box-shadow:0 40px 100px -24px rgba(0,0,0,.9);
+  opacity:0;scale:.96;translate:0 14px;
+  transition:opacity .4s ease,scale .45s var(--ease),translate .45s var(--ease)}
+#co.open .panel{opacity:1;scale:1;translate:0 0}
+.grab{display:none}
+.cohead{flex:none;display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding:clamp(22px,2.6vw,30px) clamp(20px,3vw,32px) clamp(14px,1.6vw,18px)}
+.cohead h2{font:900 clamp(24px,2.8vw,32px)/1 var(--display)}
+/* position:relative обязателен: скрытые радиокнопки размеров и оплаты стоят
+   position:absolute, и без него их держит сама панель. Тогда её scrollHeight
+   вырастает, панель становится прокручиваемой, и браузер, подводя фокус к
+   радиокнопке, утаскивает наверх шапку вместе с крестиком. */
+.cobody{position:relative;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.2) transparent;
+  padding:0 clamp(20px,3vw,32px) clamp(24px,3vw,32px)}
+.cobody::-webkit-scrollbar{width:11px}
+.cobody::-webkit-scrollbar-track{background:transparent}
+.cobody::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:11px;
+  border:3px solid transparent;background-clip:content-box}
+
+@media (max-width:640px){
+  #co{align-items:flex-end;padding:0}
+  #co .panel{width:100%;max-height:94svh;border-radius:24px 24px 0 0;border-bottom:0;
+    opacity:1;scale:1;translate:0 100%;
+    transition:translate .5s cubic-bezier(.2,.75,.15,1)}
+  #co.open .panel{translate:0 0}
+  .grab{display:block;flex:none;width:38px;height:4px;border-radius:4px;margin:9px auto 0;
+    background:rgba(255,255,255,.22)}
+  .cohead{padding:14px 20px 12px}
+  .cobody{padding:0 20px calc(24px + env(safe-area-inset-bottom,0px))}
+}
+@media (prefers-reduced-motion:reduce){
+  #co .panel{transition:none}
+}
+.x{all:unset;cursor:pointer;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;
+  background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font:400 15px/1 var(--text);
+  transition:background .2s,color .2s,scale .15s}
+.x:hover{background:rgba(255,255,255,.2);color:#fff}
+.x:active{scale:.9}
+.x:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.sum{display:grid;grid-template-columns:72px 1fr auto auto;gap:16px;align-items:center;
+  padding:16px 0;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1)}
+.sum img{width:72px;height:72px;object-fit:cover;border-radius:12px;background:rgba(255,255,255,.04)}
+.sum b{display:block;font:900 16px/1.2 var(--display)}
+/* количество и цена выровнены в колонку, как в чеке */
+.sumqty{font:500 14px/1 var(--ui);letter-spacing:.06em;color:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.16);border-radius:9px;padding:8px 11px}
+.sumprice{font:500 15px/1 var(--ui);letter-spacing:.01em;white-space:nowrap}
+@media (max-width:460px){
+  .sum{grid-template-columns:60px 1fr auto;gap:12px}
+  .sum img{width:60px;height:60px}
+  .sumqty{display:none}
+}
 .inbox{margin-top:8px;display:grid;gap:3px;list-style:none;
   font:500 11px/1.45 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.62)}
 /* количество не кричим капсом — так видно, где счёт, а где название */
 .inbox i{font-style:normal;text-transform:none;color:rgba(255,255,255,.4)}
-.onehand{margin-top:10px;font:500 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(255,255,255,.55)}
+.onehand{margin-top:14px;font:500 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.45)}
 .qty{display:flex;align-items:center;gap:0;margin-top:10px;width:max-content;border:1px solid rgba(255,255,255,.25)}
 .qty button{all:unset;cursor:pointer;width:34px;height:34px;display:grid;place-items:center;font:400 18px/1 var(--text)}
 .qty button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
@@ -306,7 +357,8 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .sz{display:flex;flex-wrap:wrap;gap:6px}
 .sz input{position:absolute;opacity:0;pointer-events:none}
-.sz label{min-width:54px;height:42px;display:grid;place-items:center;padding:0 10px;border:1px solid rgba(255,255,255,.25);
+.sz label{min-width:54px;height:44px;display:grid;place-items:center;padding:0 10px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.22);
   font:900 14px/1 var(--display);cursor:pointer;transition:background .2s,color .2s,border-color .2s}
 .sz label:hover{border-color:#fff}
 .sz input:checked+label{background:#fff;color:#000;border-color:#fff}
@@ -334,16 +386,11 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
 
 /* выбор оплаты: строки с галочкой, как в настройках iOS */
 .pay{display:flex;flex-direction:column;gap:10px}
-.pay>input+label:not(.paybtn){border:1px solid rgba(255,255,255,.16);border-radius:14px;
+/* Карта — такой же пункт списка, как крипта. Заливка на экране одна,
+   и она у кнопки действия: иначе глаз не понимает, что нажимать. */
+.pay>input+label{border:1px solid rgba(255,255,255,.16);border-radius:14px;
   background:rgba(255,255,255,.02)}
-/* карта оформлена кнопкой оплаты, а не пунктом списка */
-.paybtn{border-radius:14px;background:#fff;border:1px solid #fff;
-  transition:transform .18s ease,opacity .25s,box-shadow .25s}
-.paybtn b{color:#000!important;font-weight:600!important;font-size:15px!important}
-.paybtn i{color:rgba(0,0,0,.52)!important}
-.pay input:checked+.paybtn{box-shadow:0 0 0 2px rgba(255,255,255,.35)}
-@media (hover:hover){.paybtn:hover{background:#fff}}
-.paybtn:active{transform:scale(.985)}
+.pay label:active{scale:.99}
 /* своя кнопка «Сплатити через mono» на экране готовности к оплате */
 .monobtn{display:block;margin-top:26px;padding:16px 20px;border-radius:14px;background:#fff;color:#000;
   font:600 15px/1.2 var(--ui);letter-spacing:.02em;text-align:center;text-decoration:none;
@@ -351,35 +398,84 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
 .monobtn:active{transform:scale(.985)}
 .paylink{display:inline-block;margin-top:16px;font:400 13px/1.4 var(--text);
   color:rgba(255,255,255,.6);text-decoration:underline;text-underline-offset:3px}
-.pay input:disabled+.paybtn{background:rgba(255,255,255,.12);border-color:transparent;cursor:not-allowed}
-.pay input:disabled+.paybtn b{color:rgba(255,255,255,.55)!important}
-.pay input:disabled+.paybtn i{color:rgba(255,255,255,.35)!important}
+.pay input:disabled+label{opacity:.4;cursor:not-allowed}
 .pay input{position:absolute;opacity:0;pointer-events:none}
 .pay label{display:flex;flex-direction:column;gap:3px;align-items:center;text-align:center;
   padding:15px 18px;cursor:pointer;position:relative;transition:background .2s,border-color .2s}
 .pay label b{font:500 14px/1.2 var(--ui);letter-spacing:.02em;color:#fff}
 .pay label i{font:400 12px/1.3 var(--text);font-style:normal;color:rgba(255,255,255,.45)}
 @media (hover:hover){.pay label:hover{background:rgba(255,255,255,.04)}}
-.pay input:checked+label:not(.paybtn){background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.45)}
+.pay input:checked+label{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.45)}
 .pay input:focus-visible+label{outline:2px solid #fff;outline-offset:-2px}
-.pay.bad>input+label:not(.paybtn){border-color:#ff6b6b}
+.pay.bad>input+label{border-color:#ff6b6b}
 /* реквизиты на экране «заказ принят» */
 .paydet{margin-top:10px;padding:13px 15px;border:1px solid rgba(255,255,255,.18);border-radius:12px;
   font:500 15px/1.45 var(--ui);letter-spacing:.02em;color:#fff;word-break:break-all;
   background:rgba(255,255,255,.04)}
 .paynote{margin-top:12px;font:400 13px/1.5 var(--text);color:rgba(255,255,255,.55)}
 
-.total{display:flex;justify-content:space-between;align-items:baseline;padding-top:18px;border-top:1px solid rgba(255,255,255,.12)}
-.total span{font:900 13px/1 var(--display);color:var(--dim)}
-.total b{font:900 28px/1 var(--display)}
-.place{width:100%;margin-top:4px}
+.tally{display:grid;gap:11px;padding-bottom:16px}
+.tally>div{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.tally span{font:400 14px/1.3 var(--ui);color:rgba(255,255,255,.5)}
+.tally b{font:500 14px/1.3 var(--ui);text-align:right}
+.total{display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding-top:16px;border-top:1px solid rgba(255,255,255,.12)}
+.total span{display:block;font:500 17px/1.2 var(--ui);letter-spacing:.01em;color:#fff}
+.total i{display:block;margin-top:4px;font:400 12.5px/1.3 var(--ui);font-style:normal;color:rgba(255,255,255,.45)}
+.total b{font:500 26px/1 var(--ui);letter-spacing:-.01em;white-space:nowrap}
+/* единственное действие на экране — поэтому заливкой, а не обводкой */
+.place{width:100%;margin-top:4px;background:#fff;color:#000;border-color:#fff;border-radius:14px;
+  padding:1.15em 2em;font-weight:600;letter-spacing:.04em}
+.place:hover{background:rgba(255,255,255,.88);color:#000}
+.place:disabled{background:rgba(255,255,255,.14);border-color:transparent;color:rgba(255,255,255,.5)}
 .conote{font:400 13px/1.5 var(--text);color:var(--dim)}
 .done{display:none;margin-top:40px}
-#co.ok .cof,#co.ok .sum{display:none}
+#co.ok .cof,#co.ok .sum,#co.ok .onehand{display:none}
 #co.ok .done{display:block}
 .done h3{font:900 clamp(28px,3.4vw,44px)/1 var(--display)}
+.done h3:empty{display:none}
+.done .ticket+.payttl{margin-top:24px!important}
 .done p{margin-top:18px;font:400 16px/1.55 var(--text);color:rgba(255,255,255,.8)}
 .done .dlead{font:400 16px/1.55 var(--ui)}
+
+/* Билет. Белый на чёрном листе — он так и читается как настоящий
+   билет, а не как ещё один блок интерфейса. Перфорация и фестоны снизу
+   нарисованы кружками цвета подложки, поэтому «прорези» настоящие. */
+.ticket{margin-top:26px;background:#17171a;color:#fff;border-radius:20px 20px 4px 4px;position:relative;
+  padding-bottom:18px;box-shadow:0 0 0 1px rgba(255,255,255,.07) inset}
+.ticket::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:14px;
+  background:radial-gradient(circle 8px at 8px 100%,#0b0b0b 97%,transparent 100%) 0 100%/16px 14px repeat-x}
+.tk-head{padding:26px 24px 20px;text-align:center}
+.tk-emoji{font-size:30px;line-height:1}
+.tk-head h4{margin-top:12px;font:600 20px/1.2 var(--ui);letter-spacing:-.01em;color:#fff}
+.tk-head p{margin-top:8px;font:400 13.5px/1.5 var(--ui);color:rgba(255,255,255,.58)}
+.tk-perf{position:relative;height:0;margin:0 24px;border-top:1.5px dashed rgba(255,255,255,.22)}
+.tk-perf::before,.tk-perf::after{content:'';position:absolute;top:-13px;width:26px;height:26px;
+  border-radius:50%;background:#0b0b0b}
+.tk-perf::before{left:-37px}
+.tk-perf::after{right:-37px}
+.tk-list{margin:0;padding:18px 24px 2px;list-style:none;display:grid;gap:6px;
+  font:500 11px/1.45 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.tk-list i{font-style:normal;text-transform:none;color:rgba(255,255,255,.4)}
+.tk-rows{padding:18px 24px 0;display:grid;gap:16px}
+.tk-r{display:flex;justify-content:space-between;gap:18px}
+.tk-r span{display:block;font:400 10.5px/1.3 var(--ui);letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.45)}
+.tk-r b{display:block;margin-top:5px;font:500 15px/1.2 var(--ui);color:#fff}
+.tk-r .rt{text-align:right}
+.tk-pay{margin:18px 24px 0;display:flex;align-items:center;gap:12px;padding:12px 14px;
+  background:rgba(255,255,255,.06);border-radius:12px}
+.tk-pay b{display:block;font:500 14px/1.2 var(--ui);color:#fff}
+.tk-pay span{display:block;margin-top:3px;font:400 12px/1.2 var(--ui);color:rgba(255,255,255,.5)}
+/* метка способа оплаты: два кружка — только для карты, иначе это вводит в
+   заблуждение. Для крипты — нейтральный прямоугольник */
+.tk-dot{width:26px;height:18px;border-radius:4px;flex:none;background:rgba(255,255,255,.2)}
+.tk-dot.card{background:radial-gradient(circle at 9px 50%,#eb001b 8px,transparent 8px),
+             radial-gradient(circle at 17px 50%,#f79e1b 8px,transparent 8px)}
+.tk-code{padding:22px 24px 6px}
+.tk-bars{display:block;width:100%;height:62px}
+.tk-letters{margin-top:9px;text-align:center;font:500 12px/1 var(--ui);letter-spacing:.62em;
+  text-indent:.62em;color:#fff}
 
 /* Чек: что именно куплено и за сколько. Человеку нужно с чем-то сверяться,
    когда менеджер напишет, а нам — на что ссылаться в переписке. */
@@ -735,14 +831,16 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
 <div id="co" role="dialog" aria-modal="true" aria-labelledby="co-title" aria-hidden="true">
   <div class="scrim" data-close></div>
   <div class="panel" tabindex="-1">
+    <div class="grab" aria-hidden="true"></div>
     <div class="cohead">
       <h2 id="co-title">Checkout</h2>
       <button type="button" class="x" data-close aria-label="Close checkout">✕</button>
     </div>
 
+    <div class="cobody">
     <div class="sum">
       <img src="img/box-order.webp" alt="" width="560" height="560">
-      <div>
+      <div class="sumtxt">
         <b>Never Land Box</b>
         <ul class="inbox">
           <li><i>x1</i> CD &laquo;Never Land&raquo;</li>
@@ -750,9 +848,11 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
           <li><i>x1</i> Sticker pack</li>
           <li><i>x1</i> Брелок</li>
         </ul>
-        <p class="onehand">1 box 1 hands</p>
       </div>
+      <div class="sumqty">01</div>
+      <div class="sumprice" data-price></div>
     </div>
+    <p class="onehand">1 box 1 hands</p>
 
     <form class="cof" id="cof" novalidate>
       <fieldset>
@@ -809,13 +909,18 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
           <label for="pay-card" class="paybtn"><b>Pay by card</b><i>Apple&nbsp;Pay, Google&nbsp;Pay, Visa / Mastercard</i></label>
           <input type="radio" name="pay" id="pay-crypto" value="crypto">
           <label for="pay-crypto"><b>Crypto</b><i>USDT · TRC-20</i></label>
-          <input type="radio" name="pay" id="pay-transfer" value="transfer">
-          <label for="pay-transfer"><b>IBAN</b><i>transfer to card</i></label>
         </div>
         <span class="err" id="e-pay" aria-live="polite"></span>
       </fieldset>
 
-      <div class="total"><span>Total</span><b id="coTotal"></b></div>
+      <div class="tally">
+        <div><span>Quantity</span><b>01</b></div>
+        <div><span>Shipping</span><b lang="uk">за тарифами перевізника</b></div>
+      </div>
+      <div class="total">
+        <div><span>Total</span><i lang="uk">14 днів на повернення</i></div>
+        <b id="coTotal"></b>
+      </div>
 
       <!-- акцепт оферты: без него договор не считается заключённым (ст. 642 ЦКУ) -->
       <div class="agree" id="agreeBox">
@@ -840,6 +945,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
       <div id="doneText"></div>
       <button type="button" class="shopnow place" id="payAgain" hidden style="margin-top:28px">Try paying again</button>
       <button type="button" class="shopnow place" data-close style="margin-top:28px">Back to site</button>
+    </div>
     </div>
   </div>
 </div>
@@ -867,14 +973,6 @@ const CFG = {
   revealMobile:{ title:0, text:[200,1300], item:1300, open:1800, credit:1700 },
   previewLen:20,                               // длина превью трека, сек
   audio:n=>`audio/${n}.mp3`,                   // превью: audio/01.mp3 … 17.mp3
-  /* куда платить, если выбрали не карту. Подставьте свои реквизиты. */
-  payInfo:{
-    crypto:{ title:'USDT · TRC-20', value:'[КРИПТО-КОШЕЛЁК]',
-             note:'Send the exact amount and send the transaction hash to @neverlandsupport on Telegram.' },
-    transfer:{ title:'IBAN', value:'UA48 3220 0100 0002 6004 3801 0115 8',
-               note:'Отримувач: ФОП Дудулад Оксана Анатоліївна. У призначенні платежу вкажіть номер замовлення. '
-                    +'Після переказу надішліть квитанцію в Telegram @neverlandsupport.' },
-  },
   /* цена одной коробки в гривнах. Здесь — чтобы её было видно без сервера;
      при оплате главной считается цена из PRICE_UAH на воркере, подделать с сайта нельзя */
   order:{ price:3799, maxQty:1,
@@ -1031,16 +1129,53 @@ const payMethod=()=>{ const r=cof.querySelector('input[name=pay]:checked'); retu
    и расходиться эти два списка не должны. */
 const BOX=['CD «Never Land»','Футболка','Sticker pack','Брелок'];
 const chosenSize=()=>{ const r=cof.querySelector('input[name=size]:checked'); return r?r.value:''; };
-function receipt(id,total,size){
+const PAYNAME={ card:['Оплата карткою','Visa / Mastercard'],
+                crypto:['Крипта','USDT · TRC-20'] };
+
+/* Полоски кода выводим из номера заказа: у каждого билета свой рисунок,
+   и при перезагрузке страницы он тот же. Код декоративный — под ним
+   стоит NEVERLAND, и сканировать его не нужно. */
+function bars(seed){
+  let h=2166136261;
+  for(const ch of String(seed)) h=Math.imul(h^ch.charCodeAt(0),16777619)>>>0;
+  const rnd=()=>{ h^=h<<13;h>>>=0; h^=h>>>17; h^=h<<5;h>>>=0; return h/4294967296; };
+  let x=0,d='';
+  while(x<298){
+    const w=1+Math.floor(rnd()*4);
+    if(x+w>300) break;
+    d+='M'+x+' 0h'+w+'v70h-'+w+'z';
+    x+=w+1+Math.floor(rnd()*3);
+  }
+  return '<svg class="tk-bars" viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden="true">'
+        +'<path d="'+d+'" fill="#fff"/></svg>';
+}
+
+const stamp=()=>{
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return p(d.getDate())+' '+M[d.getMonth()]+' '+d.getFullYear()+' · '+p(d.getHours())+':'+p(d.getMinutes());
+};
+
+/* head:false — для экрана «готово до оплати», там своя шапка. */
+function ticket(id,total,size,{head=true,lead=''}={}){
   const items=BOX.map(n=> n==='Футболка'&&size ? n+' · '+size : n);
-  return '<div class="receipt">'
-    +'<div class="rrow rid"><span>Замовлення</span><b class="oid">'+escH(id)+'</b></div>'
-    +'<ul class="rlist">'+items.map(n=>'<li><i>x1</i> '+escH(n)+'</li>').join('')+'</ul>'
-    +'<div class="rrow rtotal"><span>Разом</span><b>'+fmtUAH(total)+'</b></div>'
+  const [pn,ps]=PAYNAME[payMethod()]||PAYNAME.card;
+  return '<div class="ticket">'
+    +(head
+      ? '<div class="tk-head"><div class="tk-emoji">🎉</div><h4 lang="uk">Дякуємо!</h4>'
+        +'<p lang="uk">'+escH(lead||'Ми отримали ваше замовлення. Наш менеджер зв\'яжеться з вами для підтвердження.')+'</p></div>'
+        +'<div class="tk-perf"></div>'
+      : '')
+    +'<ul class="tk-list">'+items.map(n=>'<li><i>x1</i> '+escH(n)+'</li>').join('')+'</ul>'
+    +'<div class="tk-rows">'
+      +'<div class="tk-r"><div><span>Order ID</span><b>'+escH(id)+'</b></div>'
+        +'<div class="rt"><span>Amount</span><b>'+fmtUAH(total)+'</b></div></div>'
+      +'<div class="tk-r"><div><span>Date &amp; time</span><b>'+stamp()+'</b></div></div>'
+    +'</div>'
+    +'<div class="tk-pay"><i class="tk-dot'+(payMethod()==='card'?' card':'')+'"></i><div><b>'+escH(pn)+'</b><span>'+escH(ps)+'</span></div></div>'
+    +'<div class="tk-code">'+bars(id)+'<div class="tk-letters">NEVERLAND</div></div>'
     +'</div>';
 }
-const THANKS='<p class="dlead">Ми отримали ваше замовлення. '
-  +'Наш менеджер зв\'яжеться з вами для підтвердження.</p>';
 
 function labelPlace(){
   const m=payMethod(), card=m==='card';
@@ -1048,10 +1183,9 @@ function labelPlace(){
   $('place').textContent=(card&&payments)?'Pay':'Place order';
   $('coNote').textContent=
     card&&payments  ? "You'll be taken to a secure monobank page to pay by card, Apple Pay or Google Pay."
-  : m==='crypto'    ? "We'll show the wallet right after you place the order."
-  : m==='transfer'  ? "We'll show the IBAN right after you place the order."
+  : m==='crypto'    ? 'The manager will send the wallet in Telegram after you place the order.'
   : payments        ? 'Choose how you want to pay.'
-                    : 'Card payment is being connected. Crypto and IBAN work now.';
+                    : 'Card payment is being connected. Crypto works now.';
 }
 /* карта недоступна, пока нет эквайринга — честно гасим строку, а не обещаем */
 function paintPay(){
@@ -1197,15 +1331,14 @@ cof.addEventListener('submit',async e=>{
       }
       throw new Error(res.message||'Could not place the order');
     }
-    if(res.manual){            // оплата не картой — показываем реквизиты сразу
-      const info=CFG.payInfo[payMethod()];
-      $('doneTitle').textContent='Дякуємо!';
-      $('doneText').innerHTML=THANKS+receipt(res.orderId,res.total||priceUAH,chosenSize())
-        + (info
-            ? '<p class="payttl">'+escH(info.title)+'</p>'
-              +'<p class="paydet">'+escH(info.value)+'</p>'
-              +'<p class="paynote">'+escH(info.note)+'</p>'
-            : '<p class="paynote">Питання — @neverlandsupport у Telegram.</p>');
+    if(res.manual){            // оплата не картой — реквізити надсилає менеджер
+      const crypto=payMethod()==='crypto';
+      $('doneTitle').textContent='';
+      $('doneText').innerHTML=ticket(res.orderId,res.total||priceUAH,chosenSize())
+        +'<p class="paynote" lang="uk">'
+        +(crypto ? 'Гаманець для оплати надішле менеджер у Telegram @neverlandsupport.'
+                 : 'Питання — @neverlandsupport у Telegram.')
+        +'</p>';
       $('payAgain').hidden=true; co.classList.add('ok'); return;
     }
     if(!res.pageUrl) throw new Error(res.message||'Could not create the payment');
@@ -1217,7 +1350,7 @@ cof.addEventListener('submit',async e=>{
     const onPhone=matchMedia('(pointer:coarse)').matches;
     if(res.appUrl&&onPhone){
       $('doneTitle').textContent='Готово до оплати';
-      $('doneText').innerHTML=receipt(res.orderId,res.total||priceUAH,chosenSize())
+      $('doneText').innerHTML=ticket(res.orderId,res.total||priceUAH,chosenSize(),{head:false})
         +'<a class="monobtn" href="'+escH(res.appUrl)+'">Сплатити через mono</a>'
         +'<a class="paylink" href="'+escH(res.pageUrl)+'">Оплатити карткою, Apple Pay або Google Pay</a>'
         +'<p class="paynote">Розмір у броні 15 хвилин — стільки живе рахунок.</p>';
@@ -1239,22 +1372,24 @@ cof.addEventListener('submit',async e=>{
     $('payAgain').hidden=!again; co.classList.add('ok'); openCo(); };
   const idH=`<span class="oid">${escH(id)}</span>`;
   // чек собираем из того, что сохранили перед уходом на монобанк
-  const bill=()=> saved ? receipt(id,saved.total||priceUAH,saved.size||'') : '';
-  if(!saved||saved.orderId!==id||!API){ show('Дякуємо!',THANKS+bill()); return; }
+  const bill=(o)=> saved ? ticket(id,saved.total||priceUAH,saved.size||'',o) : '';
+  if(!saved||saved.orderId!==id||!API){ show('',bill()); return; }
   $('payAgain').onclick=()=>{ location.href=saved.pageUrl; };
   show('Перевіряємо оплату…','<p class="dlead">Хвилинку — підтверджуємо платіж у monobank.</p>');
   for(let i=0;i<8;i++){
     let st='';
     try{ st=(await apiGet('/status?inv='+encodeURIComponent(saved.invoiceId))).status; }catch(_){}
-    if(st==='success'){ const b=bill(); store.del();
-      show('Оплачено, дякуємо!','<p class="dlead">Замовлення підтверджено. Наш менеджер зв\'яжеться з вами, '
-        +'а номер накладної надішлемо, щойно бокс поїде.</p>'+b); return; }
+    if(st==='success'){
+      const b=bill({lead:'Оплату підтверджено. Наш менеджер зв\'яжеться з вами, '
+                        +'а номер накладної надішлемо, щойно бокс поїде.'});
+      store.del(); show('',b); return; }
     if(st==='failure'||st==='expired'||st==='reversed'){
       show('Платіж не пройшов','<p class="dlead">Замовлення '+idH+' ще не оплачене. Можна спробувати ще раз — '
         +'нічого не списано.</p>',true); return; }
     await new Promise(r=>setTimeout(r,2500));
   }
-  show('Платіж обробляється','<p class="dlead">Замовлення збережено. Щойно monobank підтвердить оплату, ми напишемо.</p>'+bill(),true);
+  show('Платіж обробляється','<p class="dlead">Замовлення збережено. Щойно monobank підтвердить оплату, ми напишемо.</p>'
+    +bill({head:false}),true);
 })();
 $('shopNow').addEventListener('click',openCo);
 document.querySelectorAll('[data-shop]').forEach(b=>b.addEventListener('click',openCo));
