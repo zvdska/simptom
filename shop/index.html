@@ -921,7 +921,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
         <label class="f"><span>Full name</span><input name="name" autocomplete="name" required><span class="err"></span></label>
         <div class="row2">
           <label class="f"><span>Phone</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+380" required><span class="err"></span></label>
-          <label class="f"><span>Email <i>optional</i></span><input name="email" type="email" autocomplete="email"><span class="err"></span></label>
+          <label class="f"><span>Email</span><input name="email" type="email" autocomplete="email" placeholder="для чека" required><span class="err"></span></label>
         </div>
         <div class="f">
           <span>Where to write you</span>
@@ -1299,7 +1299,7 @@ var validate=function(){
     const v=inp.value.trim();
     if(inp.required&&!v) msg='Required';
     else if(inp.name==='phone'&&v&&v.replace(/\D/g,'').length<10) msg='Check the number';
-    else if(inp.name==='email'&&v&&!/^\S+@\S+\.\S+$/.test(v)) msg='Check the email';
+    else if(inp.name==='email'&&!/^\S+@\S+\.\S+$/.test(v)) msg='We send the receipt here';
     else if(inp.name==='handle'&&v.replace(/^@+/,'').trim().length<2) msg='Enter your @username';
     else if(inp.name==='name'&&v.length<2) msg='Enter your name';
     else if(inp.name==='city'&&v.length<2) msg='Enter the city';
