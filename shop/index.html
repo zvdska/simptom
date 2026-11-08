@@ -396,8 +396,18 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
   font:600 15px/1.2 var(--ui);letter-spacing:.02em;text-align:center;text-decoration:none;
   transition:transform .18s ease}
 .monobtn:active{transform:scale(.985)}
-.paylink{display:inline-block;margin-top:16px;font:400 13px/1.4 var(--text);
-  color:rgba(255,255,255,.6);text-decoration:underline;text-underline-offset:3px}
+/* Вторая кнопка оплаты — обводкой, а не заливкой: заливка на экране одна,
+   и она у того способа, который мы предлагаем первым. */
+.paylink{display:block;margin-top:12px;padding:16px 20px;border-radius:14px;
+  background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;
+  font:600 15px/1.2 var(--ui);letter-spacing:.02em;text-align:center;text-decoration:none;
+  transition:background .2s,border-color .2s,transform .18s ease}
+@media (hover:hover){.paylink:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.5)}}
+.paylink:active{transform:scale(.985)}
+/* «Назад на сайт» — третье по важности, поэтому самое тихое */
+.done .place[data-close]{background:transparent;color:rgba(255,255,255,.65);
+  border-color:rgba(255,255,255,.22)}
+.done .place[data-close]:hover{background:rgba(255,255,255,.06);color:#fff}
 .pay input:disabled+label{opacity:.4;cursor:not-allowed}
 .pay input{position:absolute;opacity:0;pointer-events:none}
 .pay label{display:flex;flex-direction:column;gap:3px;align-items:center;text-align:center;
@@ -1377,7 +1387,8 @@ cof.addEventListener('submit',async e=>{
     }
     if(!r.ok){
       // сервер проверяет те же поля ещё раз; если он назвал поле — подсветим его
-      const FIELD={ bad_name:'name', bad_phone:'phone', bad_city:'city', bad_branch:'branch', bad_handle:'handle' };
+      const FIELD={ bad_name:'name', bad_phone:'phone', bad_email:'email',
+                    bad_city:'city', bad_branch:'branch', bad_handle:'handle' };
       const nm=FIELD[res.error], inp=nm&&cof.querySelector('[name='+nm+']');
       if(inp){
         btn.disabled=false; setPlace(payments?'Pay':'Place order');
@@ -1409,7 +1420,7 @@ cof.addEventListener('submit',async e=>{
       $('doneTitle').textContent='Готово до оплати';
       $('doneText').innerHTML=ticket(res.orderId,res.total||priceUAH,chosenSize(),{head:false})
         +'<a class="monobtn" href="'+escH(res.appUrl)+'">Сплатити через mono</a>'
-        +'<a class="paylink" href="'+escH(res.pageUrl)+'">Оплатити карткою, Apple Pay або Google Pay</a>'
+        +'<a class="paylink" href="'+escH(res.pageUrl)+'">Оплатити карткою</a>'
         +'<p class="paynote">Розмір у броні 15 хвилин — стільки живе рахунок.</p>';
       $('payAgain').hidden=true; co.classList.add('ok'); return;
     }
