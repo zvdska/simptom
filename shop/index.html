@@ -4,7 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Shop NEVER LAND</title>
-<meta name="description" content="NEVER LAND SHOP — official merch.">
+<meta name="description" content="Limited Box">
+<!-- Превью ссылки: телеграм показывает site_name, title и description
+     тремя строками. Без этих тегов он берёт что придётся из страницы. -->
+<meta property="og:site_name" content="Sимптом SHOP">
+<meta property="og:title" content="NEVER LAND">
+<meta property="og:description" content="Limited Box">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://simptomaponika.com/shop/">
+<meta property="og:image" content="https://simptomaponika.com/shop/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="img/logo-round.webp" type="image/webp">
 <link rel="apple-touch-icon" href="img/logo-round.webp">
@@ -400,6 +411,41 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
 .seg input:checked+label{background:#fff;color:#000}
 .seg input:focus-visible+label{outline:2px solid #fff;outline-offset:2px}
 .seg.bad{border-color:#ff6b6b}
+/* Перевозчики — логотипами. Марки лежат на белых плитках: у «Укрпошти»
+   шрифт чёрный, на тёмном фоне его просто не видно. Невыбранные гасим
+   и обесцвечиваем, выбранная горит в цвете и обведена белым. */
+.carseg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-radius:14px}
+.carseg input{position:absolute;opacity:0;pointer-events:none}
+.carseg label{display:grid;place-items:center;height:62px;padding:10px 12px;cursor:pointer;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.14);border-radius:12px;
+  transition:background .2s,border-color .2s,box-shadow .2s}
+/* brightness(0) invert(1) кладёт любой логотип в плоский белый силуэт —
+   иначе чёрный шрифт «Укрпошти» на тёмной плитке пропадает */
+.carseg img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;
+  filter:brightness(0) invert(1);opacity:.5;transition:filter .2s,opacity .2s}
+.carseg label[for=car-np] img{max-width:84%}
+.carseg label[for=car-ng] img{max-width:96%}
+@media (hover:hover){.carseg label:hover{background:rgba(255,255,255,.07)}
+  .carseg label:hover img{opacity:.85}}
+.carseg input:checked+label{background:#fff;border-color:#fff}
+.carseg input:checked+label img{filter:none;opacity:1}
+.carseg input:focus-visible+label{box-shadow:0 0 0 2px #0b0b0b,0 0 0 4px #fff}
+.carseg.bad{outline:1px solid #ff6b6b;outline-offset:6px}
+@media (max-width:430px){
+  .carseg{gap:6px}
+  .carseg label{height:56px;padding:8px 6px}
+  .carseg label[for=car-np] img{max-width:94%}
+  .carseg label[for=car-ng] img{max-width:100%}
+}
+.seghint{margin:2px 0 0;font:400 11.5px/1.45 var(--ui);color:rgba(255,255,255,.42)}
+/* поля заграничной доставки появляются только при выборе Nova Global */
+.intl-only{display:none}
+#ship.intl .intl-only{display:grid}
+#ship.intl p.intl-only{display:block}
+#ship.intl .dom-only{display:none}
+.rowcity{display:grid;gap:14px;grid-template-columns:1fr}
+#ship.intl .rowcity{grid-template-columns:1fr 1fr}
+@media (max-width:430px){#ship.intl .rowcity{grid-template-columns:1fr}}
 
 /* выбор оплаты: строки с галочкой, как в настройках iOS */
 .pay{display:flex;flex-direction:column;gap:10px}
@@ -556,7 +602,7 @@ dialog.doc .body h4{margin:18px 0 7px;font:600 13.5px/1.45 var(--ui);color:rgba(
 dialog.doc .body .lead{color:rgba(255,255,255,.55);font-size:14px;
   padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,.08)}
 dialog.doc .body strong{color:#fff}
-dialog.doc .body ul,dialog.doc .body ol{margin:10px 0 0 20px}
+dialog.doc .body ul,dialog.doc .body ol{margin:10px 0 14px 20px}
 dialog.doc .body li{margin-top:7px}
 dialog.doc .body table{width:100%;border-collapse:collapse;margin-top:16px;font-size:14px;
   background:rgba(255,255,255,.04);border-radius:14px;overflow:hidden}
@@ -685,7 +731,6 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
   <button type="button" class="x" data-x aria-label="Закрити">✕</button>
   <h2 id="t-offer">Публічна оферта</h2>
   <div class="body">
-    <p class="lead">Договір купівлі-продажу товарів дистанційним способом</p>
 
     <h3>1. Загальні положення</h3>
     <p>1.1. Цей документ є публічною офертою (пропозицією) Фізичної особи-підприємця Дудулад Оксани Анатоліївни (далі — Продавець) укласти договір купівлі-продажу товарів дистанційним способом на умовах, викладених нижче.</p>
@@ -716,7 +761,8 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
     <p>5.4. Якщо замовлений товар відсутній, Продавець повідомляє про це Покупця та повертає кошти протягом трьох банківських днів або, за згодою Покупця, пропонує заміну.</p>
 
     <h3>6. Доставка</h3>
-    <p>6.1. Доставка здійснюється перевізником «Нова Пошта» на відділення або за адресою, вказаною Покупцем.</p>
+    <p>6.1. Доставка Україною здійснюється перевізниками «Нова Пошта» або «Укрпошта» на відділення чи за адресою, вказаною Покупцем.</p>
+    <p>6.1.1. Доставка за межі України здійснюється службою Nova Poshta Global за адресою, вказаною Покупцем. Митні платежі, податки та збори країни призначення сплачує Покупець самостійно. Якщо відправлення затримано або повернуто митними органами країни призначення, Продавець за це відповідальності не несе.</p>
     <p>6.2. Продавець передає товар перевізнику протягом 1–2 робочих днів з дня зарахування оплати. Строк доставки визначається перевізником і від Продавця не залежить.</p>
     <p>6.3. Ризик випадкового пошкодження або втрати товару переходить до Покупця з моменту передання товару перевізнику.</p>
     <p>6.4. Покупець зобов'язаний оглянути відправлення у відділенні перевізника до його отримання. Претензії щодо механічних пошкоджень упаковки чи товару після отримання відправлення без складання акта перевізником не приймаються.</p>
@@ -728,7 +774,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
     <p>7.4. Покупець має право на повернення та обмін товару на умовах розділу 8.</p>
 
     <h3>8. Повернення товару та коштів</h3>
-    <p>8.1. Покупець має право повернути або обміняти товар належної якості протягом 14 днів з дня отримання, не рахуючи дня купівлі, за умови що товар не використовувався, збережено його товарний вигляд, споживчі властивості, бирки, пломби й ярлики, а також є розрахунковий документ (стаття 9 Закону України «Про захист прав споживачів»).</p>
+    <p>8.1. Покупець має право повернути або обміняти товар належної якості протягом 14 днів з дня отримання, не рахуючи дня купівлі, за умови що товар не використовувався, збережено його товарний вигляд, споживчі властивості, бирки, пломби й ярлики, а також є розрахунковий документ (статті 9 та 13 Закону України «Про захист прав споживачів»). Товар продається комплектом (бокс) і приймається до повернення лише в повній комплектності.</p>
     <p>8.2. Обміну та поверненню не підлягають товари, включені до переліку, затвердженого постановою Кабінету Міністрів України від 19.03.1994 № 172, зокрема панчішно-шкарпеткові вироби та натільна білизна.</p>
     <p>8.3. Для повернення Покупець звертається у Telegram <a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a> із зазначенням номера замовлення та причини. Продавець повідомляє порядок відправлення.</p>
     <p>8.4. Вартість зворотного пересилання товару належної якості оплачує Покупець.</p>
@@ -761,28 +807,28 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
   <button type="button" class="x" data-x aria-label="Закрити">✕</button>
   <h2 id="t-shipping">Доставка і повернення</h2>
   <div class="body">
-    <p class="lead">Те, що в оферті написано юридичною мовою, тут сказано людською.</p>
-
     <h3>Доставка</h3>
     <p>Відправляємо «Новою Поштою» — на відділення, у поштомат або кур'єром на адресу.</p>
     <ul>
       <li>Замовлення передаємо перевізнику протягом <strong>1–2 робочих днів</strong> після оплати.</li>
-      <li>Номер накладної надійде на вказаний номер телефону.</li>
+      <li>Номер накладної надішле менеджер у Telegram <a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a>.</li>
       <li>Доставку оплачує отримувач за тарифами перевізника.</li>
       <li>Строк дороги залежить від «Нової Пошти» і зазвичай становить 1–3 дні по Україні.</li>
     </ul>
+    <p><strong>За кордон</strong> — Nova Poshta Global. При оформленні оберіть цього перевізника й вкажіть країну, місто, повну адресу та поштовий індекс. Строк — зазвичай 7–14 днів, залежно від країни. Мито й податки країни отримувача сплачує покупець.</p>
     <p><strong>Важливо:</strong> огляньте посилку у відділенні до того, як забрати її. Якщо усередині пошкодження — відразу попросіть скласти акт. Після отримання без акта перевізник претензій не приймає, і ми теж нічого не зможемо зробити.</p>
 
     <h3>Якщо не підійшло</h3>
-    <p>Маєте <strong>14 днів</strong> з дня отримання, щоб повернути або обміняти річ, якщо вона не підійшла за розміром, фасоном чи кольором.</p>
-    <p>Умови прості: річ не носили й не прали, бирки та ярлики на місці, зберігся товарний вигляд і є чек.</p>
-    <p>Що робити:</p>
-    <ol>
-      <li>Напишіть у Telegram <a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a> — номер замовлення і що саме не так.</li>
-      <li>Ми надішлемо, куди відправляти.</li>
-      <li>Після того як посилка дійде до нас, повернемо кошти на ту саму картку протягом <strong>7 днів</strong>.</li>
-    </ol>
-    <p>Зворотну пересилку в такому разі оплачує покупець.</p>
+    <p>Закон дає <strong>14 днів</strong> з дня отримання, щоб повернути річ належної якості. Умови жорсткі, і ми їх перевіряємо:</p>
+    <ul>
+      <li>річ не носили, не прали й не прасували;</li>
+      <li>бирки, ярлики та пломби на місці;</li>
+      <li>збережено товарний вигляд і повна комплектність боксу;</li>
+      <li>є фіскальний чек.</li>
+    </ul>
+    <p>Бокс — це комплект. Повертається тільки цілком: якщо всередині чогось бракує, повернення не приймаємо.</p>
+    <p>Напишіть у Telegram <a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a> — номер замовлення і причину, ми надішлемо адресу. Кошти повернемо на ту саму картку протягом <strong>7 днів</strong> після того, як бокс дійде до нас і ми його оглянемо.</p>
+    <p>Зворотну пересилку оплачує покупець. Обмін на інший розмір можливий, лише поки він є в наявності — тираж лімітований, і залишків може не бути.</p>
 
     <h3>Якщо товар з браком</h3>
     <p>Тут інакше: <strong>зворотну пересилку оплачуємо ми</strong>. На вибір — заміна на таку саму річ, усунення недоліку або повернення грошей. Фото браку пришліть разом із листом — так швидше.</p>
@@ -796,7 +842,6 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
   <button type="button" class="x" data-x aria-label="Закрити">✕</button>
   <h2 id="t-privacy">Політика конфіденційності</h2>
   <div class="body">
-    <p class="lead">Володілець персональних даних — ФОП Дудулад Оксана Анатоліївна, зв'язок у Telegram <a href="https://t.me/neverlandsupport" target="_blank" rel="noopener">@neverlandsupport</a>. Ця політика пояснює, які дані збирає сайт і що з ними відбувається.</p>
 
     <h3>1. Які дані збираються</h3>
     <table>
@@ -835,7 +880,6 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
   <button type="button" class="x" data-x aria-label="Закрити">✕</button>
   <h2 id="t-cookies">Файли cookie</h2>
   <div class="body">
-    <p class="lead">Коротко: сайт не показує рекламу й не передає ваші дані рекламним мережам. Те, що зберігається, потрібне або для роботи замовлення, або для знеособленої статистики.</p>
 
     <h3>Що саме зберігається</h3>
     <table>
@@ -963,18 +1007,31 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
           placeholder="@username" autocapitalize="off" autocomplete="off" spellcheck="false"><span class="err"></span></label>
       </fieldset>
 
-      <fieldset>
-        <label class="f"><span>City</span><input name="city" required
-          autocomplete="address-level2" placeholder="Kyiv"><span class="err"></span></label>
+      <fieldset id="ship">
         <div class="f">
           <span>Carrier</span>
-          <div class="seg" id="car">
-            <input type="radio" name="carrier" id="car-np" value="np"><label for="car-np">Нова Пошта</label>
-            <input type="radio" name="carrier" id="car-up" value="up"><label for="car-up">Укрпошта</label>
+          <div class="carseg" id="car">
+            <input type="radio" name="carrier" id="car-np" value="np">
+            <label for="car-np"><img src="img/car-np.webp" alt="Нова Пошта" width="500" height="160" decoding="async"></label>
+            <input type="radio" name="carrier" id="car-ng" value="ng">
+            <label for="car-ng"><img src="img/car-ng.webp" alt="Nova Poshta Global" width="500" height="127" decoding="async"></label>
+            <input type="radio" name="carrier" id="car-up" value="up">
+            <label for="car-up"><img src="img/car-up.webp" alt="Укрпошта" width="500" height="85" decoding="async"></label>
           </div>
           <span class="err" id="e-car" aria-live="polite"></span>
+          <p class="seghint intl-only" lang="uk">Міжнародна доставка «Нової Пошти». Мито й податки країни отримувача сплачує покупець.</p>
         </div>
-        <label class="f"><span>Branch number</span><input name="branch" required
+        <label class="f intl-only"><span>Country</span><input name="country" required
+          autocomplete="country-name" placeholder="Poland"><span class="err"></span></label>
+        <div class="rowcity">
+          <label class="f"><span>City</span><input name="city" required
+            autocomplete="address-level2" placeholder="Kyiv"><span class="err"></span></label>
+          <label class="f intl-only"><span>Postal code</span><input name="zip" required
+            autocomplete="postal-code" autocapitalize="characters" placeholder="00-001"><span class="err"></span></label>
+        </div>
+        <label class="f intl-only"><span>Address</span><input name="address" required
+          autocomplete="street-address" placeholder="street, building, apartment"><span class="err"></span></label>
+        <label class="f dom-only"><span>Branch number</span><input name="branch" required
           inputmode="numeric" autocomplete="off" placeholder="12"><span class="err"></span></label>
         <label class="f"><span>Comment <i>optional</i></span><textarea name="comment" rows="2"></textarea></label>
         <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -1375,6 +1432,7 @@ var validate=function(){
   $('sz').classList.toggle('bad',!size); $('e-size').textContent=size?'':'Pick a size';
   if(!size){ok=false; first=first||cof.querySelector('input[name=size]');}
   cof.querySelectorAll('.f > input,.f > textarea').forEach(inp=>{
+    if(inp.disabled) return;          // скрытые поля доставки не проверяем
     let msg='';
     const v=inp.value.trim();
     if(inp.required&&!v) msg='Required';
@@ -1384,6 +1442,9 @@ var validate=function(){
     else if(inp.name==='name'&&v.length<2) msg='Enter your name';
     else if(inp.name==='city'&&v.length<2) msg='Enter the city';
     else if(inp.name==='branch'&&v.length<1) msg='Enter the branch number';
+    else if(inp.name==='country'&&v.length<2) msg='Enter the country';
+    else if(inp.name==='address'&&v.length<5) msg='Street, building, apartment';
+    else if(inp.name==='zip'&&v.length<3) msg='Enter the postal code';
     inp.parentElement.classList.toggle('bad',!!msg);
     const slot=inp.parentElement.querySelector('.err'); if(slot) slot.textContent=msg;
     if(msg){ok=false; first=first||inp;}
@@ -1392,6 +1453,28 @@ var validate=function(){
   return ok;
 };
 cof.addEventListener('input',e=>{ const f=e.target.closest('.f'); if(f&&f.classList.contains('bad')){f.classList.remove('bad');f.querySelector('.err').textContent='';} if(e.target.name==='size'){$('sz').classList.remove('bad');$('e-size').textContent='';} if(e.target.name==='carrier'){$('car').classList.remove('bad');$('e-car').textContent='';} if(e.target.id==='agree'){$('agreeBox').classList.remove('bad');$('e-agree').textContent='';} });
+
+/* Nova Global — заграница: вместо номера отделения нужен полный адрес.
+   Невидимые поля отключаем: disabled не уходит в FormData и не проходит проверку,
+   поэтому форма не требует индекс у того, кто везёт на отделение в Киеве. */
+const ship=$('ship');
+const clearField=i=>{ if(!i) return; i.parentElement.classList.remove('bad');
+  const s=i.parentElement.querySelector('.err'); if(s) s.textContent=''; };
+function syncCarrier(){
+  const c=cof.querySelector('input[name=carrier]:checked');
+  const intl=!!c&&c.value==='ng';
+  ship.classList.toggle('intl',intl);
+  ['country','zip','address'].forEach(n=>{
+    const i=cof.querySelector('[name='+n+']'); if(!i) return;
+    i.disabled=!intl; if(!intl) clearField(i);
+  });
+  const br=cof.querySelector('[name=branch]');
+  if(br){ br.disabled=intl; if(intl) clearField(br); }
+  const city=cof.querySelector('[name=city]');
+  if(city) city.placeholder=intl?'Warsaw':'Kyiv';
+}
+cof.addEventListener('change',e=>{ if(e.target.name==='carrier') syncCarrier(); });
+syncCarrier();
 
 const escH=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const _validate=validate;
@@ -1405,7 +1488,7 @@ validate=function(){
   // перевозчик — отдельный выбор, иначе непонятно, куда везти
   const car=cof.querySelector('input[name=carrier]:checked');
   $('car').classList.toggle('bad',!car);
-  $('e-car').textContent=car?'':'Нова Пошта or Укрпошта?';
+  $('e-car').textContent=car?'':'Pick the carrier';
   if(!car) ok=false;
   // способ оплаты обязателен
   const pm=payMethod();
@@ -1458,7 +1541,8 @@ cof.addEventListener('submit',async e=>{
     if(!r.ok){
       // сервер проверяет те же поля ещё раз; если он назвал поле — подсветим его
       const FIELD={ bad_name:'name', bad_phone:'phone', bad_email:'email',
-                    bad_city:'city', bad_branch:'branch', bad_handle:'handle' };
+                    bad_city:'city', bad_branch:'branch', bad_handle:'handle',
+                    bad_country:'country', bad_zip:'zip', bad_address:'address' };
       const nm=FIELD[res.error], inp=nm&&cof.querySelector('[name='+nm+']');
       if(inp){
         btn.disabled=false; setPlace(payments?'Pay':'Place order');
