@@ -126,6 +126,17 @@ body.ready .it-cd{transition-delay:.2s}
 .shopnow:active{background:#fff;color:#000;border-color:#fff;transform:scale(.97)}
 .shopnow:focus-visible{outline:2px solid #fff;outline-offset:5px}
 .shopnow:disabled{opacity:.5;cursor:default}
+/* Отсчёт до открытия. Моноширинные цифры — иначе на каждой секунде
+   числа «прыгают» по ширине и строка дёргается. */
+.cd{display:flex;justify-content:center;gap:clamp(14px,3vw,26px);margin-top:18px;
+  opacity:0;transition:opacity .6s ease .3s}
+body.ready .cd{opacity:1}
+.cd span{display:grid;justify-items:center;gap:5px}
+.cd b{font:500 clamp(19px,2.4vw,26px)/1 var(--ui);letter-spacing:.02em;color:#fff;
+  font-variant-numeric:tabular-nums}
+.cd i{font:500 9.5px/1 var(--ui);font-style:normal;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(255,255,255,.4)}
+
 /* «Coming soon» — не кнопка, а объявление: приглушена, без отклика на наведение */
 .shopnow.soon{opacity:1;cursor:default;border-color:rgba(255,255,255,.14);
   background:rgba(255,255,255,.05);color:rgba(255,255,255,.7)}
@@ -618,6 +629,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
 <main class="hero">
   <h1 class="sr">Never Land — collector's box by Sимптом</h1>
   <button type="button" class="shopnow buybox" id="shopNow" aria-haspopup="dialog" aria-controls="co">Buy box</button>
+  <p class="cd" id="cd" hidden></p>
   <a class="inside" href="#products" id="toInside">What's inside</a>
 </main>
 
@@ -1048,6 +1060,10 @@ const CFG = {
      и отсюда, и переменной SHOP_SOON в Cloudflare — чтобы открыть магазин,
      не трогая сайт. Значение с сервера главнее. */
   soon:true,
+  /* Старт: середа, 11 листопада 2026, 10:00 за Києвом. Пояс у рядку
+     обов'язковий — без нього відлік збився б у покупців з інших країн.
+     Значення з сервера (OPEN_AT) головніше за це. */
+  openAt:'2026-11-11T10:00:00+02:00',
   order:{ price:3799, maxQty:1,
     /* адрес сервера заказов (Cloudflare Worker из папки server/), без слэша в конце */
     api:'https://neverland-shop.concert-grebz.workers.dev' },
@@ -1179,6 +1195,35 @@ const API=/YOUR-SUBDOMAIN/.test(CFG.order.api||'')?'':(CFG.order.api||'').replac
 const apiGet=path=>fetch(API+path).then(r=>{if(!r.ok) throw new Error(r.status); return r.json();});
 const paintPrice=()=>document.querySelectorAll('[data-price]').forEach(el=>el.textContent=fmtUAH(priceUAH));
 /* какие размеры ещё можно купить — решает сервер, на сайте остатки не хранятся */
+/* Отсчёт показываем только пока магазин закрыт и дата впереди.
+   Когда дойдёт до нуля — не открываем витрину сами, а переспрашиваем сервер:
+   он единственный решает, принимать заказы или нет. */
+let cdTimer=0;
+function paintCountdown(){
+  const el=$('cd');
+  clearInterval(cdTimer);
+  if(!soon||!openAt||openAt<=Date.now()){ el.hidden=true; el.textContent=''; return; }
+  const L=[['Days',86400000],['Hrs',3600000],['Min',60000],['Sec',1000]];
+  const draw=()=>{
+    let left=openAt-Date.now();
+    if(left<=0){
+      clearInterval(cdTimer); el.hidden=true;
+      if(API) apiGet('/config').then(c=>{
+        if(typeof c.soon==='boolean') soon=c.soon;
+        openAt=Number(c.openAt)||0;
+        loadStock(); paintCountdown();
+      }).catch(()=>{});
+      return;
+    }
+    el.innerHTML=L.map(([name,ms])=>{
+      const v=Math.floor(left/ms); left-=v*ms;
+      return '<span><b>'+String(v).padStart(2,'0')+'</b><i>'+name+'</i></span>';
+    }).join('');
+  };
+  el.hidden=false; draw();
+  cdTimer=setInterval(draw,1000);
+}
+
 function paintStock(map){
   let any=false;
   document.querySelectorAll('#sz input[name=size]').forEach(inp=>{
@@ -1192,17 +1237,27 @@ function paintStock(map){
     $('coNote').textContent='Everything is sold out. Follow us for the next drop.'; }
   /* Обе кнопки «Buy box» — на главной и в продуктах. Если боксов нет, человек
      не должен открывать форму и узнавать об этом уже внутри. */
+  paintBuy(any);
+}
+
+/* Обе кнопки «Buy box» — на главной и в продуктах. Вынесено отдельно, потому
+   что вызывать это нужно и когда склад не ответил: иначе при недоступном
+   воркере на странице осталась бы живая кнопка покупки. */
+function paintBuy(any){
   document.querySelectorAll('#shopNow,[data-shop]').forEach(b=>{
     b.disabled=soon||!any;
     b.classList.toggle('soon',soon);
     b.textContent=soon?'Coming soon':(any?'Buy box':'Sold out');
   });
 }
-const loadStock=()=>API?apiGet('/stock').then(paintStock).catch(()=>{}):Promise.resolve();
+const loadStock=()=>API
+  ? apiGet('/stock').then(paintStock).catch(()=>paintBuy(true))
+  : (paintBuy(true), Promise.resolve());
 /* пока эквайринг не одобрен, сервер принимает заказ и мы связываемся вручную —
    кнопка и подпись под ней должны говорить об этом честно */
 let payments=true;
 let soon=CFG.soon===true;
+let openAt=Date.parse(CFG.openAt||'')||0;   // момент открытия, мс; 0 — даты нет
 const payMethod=()=>{ const r=cof.querySelector('input[name=pay]:checked'); return r?r.value:''; };
 /* Состав бокса в одном месте: он показывается и в чекауте, и в чеке,
    и расходиться эти два списка не должны. */
@@ -1283,8 +1338,10 @@ if(API) apiGet('/config').then(c=>{
   if(c.priceUAH){ priceUAH=c.priceUAH; paintPrice(); }
   if(c.payments===false) payments=false;
   if(typeof c.soon==='boolean') soon=c.soon;
-  paintPay(); labelPlace(); setQty(qty); loadStock();
+  openAt=Number(c.openAt)||0;
+  paintPay(); labelPlace(); setQty(qty); loadStock(); paintCountdown();
 }).catch(()=>{});
+paintBuy(true); paintCountdown();   // до ответа сервера считаем по странице
 loadStock();
 paintPrice(); setQty(1);
 function openCo(){
