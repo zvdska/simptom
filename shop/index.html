@@ -349,8 +349,10 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
 
 /* ── корзина ─────────────────────────────────────────────── */
 /* Иконка висит поверх всего, но ниже панелей: открытый чекаут её перекрывает. */
-.carticon{position:fixed;top:max(18px,env(safe-area-inset-top,0px));right:18px;z-index:35;
-  all:unset;cursor:pointer;width:46px;height:46px;display:grid;place-items:center;border-radius:50%;
+/* all:unset обязательно первым: поставленный после, он сбрасывает и position,
+   и z-index, и кнопка уезжает в поток страницы. */
+.carticon{all:unset;position:fixed;top:max(18px,env(safe-area-inset-top,0px));right:18px;z-index:35;
+  cursor:pointer;width:46px;height:46px;display:grid;place-items:center;border-radius:50%;
   background:rgba(12,12,12,.62);border:1px solid rgba(255,255,255,.16);color:#fff;
   -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
   transition:background .2s,border-color .2s,scale .15s,opacity .3s}
@@ -358,8 +360,9 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
 .carticon:active{scale:.92}
 .carticon:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .carticon svg{width:20px;height:20px;display:block}
-/* Пока корзина пуста, иконка не нужна — она только шумит поверх видео. */
-.carticon[hidden]{display:none}
+/* Иконка видна всегда, даже с пустой корзиной: иначе человек не знает,
+   куда делся добавленный товар. Исчезает только счётчик. */
+.cartn[hidden]{display:none}
 .cartn{position:absolute;top:-3px;right:-3px;min-width:19px;height:19px;padding:0 5px;
   display:grid;place-items:center;border-radius:19px;background:#fff;color:#000;
   font:900 11px/1 var(--display)}
@@ -401,6 +404,13 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
   padding:18px 0 4px;font:600 14px/1 var(--ui)}
 .cartfoot b{font:900 22px/1 var(--display)}
 .cartnote{margin:10px 0 0;font:400 11.5px/1.5 var(--ui);color:rgba(255,255,255,.42)}
+/* Вторая кнопка намеренно тихая: уводить от оплаты белым пятном не нужно. */
+.keepshop{all:unset;cursor:pointer;display:grid;place-items:center;width:100%;height:46px;
+  margin-top:10px;border-radius:999px;border:1px solid rgba(255,255,255,.26);
+  font:700 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;
+  transition:border-color .2s,background .2s}
+.keepshop:hover{border-color:#fff;background:rgba(255,255,255,.07)}
+.keepshop:focus-visible{outline:2px solid #fff;outline-offset:3px}
 
 /* ── товар на витрине ────────────────────────────────────── */
 /* Цена и кнопка — одним блоком под центрованным названием: прижатые к краям
@@ -742,13 +752,13 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
 
 <a class="hlogo" href="#" id="hlogo" aria-label="Never Land — back to top"><img src="img/wordmark-top.webp" alt="Never Land" width="1400" height="155"></a>
 
-<button type="button" class="carticon" id="cartBtn" hidden aria-haspopup="dialog" aria-controls="cart">
+<button type="button" class="carticon" id="cartBtn" aria-haspopup="dialog" aria-controls="cart">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M6 7h12l-1.2 11.1a2 2 0 0 1-2 1.9H9.2a2 2 0 0 1-2-1.9Z"></path>
-    <path d="M9 7V5.6A3 3 0 0 1 12 3a3 3 0 0 1 3 2.6V7"></path>
+    <path d="M4.3 7.6h15.4l1 11.6a2.2 2.2 0 0 1-2.2 2.4H5.5a2.2 2.2 0 0 1-2.2-2.4Z"></path>
+    <path d="M8.6 10.6V7a3.4 3.4 0 0 1 6.8 0v3.6"></path>
   </svg>
-  <span class="cartn" id="cartN">0</span>
+  <span class="cartn" id="cartN" hidden>0</span>
   <span class="sr" id="cartSr">Cart</span>
 </button>
 
@@ -1058,6 +1068,7 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
       <div class="cartlist" id="cartList"></div>
       <div class="cartfoot" id="cartFoot"><span>Total</span><b id="cartTotal"></b></div>
       <button type="button" class="shopnow place" id="toCheckout">Checkout</button>
+      <button type="button" class="keepshop" id="keepShop">Continue shopping</button>
       <button type="button" class="sizelink" data-doc="sizes">Size guide</button>
       <p class="cartnote">1 of each per person. Sizes are picked here.</p>
     </div>
@@ -1416,11 +1427,11 @@ function rowHtml(l,editable){
 function paintCart(){
   const n=cart.length;
   $('cartN').textContent=n;
-  $('cartBtn').hidden=n===0;
+  $('cartN').hidden=n===0;
   $('cartSr').textContent='Cart, '+n+(n===1?' item':' items');
   $('cartList').innerHTML=n?cart.map(l=>rowHtml(l,true)).join('')
     :'<p class="cartempty">Your cart is empty.</p>';
-  $('cartFoot').hidden=!n; $('toCheckout').hidden=!n;
+  $('cartFoot').hidden=!n; $('toCheckout').hidden=!n; $('keepShop').hidden=!n;
   $('cartTotal').textContent=fmtUAH(cartTotal());
   $('coCart').innerHTML=cart.map(l=>rowHtml(l,false)).join('');
   $('coTotal').textContent=fmtUAH(cartTotal());
@@ -1628,6 +1639,7 @@ function closeCart(){
 }
 cartEl.querySelectorAll('[data-cart-close]').forEach(b=>b.addEventListener('click',closeCart));
 $('cartBtn').addEventListener('click',openCart);
+$('keepShop').addEventListener('click',closeCart);
 cartEl.addEventListener('click',e=>{
   const rm=e.target.closest('[data-rm]');       if(rm) return removeFromCart(rm.dataset.rm);
   const sz=e.target.closest('[data-size]');
