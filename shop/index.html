@@ -297,19 +297,19 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
    На телефоне — лист, который выезжает снизу. Шапка стоит на месте,
    прокручивается только содержимое: иначе в длинной форме пропадает
    крестик, и закрыть окно нечем. */
-#co{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+#co,#cart{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
   padding:clamp(16px,3vh,40px) 16px;visibility:hidden}
-#co.open{visibility:visible}
-#co .scrim{position:absolute;inset:0;background:rgba(0,0,0,.62);opacity:0;transition:opacity .4s;
+#co.open,#cart.open{visibility:visible}
+#co .scrim,#cart .scrim{position:absolute;inset:0;background:rgba(0,0,0,.62);opacity:0;transition:opacity .4s;
   -webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%)}
-#co.open .scrim{opacity:1}
-#co .panel{position:relative;display:flex;flex-direction:column;overflow:hidden;
+#co.open .scrim,#cart.open .scrim{opacity:1}
+#co .panel,#cart .panel{position:relative;display:flex;flex-direction:column;overflow:hidden;
   width:min(620px,100%);max-height:min(88svh,920px);background:#0b0b0b;
   border:1px solid rgba(255,255,255,.1);border-radius:28px;
   box-shadow:0 40px 100px -24px rgba(0,0,0,.9);
   opacity:0;scale:.96;translate:0 14px;
   transition:opacity .4s ease,scale .45s var(--ease),translate .45s var(--ease)}
-#co.open .panel{opacity:1;scale:1;translate:0 0}
+#co.open .panel,#cart.open .panel{opacity:1;scale:1;translate:0 0}
 .grab{display:none}
 .cohead{flex:none;display:flex;justify-content:space-between;align-items:center;gap:16px;
   padding:clamp(22px,2.6vw,30px) clamp(20px,3vw,32px) clamp(14px,1.6vw,18px)}
@@ -327,18 +327,18 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
   border:3px solid transparent;background-clip:content-box}
 
 @media (max-width:640px){
-  #co{align-items:flex-end;padding:0}
-  #co .panel{width:100%;max-height:94svh;border-radius:24px 24px 0 0;border-bottom:0;
+  #co,#cart{align-items:flex-end;padding:0}
+  #co .panel,#cart .panel{width:100%;max-height:94svh;border-radius:24px 24px 0 0;border-bottom:0;
     opacity:1;scale:1;translate:0 100%;
     transition:translate .5s cubic-bezier(.2,.75,.15,1)}
-  #co.open .panel{translate:0 0}
+  #co.open .panel,#cart.open .panel{translate:0 0}
   .grab{display:block;flex:none;width:38px;height:4px;border-radius:4px;margin:9px auto 0;
     background:rgba(255,255,255,.22)}
   .cohead{padding:14px 20px 12px}
   .cobody{padding:0 20px calc(24px + env(safe-area-inset-bottom,0px))}
 }
 @media (prefers-reduced-motion:reduce){
-  #co .panel{transition:none}
+  #co .panel,#cart .panel{transition:none}
 }
 .x{all:unset;cursor:pointer;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;
   background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font:400 15px/1 var(--text);
@@ -346,6 +346,76 @@ dialog.doc.closing::backdrop{animation:docBd .2s ease reverse both}
 .x:hover{background:rgba(255,255,255,.2);color:#fff}
 .x:active{scale:.9}
 .x:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+/* ── корзина ─────────────────────────────────────────────── */
+/* Иконка висит поверх всего, но ниже панелей: открытый чекаут её перекрывает. */
+.carticon{position:fixed;top:max(18px,env(safe-area-inset-top,0px));right:18px;z-index:35;
+  all:unset;cursor:pointer;width:46px;height:46px;display:grid;place-items:center;border-radius:50%;
+  background:rgba(12,12,12,.62);border:1px solid rgba(255,255,255,.16);color:#fff;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  transition:background .2s,border-color .2s,scale .15s,opacity .3s}
+.carticon:hover{background:rgba(26,26,26,.86);border-color:rgba(255,255,255,.4)}
+.carticon:active{scale:.92}
+.carticon:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.carticon svg{width:20px;height:20px;display:block}
+/* Пока корзина пуста, иконка не нужна — она только шумит поверх видео. */
+.carticon[hidden]{display:none}
+.cartn{position:absolute;top:-3px;right:-3px;min-width:19px;height:19px;padding:0 5px;
+  display:grid;place-items:center;border-radius:19px;background:#fff;color:#000;
+  font:900 11px/1 var(--display)}
+@media (max-width:640px){.carticon{width:42px;height:42px;right:14px;top:max(14px,env(safe-area-inset-top,0px))}}
+
+.cartlist{display:grid;gap:2px;margin:4px 0 0}
+.cartrow{display:grid;grid-template-columns:62px 1fr auto;gap:14px;align-items:center;
+  padding:16px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.cartrow img{width:62px;height:62px;object-fit:cover;border-radius:12px;background:#141414}
+.cartrow h4{font:900 15px/1.2 var(--display);margin:0 0 3px}
+.cartrow .cprice{font:600 14px/1 var(--ui);color:rgba(255,255,255,.62)}
+.cartrow .rm{all:unset;cursor:pointer;align-self:start;width:28px;height:28px;display:grid;
+  place-items:center;border-radius:50%;color:rgba(255,255,255,.45);font:400 13px/1 var(--text);
+  transition:background .2s,color .2s}
+.cartrow .rm:hover{background:rgba(255,255,255,.12);color:#fff}
+.cartrow .rm:focus-visible{outline:2px solid #fff;outline-offset:2px}
+/* Размер выбирают здесь, а не в чекауте: в заказе может быть и бокс, и
+   футболка — у каждого свой размер, одного поля на заказ уже не хватает. */
+.cartsz{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.cartsz button{all:unset;cursor:pointer;min-width:38px;height:32px;display:grid;place-items:center;
+  padding:0 8px;border-radius:9px;border:1px solid rgba(255,255,255,.22);
+  font:900 12px/1 var(--display);transition:background .2s,color .2s,border-color .2s}
+.cartsz button:hover{border-color:#fff}
+.cartsz button[aria-pressed=true]{background:#fff;color:#000;border-color:#fff}
+.cartsz button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.cartsz button:disabled{opacity:.3;cursor:not-allowed;text-decoration:line-through}
+.cartsz button:disabled:hover{border-color:rgba(255,255,255,.22)}
+.cartsz.bad button{border-color:#ff6b6b}
+/* на узком экране четыре размера должны влезать в одну строку */
+@media (max-width:430px){
+  .cartrow{grid-template-columns:54px 1fr auto;gap:11px}
+  .cartrow img{width:54px;height:54px}
+  .cartsz{gap:4px}
+  .cartsz button{min-width:34px;padding:0 5px;height:30px}
+}
+.cartempty{padding:34px 0 30px;text-align:center;color:rgba(255,255,255,.5);
+  font:400 14px/1.6 var(--ui)}
+.cartfoot{display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding:18px 0 4px;font:600 14px/1 var(--ui)}
+.cartfoot b{font:900 22px/1 var(--display)}
+.cartnote{margin:10px 0 0;font:400 11.5px/1.5 var(--ui);color:rgba(255,255,255,.42)}
+
+/* ── товар на витрине ────────────────────────────────────── */
+/* Цена и кнопка — одним блоком под центрованным названием: прижатые к краям
+   карточки они отрывались от неё, потому что фото уже самой карточки. */
+.card .pbuy{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:12px}
+.card .pprice{font:600 14px/1 var(--ui);color:rgba(255,255,255,.72);white-space:nowrap}
+.add{all:unset;cursor:pointer;height:36px;padding:0 16px;display:grid;place-items:center;
+  border-radius:999px;border:1px solid rgba(255,255,255,.3);
+  font:700 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;
+  transition:background .2s,color .2s,border-color .2s,opacity .2s}
+.add:hover{background:#fff;color:#000;border-color:#fff}
+.add:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.add:disabled{opacity:.32;cursor:not-allowed}
+.add:disabled:hover{background:none;color:inherit;border-color:rgba(255,255,255,.3)}
+.add.in{background:#fff;color:#000;border-color:#fff}
 .sum{display:grid;grid-template-columns:72px 1fr auto auto;gap:16px;align-items:center;
   padding:16px 0;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1)}
 .sum img{width:72px;height:72px;object-fit:cover;border-radius:12px;background:rgba(255,255,255,.04)}
@@ -672,6 +742,16 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
 
 <a class="hlogo" href="#" id="hlogo" aria-label="Never Land — back to top"><img src="img/wordmark-top.webp" alt="Never Land" width="1400" height="155"></a>
 
+<button type="button" class="carticon" id="cartBtn" hidden aria-haspopup="dialog" aria-controls="cart">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M6 7h12l-1.2 11.1a2 2 0 0 1-2 1.9H9.2a2 2 0 0 1-2-1.9Z"></path>
+    <path d="M9 7V5.6A3 3 0 0 1 12 3a3 3 0 0 1 3 2.6V7"></path>
+  </svg>
+  <span class="cartn" id="cartN">0</span>
+  <span class="sr" id="cartSr">Cart</span>
+</button>
+
 <main class="hero">
   <h1 class="sr">Never Land — collector's box by Sимптом</h1>
   <button type="button" class="shopnow buybox" id="shopNow" aria-haspopup="dialog" aria-controls="co">Buy box</button>
@@ -687,21 +767,37 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
         <img src="img/p-tee-2.webp" alt="Never Land tee, chest logo and tree print" width="1000" height="1000" loading="lazy">
         <div class="dots" aria-hidden="true"></div></div>
       <h3>Futbolka</h3>
+      <div class="pbuy">
+        <span class="pprice" data-price-for="tee"></span>
+        <button type="button" class="add" data-add="tee">Add</button>
+      </div>
     </article>
 
     <article class="card">
       <div class="shot"><img src="img/p-brelok.webp" alt="Never Land keychain" width="1000" height="1000" loading="lazy"></div>
       <h3>Brelok</h3>
+      <div class="pbuy">
+        <span class="pprice" data-price-for="keychain"></span>
+        <button type="button" class="add" data-add="keychain">Add</button>
+      </div>
     </article>
 
     <article class="card">
       <div class="shot"><img src="img/p-disk.webp" alt="Never Land CD" width="1000" height="1000" loading="lazy"></div>
       <h3>Disk</h3>
+      <div class="pbuy">
+        <span class="pprice" data-price-for="disk"></span>
+        <button type="button" class="add" data-add="disk">Add</button>
+      </div>
     </article>
 
     <article class="card">
       <div class="shot"><img src="img/p-stickers.webp" alt="Never Land sticker pack" width="1000" height="1000" loading="lazy"></div>
       <h3>Sticker pack</h3>
+      <div class="pbuy">
+        <span class="pprice" data-price-for="sticker"></span>
+        <button type="button" class="add" data-add="sticker">Add</button>
+      </div>
     </article>
 
   </div>
@@ -950,6 +1046,24 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
   </div>
 </dialog>
 
+<div id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true">
+  <div class="scrim" data-cart-close></div>
+  <div class="panel" tabindex="-1">
+    <div class="grab" aria-hidden="true"></div>
+    <div class="cohead">
+      <h2 id="cart-title">Cart</h2>
+      <button type="button" class="x" data-cart-close aria-label="Close cart">✕</button>
+    </div>
+    <div class="cobody">
+      <div class="cartlist" id="cartList"></div>
+      <div class="cartfoot" id="cartFoot"><span>Total</span><b id="cartTotal"></b></div>
+      <button type="button" class="shopnow place" id="toCheckout">Checkout</button>
+      <button type="button" class="sizelink" data-doc="sizes">Size guide</button>
+      <p class="cartnote">1 of each per person. Sizes are picked here.</p>
+    </div>
+  </div>
+</div>
+
 <div id="co" role="dialog" aria-modal="true" aria-labelledby="co-title" aria-hidden="true">
   <div class="scrim" data-close></div>
   <div class="panel" tabindex="-1">
@@ -960,35 +1074,11 @@ dialog.doc .body .todo{display:inline-block;padding:2px 8px;border-radius:7px;ba
     </div>
 
     <div class="cobody">
-    <div class="sum">
-      <img src="img/box-order.webp" alt="" width="560" height="560">
-      <div class="sumtxt">
-        <b>Never Land Box</b>
-        <ul class="inbox">
-          <li><i>x1</i> CD &laquo;Never Land&raquo;</li>
-          <li><i>x1</i> Футболка</li>
-          <li><i>x1</i> Sticker pack</li>
-          <li><i>x1</i> Брелок</li>
-        </ul>
-      </div>
-      <div class="sumqty">01</div>
-      <div class="sumprice" data-price></div>
-    </div>
-    <p class="onehand">1 box 1 hands</p>
+    <!-- Состав заказа рисует корзина: размеры выбраны там, здесь только сверка. -->
+    <div class="cartlist" id="coCart"></div>
+    <p class="onehand">1 of each per person</p>
 
     <form class="cof" id="cof" novalidate>
-      <fieldset>
-        <legend>Tee size</legend>
-        <div class="sz" id="sz">
-          <input type="radio" name="size" id="z-S" value="S"><label for="z-S">S</label>
-          <input type="radio" name="size" id="z-M" value="M"><label for="z-M">M</label>
-          <input type="radio" name="size" id="z-L" value="L"><label for="z-L">L</label>
-          <input type="radio" name="size" id="z-XL" value="XL"><label for="z-XL">XL</label>
-        </div>
-        <button type="button" class="sizelink" data-doc="sizes">Size guide</button>
-        <div class="f"><span class="err" id="e-size" aria-live="polite"></span></div>
-      </fieldset>
-
       <fieldset>
         <label class="f"><span>Full name</span><input name="name" autocomplete="name" required><span class="err"></span></label>
         <div class="row2">
@@ -1124,6 +1214,17 @@ const CFG = {
   order:{ price:3799, maxQty:1,
     /* адрес сервера заказов (Cloudflare Worker из папки server/), без слэша в конце */
     api:'https://neverland-shop.concert-grebz.workers.dev' },
+  /* Витрина. Цена здесь — чтобы её было видно до ответа сервера; настоящую
+     всё равно считает воркер, подделать с сайта нельзя. sized — спрашиваем
+     размер в корзине. Порядок задаёт порядок строк в корзине. */
+  catalogue:[
+    { code:'box',      title:'Never Land Box', uah:3799, sized:true,  img:'img/box-order.webp' },
+    { code:'tee',      title:'Футболка',       uah:1750, sized:true,  img:'img/p-tee-1.webp' },
+    { code:'keychain', title:'Брелок',         uah:1099, sized:false, img:'img/p-brelok.webp' },
+    { code:'disk',     title:'Диск',           uah:799,  sized:false, img:'img/p-disk.webp' },
+    { code:'sticker',  title:'Стикерпак',      uah:399,  sized:false, img:'img/p-stickers.webp' },
+  ],
+  sizes:['S','M','L','XL'],
 };
 
 const $=id=>document.getElementById(id);
@@ -1242,15 +1343,111 @@ hlogo.addEventListener('click',e=>{ e.preventDefault(); scrollTo({top:0,behavior
 const co=$('co'), cof=$('cof'); let qty=1, lastFocus=null;
 /* цена из CFG видна сразу, даже если сервер недоступен; ответил сервер — берём его цену */
 let priceUAH=CFG.order.price;
-const setQty=n=>{ qty=clamp(n,1,CFG.order.maxQty);
-  $('coTotal').textContent=fmtUAH(priceUAH*qty);
-  $('placeAmt').textContent=fmtUAH(priceUAH*qty); };
+/* ── КОРЗИНА ──
+   Состав заказа живёт здесь, а не в форме: в одном заказе может быть и бокс,
+   и футболка, и у каждого свой размер — одного поля на заказ уже не хватает.
+   Цены и остатки всё равно пересчитывает воркер, отсюда их не подделать. */
+let PROD=CFG.catalogue.slice(), SIZES=CFG.sizes.slice();
+const prodOf=code=>PROD.find(p=>p.code===code);
+let stock=null;          // ответ /stock; null — сервер ещё не ответил
+let cart=[];             // [{code,size}]
+
+/* Корзина переживает перезагрузку, но только в этом браузере. Если за это
+   время что-то разобрали, строку выбросит первая же сверка со складом. */
+const CART_KEY='nl-cart';
+const saveCart=()=>{ try{ localStorage.setItem(CART_KEY,JSON.stringify(cart)); }catch(e){} };
+const loadCart=()=>{ try{
+    const v=JSON.parse(localStorage.getItem(CART_KEY)||'[]');
+    if(Array.isArray(v)){
+      const seen=new Set();
+      cart=v.filter(l=>l&&prodOf(l.code)&&!seen.has(l.code)&&seen.add(l.code))
+            .map(l=>({code:l.code,size:SIZES.includes(l.size)?l.size:''}));
+    }
+  }catch(e){ cart=[]; } };
+
+const inCart=code=>cart.some(l=>l.code===code);
+const cartTotal=()=>cart.reduce((n,l)=>n+((prodOf(l.code)||{}).uah||0),0);
+/* Позиция готова, когда у размерного товара выбран размер. */
+const lineReady=l=>!(prodOf(l.code)||{}).sized||SIZES.includes(l.size);
+
+/* Что ещё можно купить. Сервер отдаёт {box:{S:true,…},tee:{…},disk:true,…}.
+   Пока сервер молчит — не мешаем: откажет он сам при оформлении. */
+function canBuy(code,size){
+  if(!stock) return true;
+  const s=stock[code];
+  if(s===undefined||s===null) return true;
+  if(typeof s==='boolean') return s;
+  return size?s[size]===true:Object.keys(s).some(k=>s[k]===true);
+}
+
+function addToCart(code){
+  if(soon||!prodOf(code)) return;
+  if(inCart(code)) return openCart();
+  if(!canBuy(code)) return;
+  cart.push({code,size:''});
+  saveCart(); paintCart(); openCart();
+}
+const removeFromCart=code=>{ cart=cart.filter(l=>l.code!==code); saveCart(); paintCart(); };
+function setSize(code,size){
+  const l=cart.find(x=>x.code===code);
+  if(!l||!canBuy(code,size)) return;
+  l.size=size; saveCart(); paintCart();
+}
+
+function rowHtml(l,editable){
+  const p=prodOf(l.code)||{title:l.code,uah:0,img:''};
+  /* В корзине размер выбирают кнопками, в сводке чекаута он уже выбран —
+     там кнопки только путали бы: выключенные читаются как «распродано». */
+  const sz=(p.sized&&editable)
+    ?'<div class="cartsz" data-sz="'+l.code+'">'+SIZES.map(s=>
+      '<button type="button" data-size="'+s+'" aria-pressed="'+(l.size===s)+'"'
+      +(canBuy(l.code,s)?'':' disabled')+'>'+s+'</button>').join('')+'</div>'
+    :'';
+  const name=p.title+((!editable&&l.size)?' · '+l.size:'');
+  return '<div class="cartrow">'
+    +'<img src="'+p.img+'" alt="" width="62" height="62" loading="lazy">'
+    +'<div><h4>'+name+'</h4><span class="cprice">'+fmtUAH(p.uah)+'</span>'+sz+'</div>'
+    +(editable
+      ?'<button type="button" class="rm" data-rm="'+l.code+'" aria-label="Remove '+p.title+'">✕</button>'
+      :'<span></span>')
+    +'</div>';
+}
+
+function paintCart(){
+  const n=cart.length;
+  $('cartN').textContent=n;
+  $('cartBtn').hidden=n===0;
+  $('cartSr').textContent='Cart, '+n+(n===1?' item':' items');
+  $('cartList').innerHTML=n?cart.map(l=>rowHtml(l,true)).join('')
+    :'<p class="cartempty">Your cart is empty.</p>';
+  $('cartFoot').hidden=!n; $('toCheckout').hidden=!n;
+  $('cartTotal').textContent=fmtUAH(cartTotal());
+  $('coCart').innerHTML=cart.map(l=>rowHtml(l,false)).join('');
+  $('coTotal').textContent=fmtUAH(cartTotal());
+  $('placeAmt').textContent=fmtUAH(cartTotal());
+  document.querySelectorAll('[data-add]').forEach(b=>{
+    const code=b.dataset.add, has=inCart(code);
+    b.classList.toggle('in',has);
+    b.textContent=soon?'Soon':(has?'In cart':(canBuy(code)?'Add':'Sold out'));
+    b.disabled=soon||(!has&&!canBuy(code));
+  });
+  paintBuy();
+  /* Если не осталось вообще ничего — говорим об этом в чекауте прямо. */
+  const anything=PROD.some(p=>canBuy(p.code));
+  if(!anything){ $('place').disabled=true; setPlace('Sold out');
+    $('coNote').textContent='Everything is sold out. Follow us for the next drop.'; }
+}
 /* Подпись кнопки меняем только так: прямой textContent снёс бы секцию с суммой */
 const setPlace=t=>{ $('place').querySelector('.pl-t').textContent=t; };
 /* незаполненную заглушку адреса воркера считаем «оплата не подключена» */
 const API=/YOUR-SUBDOMAIN/.test(CFG.order.api||'')?'':(CFG.order.api||'').replace(/\/+$/,'');
 const apiGet=path=>fetch(API+path).then(r=>{if(!r.ok) throw new Error(r.status); return r.json();});
-const paintPrice=()=>document.querySelectorAll('[data-price]').forEach(el=>el.textContent=fmtUAH(priceUAH));
+const paintPrice=()=>{
+  document.querySelectorAll('[data-price]').forEach(el=>el.textContent=fmtUAH(priceUAH));
+  document.querySelectorAll('[data-price-for]').forEach(el=>{
+    const p=prodOf(el.dataset.priceFor); if(p) el.textContent=fmtUAH(p.uah);
+  });
+};
 /* какие размеры ещё можно купить — решает сервер, на сайте остатки не хранятся */
 /* Отсчёт показываем только пока магазин закрыт и дата впереди.
    Когда дойдёт до нуля — не открываем витрину сами, а переспрашиваем сервер:
@@ -1281,35 +1478,31 @@ function paintCountdown(){
   cdTimer=setInterval(draw,1000);
 }
 
+/* Пришёл склад — выбрасываем из корзины то, что успели разобрать, пока
+   человек ходил по сайту, и снимаем размер, которого больше нет. */
 function paintStock(map){
-  let any=false;
-  document.querySelectorAll('#sz input[name=size]').forEach(inp=>{
-    const free=map[inp.value]!==false;
-    inp.disabled=!free;
-    if(!free&&inp.checked) inp.checked=false;
-    if(free) any=true;
-  });
-  const btn=$('place');
-  if(!any){ btn.disabled=true; setPlace('Sold out');
-    $('coNote').textContent='Everything is sold out. Follow us for the next drop.'; }
-  /* Обе кнопки «Buy box» — на главной и в продуктах. Если боксов нет, человек
-     не должен открывать форму и узнавать об этом уже внутри. */
-  paintBuy(any);
+  stock=map||null;
+  const before=cart.length;
+  cart=cart.filter(l=>canBuy(l.code));
+  cart.forEach(l=>{ if(l.size&&!canBuy(l.code,l.size)) l.size=''; });
+  if(cart.length!==before) saveCart();
+  paintCart();
 }
 
 /* Обе кнопки «Buy box» — на главной и в продуктах. Вынесено отдельно, потому
    что вызывать это нужно и когда склад не ответил: иначе при недоступном
    воркере на странице осталась бы живая кнопка покупки. */
-function paintBuy(any){
+function paintBuy(){
+  const has=inCart('box'), ok=canBuy('box');
   document.querySelectorAll('#shopNow,[data-shop]').forEach(b=>{
-    b.disabled=soon||!any;
+    b.disabled=soon||(!has&&!ok);
     b.classList.toggle('soon',soon);
-    b.textContent=soon?'Coming soon':(any?'Buy box':'Sold out');
+    b.textContent=soon?'Coming soon':(has?'In cart':(ok?'Buy box':'Sold out'));
   });
 }
 const loadStock=()=>API
-  ? apiGet('/stock').then(paintStock).catch(()=>paintBuy(true))
-  : (paintBuy(true), Promise.resolve());
+  ? apiGet('/stock').then(paintStock).catch(()=>paintCart())
+  : (paintCart(), Promise.resolve());
 /* пока эквайринг не одобрен, сервер принимает заказ и мы связываемся вручную —
    кнопка и подпись под ней должны говорить об этом честно */
 let payments=true;
@@ -1319,7 +1512,10 @@ const payMethod=()=>{ const r=cof.querySelector('input[name=pay]:checked'); retu
 /* Состав бокса в одном месте: он показывается и в чекауте, и в чеке,
    и расходиться эти два списка не должны. */
 const BOX=['CD «Never Land»','Футболка','Sticker pack','Брелок'];
-const chosenSize=()=>{ const r=cof.querySelector('input[name=size]:checked'); return r?r.value:''; };
+/* Размер для билета: берём у бокса, иначе у футболки. В заказе из одних
+   стикеров размера нет — билет это переживёт. */
+const chosenSize=()=>{ const l=cart.find(x=>x.code==='box')||cart.find(x=>x.code==='tee');
+  return l?l.size:''; };
 const PAYNAME={ card:['Оплата карткою','Visa / Mastercard'],
                 crypto:['Крипта','USDT · TRC-20'] };
 
@@ -1348,8 +1544,9 @@ const stamp=()=>{
 };
 
 /* head:false — для экрана «готово до оплати», там своя шапка. */
-function ticket(id,total,size,{head=true,lead=''}={}){
-  const items=BOX.map(n=> n==='Футболка'&&size ? n+' · '+size : n);
+function ticket(id,total,size,{head=true,lead='',lines=null}={}){
+  /* Для одного бокса показываем, что внутри; для сборной корзины — что купили. */
+  const items=(lines&&lines.length)?lines:BOX.map(n=> n==='Футболка'&&size ? n+' · '+size : n);
   const [pn,ps]=PAYNAME[payMethod()]||PAYNAME.card;
   return '<div class="ticket">'
     +(head
@@ -1367,6 +1564,14 @@ function ticket(id,total,size,{head=true,lead=''}={}){
     +'<div class="tk-code">'+bars(id)+'<div class="tk-letters">NEVERLAND</div></div>'
     +'</div>';
 }
+
+/* Строки билета: один бокс — показываем его состав, иначе список покупок. */
+const ticketLines=b=>{
+  if(b.length===1&&b[0].code==='box')
+    return BOX.map(n=> n==='Футболка'&&b[0].size ? n+' · '+b[0].size : n);
+  return b.map(l=>{ const p=prodOf(l.code)||{title:l.code};
+    return p.title+(l.size?' · '+l.size:''); });
+};
 
 function labelPlace(){
   const m=payMethod(), card=m==='card';
@@ -1392,15 +1597,59 @@ cof.addEventListener('change',e=>{
   if(e.target.name==='net'){ $('net').classList.remove('bad'); $('e-net').textContent=''; }
 });
 if(API) apiGet('/config').then(c=>{
-  if(c.priceUAH){ priceUAH=c.priceUAH; paintPrice(); }
+  if(c.priceUAH){ priceUAH=c.priceUAH; }
+  /* Каталог с сервера главнее: цену и состав витрины меняют там, не трогая сайт.
+     Картинки остаются местные — их сервер не знает. */
+  if(Array.isArray(c.products)&&c.products.length)
+    PROD=c.products.map(p=>({...p,img:(prodOf(p.code)||{}).img||''}));
+  if(Array.isArray(c.sizes)&&c.sizes.length) SIZES=c.sizes.slice();
   if(c.payments===false) payments=false;
   if(typeof c.soon==='boolean') soon=c.soon;
   openAt=Number(c.openAt)||0;
-  paintPay(); labelPlace(); setQty(qty); loadStock(); paintCountdown();
+  paintPrice(); paintPay(); labelPlace(); loadStock(); paintCountdown();
 }).catch(()=>{});
-paintBuy(true); paintCountdown();   // до ответа сервера считаем по странице
+loadCart();
+paintPrice(); paintCart(); paintCountdown();   // до ответа сервера считаем по странице
 loadStock();
-paintPrice(); setQty(1);
+
+/* ── панель корзины ── */
+const cartEl=$('cart');
+function openCart(){
+  lastFocus=document.activeElement;
+  cartEl.classList.add('open'); cartEl.setAttribute('aria-hidden','false');
+  document.body.classList.add('lock');
+  loadStock();
+  setTimeout(()=>cartEl.querySelector('.panel').focus(),50);
+}
+function closeCart(){
+  cartEl.classList.remove('open'); cartEl.setAttribute('aria-hidden','true');
+  if(!co.classList.contains('open')) document.body.classList.remove('lock');
+  lastFocus&&lastFocus.focus();
+}
+cartEl.querySelectorAll('[data-cart-close]').forEach(b=>b.addEventListener('click',closeCart));
+$('cartBtn').addEventListener('click',openCart);
+cartEl.addEventListener('click',e=>{
+  const rm=e.target.closest('[data-rm]');       if(rm) return removeFromCart(rm.dataset.rm);
+  const sz=e.target.closest('[data-size]');
+  if(sz){ const box=sz.closest('[data-sz]'); if(box) setSize(box.dataset.sz,sz.dataset.size); }
+});
+document.addEventListener('click',e=>{
+  const add=e.target.closest('[data-add]');
+  if(add) addToCart(add.dataset.add);
+});
+$('toCheckout').addEventListener('click',()=>{
+  if(!cart.length) return;
+  /* Размер — обязателен до чекаута: иначе человек заполнит всю форму
+     и получит отказ на последнем шаге из-за одной невыбранной буквы. */
+  const miss=cart.find(l=>!lineReady(l));
+  if(miss){
+    const box=$('cartList').querySelector('[data-sz="'+miss.code+'"]');
+    if(box){ box.classList.add('bad'); box.scrollIntoView({block:'center',behavior:'smooth'}); }
+    return;
+  }
+  closeCart(); openCo();
+});
+
 function openCo(){
   lastFocus=document.activeElement; co.classList.add('open'); co.setAttribute('aria-hidden','false');
   loadStock();
@@ -1408,7 +1657,7 @@ function openCo(){
 }
 function closeCo(){
   co.classList.remove('open'); co.setAttribute('aria-hidden','true'); document.body.classList.remove('lock');
-  if(co.classList.contains('ok')){ co.classList.remove('ok'); cof.reset(); setQty(1); labelPlace(); }
+  if(co.classList.contains('ok')){ co.classList.remove('ok'); cof.reset(); labelPlace(); }
   lastFocus&&lastFocus.focus();
 }
 co.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeCo));
@@ -1416,7 +1665,8 @@ co.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeC
    а не весь чекаут вместе с заполненной формой */
 addEventListener('keydown',e=>{ if(e.key!=='Escape') return;
   if(document.querySelector('dialog.doc[open]')) return;
-  if(co.classList.contains('open')) closeCo(); });
+  if(co.classList.contains('open')) return closeCo();
+  if(cartEl.classList.contains('open')) closeCart(); });
 // фокус не уходит за пределы панели
 co.addEventListener('keydown',e=>{
   if(e.key!=='Tab') return;
@@ -1428,9 +1678,8 @@ co.addEventListener('keydown',e=>{
 
 var validate=function(){
   let ok=true, first=null;
-  const size=cof.querySelector('input[name=size]:checked');
-  $('sz').classList.toggle('bad',!size); $('e-size').textContent=size?'':'Pick a size';
-  if(!size){ok=false; first=first||cof.querySelector('input[name=size]');}
+  /* Размеры выбраны в корзине — здесь только убеждаемся, что корзина цела. */
+  if(!cart.length||cart.some(l=>!lineReady(l))){ closeCo(); openCart(); return false; }
   cof.querySelectorAll('.f > input,.f > textarea').forEach(inp=>{
     if(inp.disabled) return;          // скрытые поля доставки не проверяем
     let msg='';
@@ -1452,7 +1701,7 @@ var validate=function(){
   first&&first.focus();
   return ok;
 };
-cof.addEventListener('input',e=>{ const f=e.target.closest('.f'); if(f&&f.classList.contains('bad')){f.classList.remove('bad');f.querySelector('.err').textContent='';} if(e.target.name==='size'){$('sz').classList.remove('bad');$('e-size').textContent='';} if(e.target.name==='carrier'){$('car').classList.remove('bad');$('e-car').textContent='';} if(e.target.id==='agree'){$('agreeBox').classList.remove('bad');$('e-agree').textContent='';} });
+cof.addEventListener('input',e=>{ const f=e.target.closest('.f'); if(f&&f.classList.contains('bad')){f.classList.remove('bad');f.querySelector('.err').textContent='';} if(e.target.name==='carrier'){$('car').classList.remove('bad');$('e-car').textContent='';} if(e.target.id==='agree'){$('agreeBox').classList.remove('bad');$('e-agree').textContent='';} });
 
 /* Nova Global — заграница: вместо номера отделения нужен полный адрес.
    Невидимые поля отключаем: disabled не уходит в FormData и не проходит проверку,
@@ -1522,18 +1771,22 @@ cof.addEventListener('submit',async e=>{
   const d=Object.fromEntries(new FormData(cof));
   const btn=$('place'); btn.disabled=true; setPlace(payments?'Creating payment…':'Sending order…');
   try{
-    const r=await fetch(API+'/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...d,qty})});
+    /* Шлём состав корзины. Цены не шлём вовсе: их считает воркер по своему
+       каталогу, поэтому подменить сумму со страницы нельзя. */
+    const items=cart.map(l=>({code:l.code,size:l.size||undefined,qty:1}));
+    const r=await fetch(API+'/order',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({...d,items,qty:items.length})});
     const res=await r.json().catch(()=>({}));
     if(r.status===409){
       btn.disabled=false; setPlace(payments?'Pay':'Place order');
-      if(res.error==='one_per_person'){          // этот человек уже взял коробку
+      if(res.error==='one_per_person'){          // этот предмет у него уже есть
         const f=cof.querySelector('input[name=phone]').parentElement;
-        f.classList.add('bad'); f.querySelector('.err').textContent='1 box 1 hands';
-        $('coNote').textContent='You already have an order. 1 box 1 hands.';
-      }else{                                     // размер разобрали, пока заполняли форму
-        await loadStock();
-        $('sz').classList.add('bad');
-        $('e-size').textContent='This size has just sold out — pick another';
+        f.classList.add('bad');
+        f.querySelector('.err').textContent=res.message||'1 of each per person';
+        $('coNote').textContent='This number already has that item. 1 of each per person.';
+      }else{                                     // разобрали, пока заполняли форму
+        await loadStock();                       // склад обновится и корзина сама подчистится
+        closeCo(); openCart();
         $('coNote').textContent='Someone took the last one while you were filling the form.';
       }
       return;
@@ -1553,10 +1806,16 @@ cof.addEventListener('submit',async e=>{
       }
       throw new Error(res.message||'Could not place the order');
     }
+    /* Заказ принят. Корзину сразу очищаем: если человек вернётся на сайт,
+       она не должна пытаться оформиться второй раз — второй такой же предмет
+       на этот номер всё равно не пропустят. */
+    const bought=cart.slice(), boughtSize=chosenSize(), boughtLines=ticketLines(bought);
+    cart=[]; saveCart(); paintCart();
+
     if(res.manual){            // оплата не картой — реквізити надсилає менеджер
       const crypto=payMethod()==='crypto';
       $('doneTitle').textContent='';
-      $('doneText').innerHTML=ticket(res.orderId,res.total||priceUAH,chosenSize())
+      $('doneText').innerHTML=ticket(res.orderId,res.total||priceUAH,boughtSize,{lines:boughtLines})
         +'<p class="paynote" lang="uk">'
         +(crypto ? 'Гаманець для оплати надішле менеджер у Telegram @neverlandsupport.'
                  : 'Питання — @neverlandsupport у Telegram.')
@@ -1564,7 +1823,7 @@ cof.addEventListener('submit',async e=>{
       $('payAgain').hidden=true; co.classList.add('ok'); return;
     }
     if(!res.pageUrl) throw new Error(res.message||'Could not create the payment');
-    store.set({orderId:res.orderId,invoiceId:res.invoiceId,pageUrl:res.pageUrl,size:chosenSize(),total:res.total||priceUAH});
+    store.set({orderId:res.orderId,invoiceId:res.invoiceId,pageUrl:res.pageUrl,size:boughtSize,lines:boughtLines,total:res.total||priceUAH});
     /* Диплинк monobank:// открывает приложение сразу на подтверждении платежа,
        но работает только на телефоне и только если приложение установлено.
        Поэтому показываем его как выбор, а не как единственный путь: промахнуться
@@ -1572,7 +1831,7 @@ cof.addEventListener('submit',async e=>{
     const onPhone=matchMedia('(pointer:coarse)').matches;
     if(res.appUrl&&onPhone){
       $('doneTitle').textContent='Готово до оплати';
-      $('doneText').innerHTML=ticket(res.orderId,res.total||priceUAH,chosenSize(),{head:false})
+      $('doneText').innerHTML=ticket(res.orderId,res.total||priceUAH,boughtSize,{head:false,lines:boughtLines})
         +'<a class="monobtn" href="'+escH(res.appUrl)+'">Сплатити через mono</a>'
         +'<a class="paylink" href="'+escH(res.pageUrl)+'">Оплатити карткою</a>'
         +'<p class="paynote">Розмір у броні 15 хвилин — стільки живе рахунок.</p>';
@@ -1594,7 +1853,7 @@ cof.addEventListener('submit',async e=>{
     $('payAgain').hidden=!again; co.classList.add('ok'); openCo(); };
   const idH=`<span class="oid">${escH(id)}</span>`;
   // чек собираем из того, что сохранили перед уходом на монобанк
-  const bill=(o)=> saved ? ticket(id,saved.total||priceUAH,saved.size||'',o) : '';
+  const bill=(o)=> saved ? ticket(id,saved.total||priceUAH,saved.size||'',{...o,lines:saved.lines||null}) : '';
   if(!saved||saved.orderId!==id||!API){ show('',bill()); return; }
   $('payAgain').onclick=()=>{ location.href=saved.pageUrl; };
   show('Перевіряємо оплату…','<p class="dlead">Хвилинку — підтверджуємо платіж у monobank.</p>');
@@ -1613,8 +1872,10 @@ cof.addEventListener('submit',async e=>{
   show('Платіж обробляється','<p class="dlead">Замовлення збережено. Щойно monobank підтвердить оплату, ми напишемо.</p>'
     +bill({head:false}),true);
 })();
-$('shopNow').addEventListener('click',openCo);
-document.querySelectorAll('[data-shop]').forEach(b=>b.addEventListener('click',openCo));
+/* «Buy box» теперь кладёт бокс в корзину и открывает её: размер выбирают там,
+   вместе с остальными позициями заказа. */
+document.querySelectorAll('#shopNow,[data-shop]').forEach(
+  b=>b.addEventListener('click',()=>addToCart('box')));
 
 /* ══ КАРТОЧКИ ТОВАРОВ ══════════════════════════════════
    У футболки два кадра. Вместо вложенной горизонтальной прокрутки
